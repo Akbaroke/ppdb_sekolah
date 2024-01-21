@@ -24,7 +24,7 @@ const Button: React.FC<ButtonProps> = ({
       type={type || 'button'}
       disabled={isLoading || isDisabled}
       className={cn(
-        'rounded-[5px] min-w-[151px] h-[30px] font-bold text-[16px]  transition-all px-6 capitalize bg-gold text-white',
+        'rounded-[5px] min-w-[151px] h-[30px] font-bold text-[14px]  transition-all px-6 capitalize bg-gold text-white',
         isLoading ? 'grid place-items-center opacity-70' : '',
         isLoading || isDisabled
           ? 'cursor-not-allowed'
