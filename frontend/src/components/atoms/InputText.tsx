@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import * as React from 'react';
 import { Loader } from '@mantine/core';
-import PhoneInput from 'react-phone-number-input/input';
-import 'react-phone-number-input/style.css';
+import Input from 'react-phone-number-input/input';
 
-interface InputTextProps {
+interface Props {
   label: string;
   id: string;
   value: string;
@@ -12,12 +11,12 @@ interface InputTextProps {
   isLoading?: boolean;
   type?: 'text' | 'email' | 'password';
   maxLength?: number;
-  onChange: (value: string) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement> | string) => void;
   required?: boolean;
   placeholder?: string;
 }
 
-const InputText: React.FC<InputTextProps> = ({
+const InputText: React.FC<Props> = ({
   label,
   id,
   value,
@@ -30,59 +29,53 @@ const InputText: React.FC<InputTextProps> = ({
   required,
   placeholder,
 }) => {
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputan, setInputan] = React.useState('');
 
-  useEffect(() => {
-    if (id === 'no_ponsel' && inputValue.length > 0) {
-      onChange(inputValue);
+  React.useEffect(() => {
+    if (id === 'no_ponsel') {
+      if (inputan.length > 0) {
+        onChange(inputan);
+      }
     }
-  }, [inputValue, id, onChange]);
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement> | string
-  ) => {
-    const newValue = typeof e === 'string' ? e : e.target.value;
-    setInputValue(newValue);
-  };
-
-  const renderInput = () => {
-    const commonInputProps = {
-      className: `border border-[#EFF0F0] rounded-[10px] w-full h-[37px] pl-3 text-[14px] placeholder:text-gray-300 ${
-        disabled ? 'bg-[#F4F5F7]' : ''
-      }`,
-      maxLength,
-      placeholder,
-    };
-
-    return id === 'no_ponsel' ? (
-      <PhoneInput
-        value={inputValue || value}
-        onChange={(e) => handleInputChange(e || '')}
-        country="ID"
-        {...commonInputProps}
-      />
-    ) : (
-      <input
-        id={id}
-        type={type}
-        value={value}
-        onChange={(e) => handleInputChange(e)}
-        disabled={isLoading || disabled}
-        {...commonInputProps}
-      />
-    );
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputan, id]);
 
   return (
     <div className="flex flex-col my-2 relative">
       <label htmlFor={id} className="text-[14px]">
-        {label} {required && <span className="text-red-500">*</span>}
+        {label} {required ? <span className="text-red-500">*</span> : null}
       </label>
-      {renderInput()}
-      {errorLabel && <p className="text-red-500 text-[12px]">{errorLabel}</p>}
-      {isLoading && (
-        <Loader color="gray" size="xs" className="absolute bottom-2 right-3" />
+      {id === 'no_ponsel' ? (
+        <Input
+          value={inputan || value}
+          onChange={(e) => setInputan(e || '')}
+          country="ID"
+          className={`border border-[#EFF0F0] rounded-[10px] h-[37px] pl-3 text-[14px] placeholder:text-gray-300 ${
+            disabled ? 'bg-[#F4F5F7]' : ''
+          }`}
+          maxLength={16}
+          placeholder={placeholder}
+        />
+      ) : (
+        <input
+          id={id}
+          type={type}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          disabled={isLoading || disabled}
+          maxLength={maxLength}
+          className={`border border-[#EFF0F0] rounded-[10px] h-[37px] pl-3 text-[14px] placeholder:text-gray-300 ${
+            disabled ? 'bg-[#F4F5F7]' : ''
+          }`}
+          placeholder={placeholder}
+        />
       )}
+      {errorLabel ? (
+        <p className="text-red-500 text-[12px]">{errorLabel}</p>
+      ) : null}
+      {isLoading ? (
+        <Loader color="gray" size="xs" className="absolute bottom-2 right-3" />
+      ) : null}
     </div>
   );
 };

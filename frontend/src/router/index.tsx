@@ -3,7 +3,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Forgot from '../pages/Forgot';
 import VerifyOtp from '../pages/VerifyOtp';
-import ResetPassword from '../pages/ResetPassword';
+import Home from '../pages/Home';
 type DataRouteType = {
   path: string;
   element: React.ReactElement;
@@ -12,6 +12,11 @@ type DataRouteType = {
 
 export default function Root() {
   const dataRoute: DataRouteType[] = [
+    {
+      path: '/',
+      element: <Home />,
+      middleware: 'guest',
+    },
     {
       path: '/login',
       element: <Login />,
@@ -30,11 +35,6 @@ export default function Root() {
     {
       path: '/otp',
       element: <VerifyOtp />,
-      middleware: 'guest',
-    },
-    {
-      path: '/reset_password',
-      element: <ResetPassword />,
       middleware: 'guest',
     },
   ];

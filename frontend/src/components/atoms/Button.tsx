@@ -7,7 +7,7 @@ interface ButtonProps {
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
-  isDisabled?: boolean;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
@@ -16,18 +16,18 @@ const Button: React.FC<ButtonProps> = ({
   className,
   children,
   isLoading,
-  isDisabled,
+  disabled,
   onClick,
 }) => {
   return (
     <button
       type={type || 'button'}
-      disabled={isLoading || isDisabled}
+      disabled={isLoading || disabled}
       className={cn(
         'rounded-[5px] min-w-[151px] h-[30px] font-bold text-[14px]  transition-all px-6 capitalize bg-gold text-white',
         isLoading ? 'grid place-items-center opacity-70' : '',
-        isLoading || isDisabled
-          ? 'cursor-not-allowed'
+        isLoading || disabled
+          ? 'cursor-not-allowed bg-opacity-70'
           : 'active:shadow-none  active:scale-95 shadow-md',
         className
       )}
