@@ -1,10 +1,11 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '../components/atoms/Button';
-import AuthLayout from '../components/organisms/AuthLayout';
+import AuthLayout from '../layouts/AuthLayout';
 import OTPInput from 'react-otp-input';
 import { useState } from 'react';
 import InputText from '../components/atoms/InputText';
 import { isEmail, useForm } from '@mantine/form';
+import useCountdown from '../hooks/useCountdown';
 
 type FormType = {
   email: string;
@@ -12,10 +13,11 @@ type FormType = {
 
 export default function VerifyOtp() {
   const navigate = useNavigate();
-  const { search } = useLocation();
-  const query = new URLSearchParams(search);
-  const paramEmail = query.get('email');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const paramEmail = searchParams.get('email');
+  const paramType = searchParams.get('type');
   const [otp, setOtp] = useState('');
+  const { time, setTime } = useCountdown();
 
   const form = useForm<FormType>({
     validateInputOnChange: true,
@@ -30,10 +32,16 @@ export default function VerifyOtp() {
 
   const handleSubmitEmail = () => {
     console.log(form.values);
-    navigate(`/otp?email=${form.values.email}`);
+    setSearchParams({ email: form.values.email });
   };
   const handleSubmitOtp = () => {
-    navigate('/login');
+    if (paramType === 'forgot')
+      return navigate(`/forgot?token=${otp}`, { replace: true });
+    navigate('/login', { replace: true });
+  };
+
+  const handleResendOtp = () => {
+    setTime(60);
   };
 
   const Page1 = () => (
@@ -95,9 +103,15 @@ export default function VerifyOtp() {
       <div className="flex flex-col items-center gap-3 text-[14px] mt-5">
         <p className="">
           Tidak menerima kode OTP ?{' '}
-          <Link to="/login" className="font-bold text-gold">
-            Minta kode baru
-          </Link>
+          {time ? (
+            <span className="font-bold text-gold">{time} detik</span>
+          ) : (
+            <span
+              className="font-bold text-gold cursor-pointer"
+              onClick={handleResendOtp}>
+              Minta kode baru
+            </span>
+          )}
         </p>
       </div>
     </>

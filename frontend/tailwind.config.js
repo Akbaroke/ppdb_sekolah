@@ -9,8 +9,10 @@ export default {
         gold: '#AE7D00',
         success_primary: '#008D41',
         success_secondary: '#CCE8D9',
-        pending_primary: '#FFB803',
-        pending_secondary: '#FFF1CD',
+        warning_primary: '#FFB803',
+        warning_secondary: '#FFF1CD',
+        danger_primary: '#FF3030',
+        danger_secondary: '#FFD6D6',
       },
       fontFamily: {
         jakarta: ['Plus Jakarta Sans', 'sans-serif'],

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/atoms/Button';
 import InputText from '../components/atoms/InputText';
-import AuthLayout from '../components/organisms/AuthLayout';
+import AuthLayout from '../layouts/AuthLayout';
 import { isEmail, useForm } from '@mantine/form';
 
 type FormType = {
@@ -31,7 +31,7 @@ export default function Login() {
 
   const handleSubmit = () => {
     console.log(form.values);
-    navigate('/');
+    navigate('/user');
   };
 
   return (

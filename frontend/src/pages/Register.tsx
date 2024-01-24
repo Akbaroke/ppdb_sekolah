@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../components/atoms/Button';
 import InputText from '../components/atoms/InputText';
-import AuthLayout from '../components/organisms/AuthLayout';
+import AuthLayout from '../layouts/AuthLayout';
 import { isEmail, matchesField, useForm } from '@mantine/form';
 
 type FormType = {
