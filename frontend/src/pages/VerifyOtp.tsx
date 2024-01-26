@@ -2,10 +2,11 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import Button from '../components/atoms/Button';
 import AuthLayout from '../layouts/AuthLayout';
 import OTPInput from 'react-otp-input';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputText from '../components/atoms/InputText';
 import { isEmail, useForm } from '@mantine/form';
 import useCountdown from '../hooks/useCountdown';
+import axios from '../axios';
 
 type FormType = {
   email: string;
@@ -18,6 +19,9 @@ export default function VerifyOtp() {
   const paramType = searchParams.get('type');
   const [otp, setOtp] = useState('');
   const { time, setTime } = useCountdown();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => setTime(60), []);
 
   const form = useForm<FormType>({
     validateInputOnChange: true,
@@ -34,14 +38,46 @@ export default function VerifyOtp() {
     console.log(form.values);
     setSearchParams({ email: form.values.email });
   };
-  const handleSubmitOtp = () => {
-    if (paramType === 'forgot')
-      return navigate(`/forgot?token=${otp}`, { replace: true });
-    navigate('/login', { replace: true });
+  const handleSubmitOtp = async () => {
+    if (paramType === 'forgot') {
+      try {
+        const { data } = await axios.post('/otp', {
+          type_otp: 'forgot',
+          email: form.values.email,
+          otp,
+        });
+        console.log(data);
+        navigate(`/forgot?token=${data.token}`, { replace: true });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const { data } = await axios.post('/otp', {
+          type_otp: 'register',
+          email: form.values.email,
+          otp,
+        });
+        console.log(data);
+        navigate('/login', { replace: true });
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
-  const handleResendOtp = () => {
-    setTime(60);
+  const handleResendOtp = async () => {
+    try {
+      setTime(60);
+      await axios.get('/otp', {
+        params: {
+          email: paramEmail,
+          type_otp: paramType ? 'forgot' : 'register',
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const Page1 = () => (
@@ -83,7 +119,6 @@ export default function VerifyOtp() {
             value={otp}
             onChange={setOtp}
             numInputs={5}
-            placeholder="•"
             inputStyle={{
               border: '1px solid #EFF0F0',
               borderRadius: '8px',

@@ -3,6 +3,7 @@ import Button from '../components/atoms/Button';
 import InputText from '../components/atoms/InputText';
 import AuthLayout from '../layouts/AuthLayout';
 import { isEmail, matchesField, useForm } from '@mantine/form';
+import axios from '../axios';
 
 type FormType = {
   email: string;
@@ -35,9 +36,18 @@ export default function Register() {
     },
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(form.values);
-    navigate(`/otp?email=${form.values.email}`);
+    try {
+      const { data } = await axios.post('/register', {
+        email: form.values.email,
+        password: form.values.password,
+      });
+      console.log(data);
+      navigate(`/otp?email=${form.values.email}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

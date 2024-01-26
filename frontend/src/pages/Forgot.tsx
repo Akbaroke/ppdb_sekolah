@@ -1,3 +1,4 @@
+import axios from '../axios';
 import Button from '../components/atoms/Button';
 import InputText from '../components/atoms/InputText';
 import AuthLayout from '../layouts/AuthLayout';
@@ -50,14 +51,43 @@ export default function Forgot() {
     },
   });
 
-  const handleSubmitEmail = () => {
+  const handleSubmitEmail = async () => {
     console.log(form1.values);
-    navigate(`/otp?email=${form1.values.email}&type=forgot`, { replace: true });
+    try {
+      await axios.get('/otp', {
+        params: {
+          email: form1.values.email,
+          type_otp: 'forgot',
+        },
+      });
+      localStorage.setItem('email', form1.values.email);
+      navigate(`/otp?email=${form1.values.email}&type=forgot`, {
+        replace: true,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleSubmitResetPassword = () => {
+  const handleSubmitResetPassword = async () => {
     console.log(form2.values);
-    navigate('/login', { replace: true });
+    console.log({
+      token,
+      email: localStorage.getItem('email'),
+      new_password: form2.values.newPassword,
+    });
+    try {
+      const { data } = await axios.patch('/reset_password', {
+        token,
+        email: localStorage.getItem('email'),
+        new_password: form2.values.newPassword,
+      });
+      console.log(data);
+      localStorage.removeItem('email')
+      navigate('/login', { replace: true });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const Page1 = () => (
