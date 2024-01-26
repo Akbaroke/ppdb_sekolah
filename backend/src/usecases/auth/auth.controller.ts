@@ -23,6 +23,7 @@ import {
   ResponseGetOTP,
   ResponseLogin,
   ResponsePostOTP,
+  ResponseRefreshToken,
   ResponseRegister,
   ResponseResetPassword,
 } from './auth.presenter';
@@ -32,6 +33,7 @@ import { VerificationUserDto } from './dtos/verification-user.dto';
 import { TYPE_OTP } from 'src/domain/otp/otp.interface';
 import { IMessage } from '../message.interface';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
 
 @ApiTags('Auth')
 @Controller()
@@ -125,5 +127,16 @@ export class AuthController implements IAuthController {
     @Body() { email, new_password, token }: ResetPasswordDto,
   ): Promise<IMessage> {
     return await this.authService.resetPassword(token, email, new_password);
+  }
+
+  @ApiOperation({ description: 'POST - api/refresh_token' })
+  @ApiResponse({
+    description: 'RefreshToken berhasil',
+    type: ResponseRefreshToken,
+    status: HttpStatus.OK,
+  })
+  @Post('refresh_token')
+  async refresh_token(@Body() { accessToken }: RefreshTokenDto) {
+    return await this.authService.refreshToken(accessToken);
   }
 }

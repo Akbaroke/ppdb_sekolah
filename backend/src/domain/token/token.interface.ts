@@ -18,7 +18,7 @@ export interface IGetToken {
 
 export interface ITokenRepository {
   saveToken(payload: IPayloadSaveToken): Promise<Token>;
-  findOne(payload: IGetToken): Promise<Token>;
+  findToken(payload: IGetToken): Promise<Token>;
 }
 
 export interface ITokenService {
@@ -30,6 +30,9 @@ export interface ITokenService {
   ): Promise<string>;
   saveToken(payload: IPayloadSaveToken): Promise<Token>;
   findTokenByUser(payload: IGetToken): Promise<string>;
+  refreshToken(token: Token): Promise<string>;
+  checkExpiredAccessToken(accessToken: string): Promise<boolean>;
+  findToken(accessToken: string): Promise<Token>;
   verifyToken(
     token: string,
     type: 'forgot' | 'accessToken',

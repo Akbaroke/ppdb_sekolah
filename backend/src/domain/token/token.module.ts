@@ -14,7 +14,7 @@ import { TokenRepository } from './token.repository';
         global: true,
         secret: configService.getOrThrow('jwt_public_key'),
         signOptions: {
-          expiresIn: '1d',
+          expiresIn: '15m',
         },
       }),
       inject: [ConfigService],

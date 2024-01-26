@@ -211,6 +211,25 @@ export class AuthService implements IAuthService {
     }
   }
 
+  async refreshToken(accessToken: string): Promise<TMessageWithToken> {
+    try {
+      await this.validateAccessTokenExpiration(accessToken);
+      const existingToken = await this.tokenService.findToken(accessToken);
+      if (!existingToken) {
+        throw new UnauthorizedException('token illegal');
+      }
+
+      const token = await this.tokenService.refreshToken(existingToken);
+      return {
+        httpStatus: HttpStatus.OK,
+        message: 'RefreshToken berhasil',
+        token,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async resetPassword(
     token: string,
     email: string,
@@ -367,6 +386,16 @@ export class AuthService implements IAuthService {
       }
     } catch (error) {
       throw error;
+    }
+  }
+
+  private async validateAccessTokenExpiration(accessToken: string) {
+    const isExpired = await this.tokenService.checkExpiredAccessToken(
+      accessToken,
+    );
+
+    if (!isExpired) {
+      throw new ForbiddenException('Token belum kadaluarsa');
     }
   }
 }
