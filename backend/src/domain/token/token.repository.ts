@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from './token.entity';
-import { Repository } from 'typeorm';
+import { Repository, UpdateResult } from 'typeorm';
 import {
   IGetToken,
   IPayloadSaveToken,
@@ -15,8 +15,7 @@ export class TokenRepository implements ITokenRepository {
     private readonly tokenRepository: Repository<Token>,
   ) {}
 
-  //   masih ada salah disini
-  async findOne(payload: IGetToken): Promise<Token> {
+  async findToken(payload: IGetToken): Promise<Token> {
     const data = await this.tokenRepository.findOne({
       where: {
         user: payload.user,
@@ -26,7 +25,26 @@ export class TokenRepository implements ITokenRepository {
     return data;
   }
 
+  async findTokenByAccessToken(accessToken: string): Promise<Token> {
+    const data = await this.tokenRepository.findOne({
+      where: {
+        accessToken,
+      },
+      relations: { user: true },
+      select: { user: { user_id: true, email: true, role: true } },
+    });
+
+    return data;
+  }
+
   async saveToken(payload: IPayloadSaveToken): Promise<Token> {
     return await this.tokenRepository.save(payload);
+  }
+
+  async updateToken(
+    accessToken: string,
+    payload?: { accessToken?: string; refreshToken?: string },
+  ): Promise<UpdateResult> {
+    return await this.tokenRepository.update({ accessToken }, payload);
   }
 }

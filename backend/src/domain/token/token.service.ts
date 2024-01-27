@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import {
   IPayloadToken,
   IPayloadTokenForgotPassword,
@@ -17,6 +17,13 @@ export class TokenService implements ITokenService {
     private readonly tokenRepository: TokenRepository,
     private readonly configService: ConfigService,
   ) {}
+
+  private async updateToken(
+    accessToken: string,
+    payload?: { accessToken?: string; refreshToken?: string },
+  ) {
+    return await this.tokenRepository.updateToken(accessToken, payload || {});
+  }
 
   async generateAccessTokenAndRefreshToken(
     payload: IPayloadToken,
@@ -47,7 +54,7 @@ export class TokenService implements ITokenService {
   }
 
   async findTokenByUser(payload: IGetToken): Promise<string> {
-    const data = await this.tokenRepository.findOne(payload);
+    const data = await this.tokenRepository.findToken(payload);
     if (!data) {
       return null;
     }
@@ -55,7 +62,74 @@ export class TokenService implements ITokenService {
   }
 
   async verifyToken(accessToken: string): Promise<TPayloadVerifyToken> {
-    return await this.jwtService.verifyAccessToken(accessToken);
+    const data = await this.jwtService.verifyAccessToken(accessToken);
+    return data;
+  }
+
+  async checkExpiredAccessToken(accessToken: string): Promise<boolean> {
+    const isExpired = await this.jwtService
+      .verifyAccessToken(accessToken)
+      .then(() => false)
+      .catch((error) => {
+        if (error.message === 'jwt expired') {
+          return true;
+        }
+
+        throw new BadRequestException('Token tidak sah');
+      });
+
+    return isExpired;
+  }
+
+  async findToken(accessToken: string): Promise<Token> {
+    const token = await this.tokenRepository.findTokenByAccessToken(
+      accessToken,
+    );
+
+    return token;
+  }
+
+  async refreshToken(token: Token): Promise<string> {
+    const accessToken = await this.jwtService
+      .verifyRefreshToken(token.refreshToken, {
+        secret: this.configService.getOrThrow('jwt_secret_key'),
+      })
+      .then(async ({ id, email, role }) => {
+        const createAccessToken = await this.jwtService.generateAccessToken({
+          id,
+          email,
+          role,
+        });
+
+        await this.updateToken(token.accessToken, {
+          accessToken: createAccessToken,
+        });
+        return createAccessToken;
+      })
+      .catch(async (error) => {
+        if (error.message === 'jwt expired') {
+          const payload = {
+            id: token.user.user_id,
+            email: token.user.email,
+            role: token.user.role,
+          };
+
+          const generateToken = await this.generateAccessTokenAndRefreshToken(
+            payload,
+          );
+
+          await this.updateToken(token.accessToken, {
+            accessToken: generateToken.accessToken,
+            refreshToken: generateToken.refreshToken,
+          });
+
+          return generateToken.accessToken;
+        }
+
+        throw new BadRequestException('token tidak sah');
+      });
+
+    return accessToken;
   }
 
   async verifyTokenForgotPassword(

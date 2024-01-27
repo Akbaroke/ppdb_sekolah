@@ -19,15 +19,14 @@ export class ResetPasswordDto {
 
   @ApiProperty({
     required: true,
-    description:
-      'Password harus memiliki 1 simbol, 1 angka, 1 huruf besar dan 1 huruf kecil',
+    description: 'Password harus memiliki angka',
     minLength: 12,
     example: 'AdminAja123_',
     type: String,
   })
   @IsNotEmpty({ message: 'new_password harus di isi' })
   @IsString({ message: 'Type new_password harus string' })
-  @MinLength(12, { message: 'new_password minimal 12 characters' })
+  @MinLength(8, { message: 'new_password minimal 8 characters' })
   @IsStrongPassword(
     {
       minNumbers: 1,
