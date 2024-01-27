@@ -10,11 +10,11 @@ interface BlacklistData {
 @Injectable()
 export class BlacklistService {
   blacklistFilePath: string;
-  resetInterval: number; // tambahkan properti untuk interval reset (dalam milidetik)
+  resetInterval: number;
 
   constructor() {
     this.blacklistFilePath = path.join(__dirname, 'blacklist.json');
-    this.resetInterval = 24 * 60 * 60 * 1000; // interval 1 hari (24 jam) dalam milidetik
+    this.resetInterval = 24 * 60 * 60 * 1000;
   }
 
   private readBlacklist(): BlacklistData {
