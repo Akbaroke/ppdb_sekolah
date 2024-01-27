@@ -1,4 +1,4 @@
-import axios from '../axios';
+import api from '../api';
 import Button from '../components/atoms/Button';
 import InputText from '../components/atoms/InputText';
 import AuthLayout from '../layouts/AuthLayout';
@@ -54,7 +54,7 @@ export default function Forgot() {
   const handleSubmitEmail = async () => {
     console.log(form1.values);
     try {
-      await axios.get('/otp', {
+      await api.get('/otp', {
         params: {
           email: form1.values.email,
           type_otp: 'forgot',
@@ -77,13 +77,13 @@ export default function Forgot() {
       new_password: form2.values.newPassword,
     });
     try {
-      const { data } = await axios.patch('/reset_password', {
+      const { data } = await api.patch('/reset_password', {
         token,
         email: localStorage.getItem('email'),
         new_password: form2.values.newPassword,
       });
       console.log(data);
-      localStorage.removeItem('email')
+      localStorage.removeItem('email');
       navigate('/login', { replace: true });
     } catch (error) {
       console.log(error);

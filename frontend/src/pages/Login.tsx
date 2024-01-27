@@ -3,6 +3,9 @@ import Button from '../components/atoms/Button';
 import InputText from '../components/atoms/InputText';
 import AuthLayout from '../layouts/AuthLayout';
 import { isEmail, useForm } from '@mantine/form';
+import { useDispatch } from 'react-redux';
+import { login } from '../redux/slices/authSlice';
+import api from '../api';
 
 type FormType = {
   email: string;
@@ -11,6 +14,7 @@ type FormType = {
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const form = useForm<FormType>({
     validateInputOnChange: true,
     validateInputOnBlur: true,
@@ -29,9 +33,19 @@ export default function Login() {
     },
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(form.values);
-    navigate('/user');
+    const { email, password } = form.values;
+    try {
+      const { data } = await api.post('/login', {
+        email,
+        password,
+      });
+      dispatch(login(data));
+      navigate('/user');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

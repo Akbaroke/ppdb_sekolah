@@ -5,10 +5,10 @@ import Forgot from '../pages/Forgot';
 import VerifyOtp from '../pages/VerifyOtp';
 import DaftarSiswa from '../pages/DaftarSiswa';
 import LandingPage from '../pages/LandingPage';
-import UserLayout from '../layouts/UserLayout';
 import renderRoute from './renderRoute';
 import ResetPassword from '../pages/ResetPassword';
 import FormulirPendaftaran from '../pages/FormulirPendaftaran';
+import DashboardLayout from '../layouts/DashboardLayout';
 export type DataRouteType = {
   path: string;
   element: React.ReactElement;
@@ -50,7 +50,7 @@ export default function Root() {
     },
     {
       path: '/user',
-      element: <UserLayout />,
+      element: <DashboardLayout />,
       middleware: 'user',
       withChildren: [
         {
@@ -68,6 +68,17 @@ export default function Root() {
         {
           path: '/reset-password',
           element: <ResetPassword />,
+        },
+      ],
+    },
+    {
+      path: '/admin',
+      element: <DashboardLayout />,
+      middleware: 'admin',
+      withChildren: [
+        {
+          path: '/',
+          element: <DaftarSiswa />,
         },
       ],
     },

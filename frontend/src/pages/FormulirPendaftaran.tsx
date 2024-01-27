@@ -211,16 +211,36 @@ export default function FormulirPendaftaran() {
           </div>
         </div>
         <div>
-          <h1 className="font-semibold">Daftar Pengajuan</h1>
+          <h1 className="font-semibold">Berkas Dokumen Siswa</h1>
           <div className="flex justify-between gap-5 px-2">
             <InputText
-              label="Jenjang"
-              id="jenjang"
+              label="Akta"
+              id="akta"
               required
-              placeholder="Jenjang"
-              value={form.values.jenjang}
-              errorLabel={form.errors.jenjang as string}
-              onChange={(e) => form.setFieldValue('jenjang', e as string)}
+              placeholder="Akta"
+              value={form.values.akta}
+              errorLabel={form.errors.akta as string}
+              onChange={(e) => form.setFieldValue('akta', e as string)}
+            />
+            <InputText
+              label="Kartu Keluarga"
+              id="kartu_keluarga"
+              required
+              placeholder="Kartu keluarga"
+              value={form.values.kartu_keluarga}
+              errorLabel={form.errors.kartu_keluarga as string}
+              onChange={(e) =>
+                form.setFieldValue('kartu_keluarga', e as string)
+              }
+            />
+            <InputText
+              label="Foto"
+              id="foto"
+              required
+              placeholder="Foto"
+              value={form.values.foto}
+              errorLabel={form.errors.foto as string}
+              onChange={(e) => form.setFieldValue('foto', e as string)}
             />
           </div>
         </div>

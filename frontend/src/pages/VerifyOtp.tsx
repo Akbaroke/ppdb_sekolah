@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import InputText from '../components/atoms/InputText';
 import { isEmail, useForm } from '@mantine/form';
 import useCountdown from '../hooks/useCountdown';
-import axios from '../axios';
+import api from '../api';
 
 type FormType = {
   email: string;
@@ -41,7 +41,7 @@ export default function VerifyOtp() {
   const handleSubmitOtp = async () => {
     if (paramType === 'forgot') {
       try {
-        const { data } = await axios.post('/otp', {
+        const { data } = await api.post('/otp', {
           type_otp: 'forgot',
           email: form.values.email,
           otp,
@@ -53,7 +53,7 @@ export default function VerifyOtp() {
       }
     } else {
       try {
-        const { data } = await axios.post('/otp', {
+        const { data } = await api.post('/otp', {
           type_otp: 'register',
           email: form.values.email,
           otp,
@@ -69,7 +69,7 @@ export default function VerifyOtp() {
   const handleResendOtp = async () => {
     try {
       setTime(60);
-      await axios.get('/otp', {
+      await api.get('/otp', {
         params: {
           email: paramEmail,
           type_otp: paramType ? 'forgot' : 'register',
