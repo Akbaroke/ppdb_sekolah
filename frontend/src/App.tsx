@@ -1,6 +1,6 @@
-import { BrowserRouter } from 'react-router-dom';
-import Router from './router';
-import AppShell from './layouts/AppShell';
+import { BrowserRouter } from "react-router-dom";
+import Router from "./router";
+import AppShell from "./layouts/AppShell";
 
 export default function App() {
   return (

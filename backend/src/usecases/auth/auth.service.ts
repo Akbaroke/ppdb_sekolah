@@ -13,6 +13,7 @@ import {
   TMessageWithEmail,
   TMessageWithToken,
   TMessageWithIPayloadToken,
+  TMessageLogin,
 } from './auth.interface';
 import { HashingService } from 'src/infrastucture/hashing/hashing.service';
 import { EntityManager } from 'typeorm';
@@ -103,7 +104,7 @@ export class AuthService implements IAuthService {
     }
   }
 
-  async login(email: string, password: string): Promise<TMessageWithToken> {
+  async login(email: string, password: string): Promise<TMessageLogin> {
     let token: string;
     try {
       const user = await this.findUserByEmail(email);
@@ -137,6 +138,8 @@ export class AuthService implements IAuthService {
       return {
         httpStatus: HttpStatus.OK,
         message: 'Berhasil masuk',
+        role: user.role,
+        email,
         token,
       };
     } catch (error) {

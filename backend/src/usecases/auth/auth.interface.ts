@@ -9,11 +9,16 @@ import { RefreshTokenDto } from './dtos/refresh-token.dto';
 
 export type TMessageWithEmail = IMessage & { email: string };
 export type TMessageWithToken = IMessage & { token: string };
+export type TMessageLogin = IMessage & {
+  token: string;
+  email: string;
+  role: string;
+};
 export type TMessageWithIPayloadToken = IMessage & IPayloadToken;
 
 export interface IAuthService {
   register(email: string, password: string): Promise<TMessageWithEmail>;
-  login(email: string, password: string): Promise<TMessageWithToken>;
+  login(email: string, password: string): Promise<TMessageLogin>;
   me(token: string): Promise<TMessageWithIPayloadToken>;
   verificationOTP(
     email: string,
@@ -33,7 +38,7 @@ export interface IAuthService {
 
 export interface IAuthController {
   register_user(body: RegisterDto): Promise<TMessageWithEmail>;
-  login(body: LoginDto): Promise<TMessageWithToken>;
+  login(body: LoginDto): Promise<TMessageLogin>;
   verifikasi_user(body: VerificationUserDto): Promise<TMessageWithEmail>;
   refresh_token(body: RefreshTokenDto): Promise<TMessageWithToken>;
   me(body: MeDto): Promise<TMessageWithIPayloadToken>;
