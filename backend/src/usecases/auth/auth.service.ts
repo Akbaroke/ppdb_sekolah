@@ -278,10 +278,14 @@ export class AuthService implements IAuthService {
         id,
         email,
         role,
-        message: 'Token benar',
+        message: 'Berhasil masuk',
         httpStatus: HttpStatus.OK,
       };
     } catch (error) {
+      if (error.message === 'jwt expired') {
+        throw new UnauthorizedException('Token sudah kadaluarsa');
+      }
+
       throw error;
     }
   }
