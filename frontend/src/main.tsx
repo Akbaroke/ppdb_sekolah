@@ -8,7 +8,10 @@ import { store } from './redux/index.ts';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <MantineProvider>
+    <MantineProvider
+      theme={{
+        fontFamily: 'Plus Jakarta Sans, sans-serif',
+      }}>
       <Provider store={store}>
         <App />
       </Provider>
