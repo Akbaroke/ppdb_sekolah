@@ -41,7 +41,7 @@ export class User implements IUser {
   @Column({ enum: STATUS_USER, default: STATUS_USER.PENDING, type: 'enum' })
   status: STATUS_USER;
 
-  @Column({ enum: ROLE_USER, default: ROLE_USER.SISWA, type: 'enum' })
+  @Column({ enum: ROLE_USER, default: ROLE_USER.USER, type: 'enum' })
   role: ROLE_USER;
 
   @OneToOne(() => Token, (token) => token.user)
