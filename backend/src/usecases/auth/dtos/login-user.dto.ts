@@ -13,4 +13,8 @@ export class MeDto {
   @IsString()
   @IsNotEmpty({ message: 'token harus diisi' })
   token: string;
+
+  constructor(partial: Partial<MeDto>) {
+    Object.assign(this, partial);
+  }
 }
