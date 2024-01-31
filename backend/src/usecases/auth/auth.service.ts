@@ -177,9 +177,7 @@ export class AuthService implements IAuthService {
             entityManager,
           );
 
-          this.emailService.sendForgotPassword(email, otp);
-
-          return;
+          return await this.emailService.sendForgotPassword(email, otp);
         }
 
         if (user.status !== 'active' && type_otp === 'register') {
@@ -191,9 +189,7 @@ export class AuthService implements IAuthService {
             entityManager,
           );
 
-          this.emailService.sendVerificationEmail(email, otp);
-
-          return;
+          return await this.emailService.sendVerificationEmail(email, otp);
         }
 
         throw new BadRequestException('Gagal kirim otp');
@@ -312,7 +308,7 @@ export class AuthService implements IAuthService {
           this.userService.saveTransactionUser(createUser, entityManager),
         ]);
 
-        this.emailService.sendVerificationEmail(email, createOtp.otp);
+        await this.emailService.sendVerificationEmail(email, createOtp.otp);
       });
     } catch (error) {
       throw error;
