@@ -1,3 +1,9 @@
+# sementara
+/src/domain/siswa
+/src/domain/wali
+/src/infrastucture/config/firebase
+/src/usecases/daftar-siswa
+
 # env
 /env/.env
 
