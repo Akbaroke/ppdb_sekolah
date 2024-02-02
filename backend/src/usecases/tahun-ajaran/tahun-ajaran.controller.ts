@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { TahunAjaranService } from 'src/domain/tahun-ajaran/tahun-ajaran.service';
-import { CreateTahunAjaranDto } from './tahun-ajaran.dto';
+import { CreateTahunAjaranDto } from './dtos/create-tahun-ajaran.dto';
 import { Roles } from 'src/infrastucture/common/decorators/roles.decorator';
 import { ROLE_USER } from 'src/domain/user/user.interface';
 import { ValidationUUID } from 'src/infrastucture/common/filters/validationUUID.filter';

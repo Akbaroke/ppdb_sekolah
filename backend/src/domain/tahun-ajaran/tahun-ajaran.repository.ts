@@ -24,4 +24,12 @@ export class TahunAjaranRepository implements ITahunAjaranRepository {
       where: { tahun_ajaran_id },
     });
   }
+
+  async findByTahunAjaran(tahun_ajaran: string): Promise<TahunAjaran> {
+    return await this.tahunAjaranRepository.findOne({
+      where: {
+        tahun_ajaran,
+      },
+    });
+  }
 }

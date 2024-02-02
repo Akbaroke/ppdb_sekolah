@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TahunAjaranServiceModule } from 'src/domain/tahun-ajaran/tahun-ajaran.module';
+import { TahunAjaranModule } from 'src/domain/tahun-ajaran/tahun-ajaran.module';
 import { TahunAjaranController } from './tahun-ajaran.controller';
 
 @Module({
-  imports: [TahunAjaranServiceModule],
+  imports: [TahunAjaranModule],
   controllers: [TahunAjaranController],
 })
-export class TahunAjaranModule {}
+export class UsecaseTahunAjaranModule {}

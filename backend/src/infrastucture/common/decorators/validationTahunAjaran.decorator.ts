@@ -34,6 +34,16 @@ export const validationTahunAjaran = (
             return false;
           }
 
+          const isTrue = isTahunAjaranValid(value);
+
+          if (!isTrue) {
+            (validationArguments.object as any)[
+              `${validationArguments.property}_error`
+            ] = 'Tolong masukkan tahun ajaran yang benar';
+
+            return false;
+          }
+
           return true;
         },
         defaultMessage(validationArguments: ValidationArguments) {
@@ -46,4 +56,21 @@ export const validationTahunAjaran = (
       },
     });
   };
+};
+
+const isTahunAjaranValid = (tahunAjaran: string): boolean => {
+  const splitTahunAjaran = tahunAjaran.split('/');
+  const tahunAjaran1 = Number(splitTahunAjaran[0]);
+  const tahunAjaran2 = Number(splitTahunAjaran[1]);
+  const currentYear = new Date().getFullYear();
+
+  if (
+    tahunAjaran1 > currentYear ||
+    tahunAjaran2 > currentYear + 1 ||
+    tahunAjaran1 !== tahunAjaran2 - 1
+  ) {
+    return false;
+  }
+
+  return true;
 };

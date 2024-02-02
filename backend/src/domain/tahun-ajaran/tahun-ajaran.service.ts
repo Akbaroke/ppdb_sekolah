@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   ConflictException,
   HttpStatus,
   Injectable,
@@ -34,33 +33,14 @@ export class TahunAjaranService implements ITahunAjaranService {
     return await entityManager.save(tahunAjaran);
   }
 
-  private validationTahunAjaran(tahunAjaran: string): boolean {
-    const splitTahunAjaran = tahunAjaran.split('/');
-    const tahunAjaran1 = Number(splitTahunAjaran[0]);
-    const tahunAjaran2 = Number(splitTahunAjaran[1]);
-    const currentYear = new Date().getFullYear();
+  private async findTahunAjaranById(id: string): Promise<TahunAjaran> {
+    const data = await this.tahunAjaranRepository.find(id);
 
-    if (
-      tahunAjaran1 > currentYear ||
-      tahunAjaran2 > currentYear + 1 ||
-      tahunAjaran1 !== tahunAjaran2 - 1
-    ) {
-      return false;
-    }
-
-    return true;
+    return data;
   }
 
   async createTahunAjaran(data: ICreateTahunAjaran): Promise<IMessage> {
     try {
-      const isTrue = this.validationTahunAjaran(data.tahun_ajaran);
-
-      if (!isTrue) {
-        throw new BadRequestException(
-          'Tolong masukkan tahun ajaran yang benar',
-        );
-      }
-
       const isTahunAjaranExist = await this.tahunAjaranRepository.exists(
         data.tahun_ajaran,
       );
@@ -108,7 +88,7 @@ export class TahunAjaranService implements ITahunAjaranService {
     id: string,
   ): Promise<IMessage & { data: TahunAjaran }> {
     try {
-      const data = await this.tahunAjaranRepository.find(id);
+      const data = await this.findTahunAjaranById(id);
 
       if (!data) {
         throw new NotFoundException('Tahun ajaran tidak ditemukan');
@@ -122,5 +102,12 @@ export class TahunAjaranService implements ITahunAjaranService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async findTahunAjaran(tahun_ajaran: string) {
+    const data = await this.tahunAjaranRepository.findByTahunAjaran(
+      tahun_ajaran,
+    );
+    return data;
   }
 }
