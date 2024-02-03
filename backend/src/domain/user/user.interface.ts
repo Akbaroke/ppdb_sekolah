@@ -8,8 +8,8 @@ export enum STATUS_USER {
 }
 
 export enum ROLE_USER {
-  SISWA = 'siswa',
-  GURU = 'guru',
+  USER = 'user',
+  ADMIN = 'admin',
 }
 
 export interface IUserRepository {

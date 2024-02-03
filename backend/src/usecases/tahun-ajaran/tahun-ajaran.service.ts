@@ -1,0 +1,91 @@
+import {
+  BadRequestException,
+  ConflictException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ICreateTahunAjaran } from 'src/domain/tahun-ajaran/tahun-ajaran.interface';
+import { TahunAjaranService } from 'src/domain/tahun-ajaran/tahun-ajaran.service';
+import { IMessage } from '../message.interface';
+import { TahunAjaran } from 'src/domain/tahun-ajaran/tahun-ajaran.entity';
+import { PaginationService } from '../services/pagination.service';
+import { IUsecaseTahunAjaranService } from './tahun-ajaran.interface';
+
+@Injectable()
+export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
+  constructor(
+    private readonly tahunAjaranService: TahunAjaranService,
+    private readonly paginationService: PaginationService,
+  ) {}
+
+  async create(data: ICreateTahunAjaran): Promise<IMessage> {
+    try {
+      const checkTahunAjaran = await this.tahunAjaranService.IsTahunAjaranExist(
+        data.tahun_ajaran,
+      );
+
+      if (checkTahunAjaran) {
+        throw new ConflictException('Tahun ajaran sudah ada');
+      }
+
+      await this.tahunAjaranService.createTahunAjaran(data);
+
+      return {
+        httpStatus: HttpStatus.CREATED,
+        message: 'Berhasil membuat tahun ajaran',
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getById(id: string): Promise<IMessage & { data: TahunAjaran }> {
+    try {
+      const data = await this.tahunAjaranService.getTahunAjaranById(id);
+
+      if (!data) {
+        throw new NotFoundException('Tahun ajaran tidak ditemukan');
+      }
+
+      return {
+        data,
+        message: 'Tahun ajaran berhasil diambil',
+        httpStatus: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getAll(
+    limit = 10,
+    page = 1,
+    latest = true,
+  ): Promise<IMessage & { data?: TahunAjaran[]; pagination?: object }> {
+    try {
+      if (page < 1 || limit < 1) {
+        throw new BadRequestException('page minimal 1 dan limit minimal 1');
+      }
+
+      const { data, count, limit_item, start } =
+        await this.tahunAjaranService.getAllTahunAjaran(limit, page, latest);
+
+      const pagination = this.paginationService.createPagination(
+        count,
+        limit_item,
+        page,
+        start,
+      );
+
+      return {
+        httpStatus: HttpStatus.OK,
+        message: 'Data kelas berhasil diambil',
+        data,
+        pagination,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+}

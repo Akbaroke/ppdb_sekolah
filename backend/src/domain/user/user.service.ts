@@ -63,19 +63,3 @@ export class UserService implements IUserService {
     return entityManager.update(User, user, payload || {});
   }
 }
-
-// async createUser(email: string, hashPassword: string) {
-//   try {
-//     await this.entityManager.transaction(async (entityManager) => {
-//       const user = entityManager.create(User, {
-//         email,
-//         password: hashPassword,
-//       });
-
-//       await this.emailService.sendEmail(email, 'verifikasi akun', 'halo');
-//       return await entityManager.save(user);
-//     });
-//   } catch (error) {
-//     throw error;
-//   }
-// }

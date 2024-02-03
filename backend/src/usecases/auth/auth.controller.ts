@@ -53,7 +53,7 @@ export class AuthController implements IAuthController {
   }
 
   @ApiBody({ type: LoginDto })
-  @ApiOperation({ description: 'POST = api/login' })
+  @ApiOperation({ description: 'POST - api/login' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Login berhasil',
