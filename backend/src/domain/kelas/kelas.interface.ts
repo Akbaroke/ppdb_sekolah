@@ -18,9 +18,11 @@ export interface ICreateKelas {
 
 export interface IKelasRepository {
   countKelas(jenjang: JENJANG, tahun_ajaran: TahunAjaran): Promise<number>;
-  findAll(): Promise<Kelas[]>;
   find(id: string): Promise<Kelas>;
+  findAll(): Promise<Kelas[]>;
 }
+
+// findAll(): Promise<{ data: Kelas[]; totalCount: number }>;
 
 export interface IKelasService {
   createKelas({

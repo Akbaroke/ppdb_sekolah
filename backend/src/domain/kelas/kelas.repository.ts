@@ -27,13 +27,26 @@ export class KelasRepository implements IKelasRepository {
   }
 
   async findAll(): Promise<Kelas[]> {
-    const data = await this.kelasRepository.find();
+    const data = await this.kelasRepository.find({
+      relations: ['tahun_ajaran'],
+      select: {
+        tahun_ajaran: {
+          tahun_ajaran: true,
+        },
+      },
+    });
     return data;
   }
 
   async find(id: string): Promise<Kelas> {
     const data = await this.kelasRepository.findOne({
       where: { kelas_id: id },
+      relations: ['tahun_ajaran'],
+      select: {
+        tahun_ajaran: {
+          tahun_ajaran: true,
+        },
+      },
     });
 
     return data;

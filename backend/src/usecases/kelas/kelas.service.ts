@@ -3,11 +3,12 @@ import { JENJANG } from 'src/domain/kelas/kelas.interface';
 import { KelasService } from 'src/domain/kelas/kelas.service';
 import { TahunAjaranService } from 'src/domain/tahun-ajaran/tahun-ajaran.service';
 import { IMessage } from '../message.interface';
-import { Kelas } from 'src/domain/kelas/kelas.entity';
 import { TahunAjaran } from 'src/domain/tahun-ajaran/tahun-ajaran.entity';
+import { IResponseDataKelas, IUsecaseKelasService } from './kelas.interface';
+import { Kelas } from 'src/domain/kelas/kelas.entity';
 
 @Injectable()
-export class UsecaseKelasService {
+export class UsecaseKelasService implements IUsecaseKelasService {
   constructor(
     private kelasService: KelasService,
     private tahunAjaranService: TahunAjaranService,
@@ -20,6 +21,25 @@ export class UsecaseKelasService {
       if (!data) {
         throw new NotFoundException('Tahun ajaran tidak ada');
       }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private mapResponseData(kelas: Kelas[]): IResponseDataKelas[] {
+    try {
+      const data = kelas.map((value) => ({
+        id: value.kelas_id,
+        jenjang: value.jenjang,
+        jumlah_siswa: value.jumlah_siswa,
+        kelas: value.kelas,
+        tahun_ajaran: value.tahun_ajaran?.tahun_ajaran,
+        kode_kelas: value.kode_kelas,
+        created_at: value.created_at,
+        updated_at: value.updated_at,
+      }));
 
       return data;
     } catch (error) {
@@ -45,17 +65,18 @@ export class UsecaseKelasService {
     }
   }
 
-  async getAllKelas(): Promise<IMessage & { data?: Kelas[] }> {
+  async getAllKelas(): Promise<IMessage & { data?: IResponseDataKelas[] }> {
     try {
-      const data = await this.kelasService.getAllKelas();
+      const getData = await this.kelasService.getAllKelas();
 
-      if (!data) {
+      if (!getData) {
         return {
           httpStatus: HttpStatus.FOUND,
           message: 'Kelas belum ada',
         };
       }
 
+      const data = this.mapResponseData(getData);
       return {
         httpStatus: HttpStatus.OK,
         message: 'Data kelas berhasil diambil',
@@ -66,18 +87,22 @@ export class UsecaseKelasService {
     }
   }
 
-  async getKelas(kelas_id: string): Promise<IMessage & { data: Kelas }> {
+  async getKelas(
+    kelas_id: string,
+  ): Promise<IMessage & { data: IResponseDataKelas }> {
     try {
-      const data = await this.kelasService.getKelasById(kelas_id);
+      const getData = await this.kelasService.getKelasById(kelas_id);
 
-      if (!data) {
+      if (!getData) {
         throw new NotFoundException('Kelas tidak ditemukan');
       }
+
+      const data = this.mapResponseData([getData]);
 
       return {
         message: 'Data kelas berhasil diambil',
         httpStatus: HttpStatus.OK,
-        data,
+        data: data[0],
       };
     } catch (error) {
       throw error;
