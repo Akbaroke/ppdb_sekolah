@@ -1,6 +1,9 @@
 import { Route } from 'react-router-dom';
 import renderRouteWithChildren from './renderRouteWithChildren';
 import { DataRouteType } from '.';
+import GuestMiddleware from '../middlewares/GuestMiddleware';
+import AdminMiddleware from '../middlewares/AdminMiddleware';
+import UserMiddleware from '../middlewares/UserMiddleware';
 
 function renderRoute(route: DataRouteType, index: number) {
   return (
@@ -10,9 +13,11 @@ function renderRoute(route: DataRouteType, index: number) {
       element={
         route.middleware ? (
           route.middleware === 'guest' ? (
-            <>{route.element}</>
+            <GuestMiddleware>{route.element}</GuestMiddleware>
+          ) : route.middleware === 'admin' ? (
+            <AdminMiddleware>{route.element}</AdminMiddleware>
           ) : (
-            <>{route.element}</>
+            <UserMiddleware>{route.element}</UserMiddleware>
           )
         ) : (
           route.element
