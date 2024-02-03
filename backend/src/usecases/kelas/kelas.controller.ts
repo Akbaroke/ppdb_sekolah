@@ -1,11 +1,15 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
+  ParseBoolPipe,
+  ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { UsecaseKelasService as KelasService } from './kelas.service';
 import { Roles } from 'src/infrastucture/common/decorators/roles.decorator';
@@ -26,8 +30,15 @@ export class KelasController {
 
   @Roles(ROLE_USER.ADMIN)
   @Get()
-  async get_all_kelas() {
-    return await this.kelasService.getAllKelas();
+  async get_all_kelas(
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe)
+    limit?: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe)
+    page?: number,
+    @Query('latest', new DefaultValuePipe(false), ParseBoolPipe)
+    latest?: boolean,
+  ) {
+    return await this.kelasService.getAllKelas(limit, page, latest);
   }
 
   @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)

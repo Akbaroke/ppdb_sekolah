@@ -1,4 +1,3 @@
-import { IMessage } from 'src/usecases/message.interface';
 import { TahunAjaran } from './tahun-ajaran.entity';
 
 export interface ICreateTahunAjaran {
@@ -9,12 +8,26 @@ export interface ICreateTahunAjaran {
 
 export interface ITahunAjaranRepository {
   exists(tahun_ajaran: string): Promise<boolean>;
-  findAll(): Promise<TahunAjaran[]>;
+  findAll(
+    limit: number,
+    skip: number,
+    latest: boolean,
+  ): Promise<{ data: TahunAjaran[]; count: number }>;
   find(tahun_ajaran_id: string): Promise<TahunAjaran>;
 }
 
 export interface ITahunAjaranService {
-  createTahunAjaran(data: ICreateTahunAjaran): Promise<IMessage>;
-  getAllTahunAjaran(): Promise<IMessage & { data?: TahunAjaran[] }>;
-  getTahunAjaranById(id: string): Promise<IMessage & { data: TahunAjaran }>;
+  IsTahunAjaranExist(tahun_ajaran: string): Promise<boolean>;
+  createTahunAjaran(data: ICreateTahunAjaran): Promise<void>;
+  getAllTahunAjaran(
+    limit: number,
+    page: number,
+    latest: boolean,
+  ): Promise<{
+    limit_item: number;
+    start: number;
+    data: TahunAjaran[];
+    count: number;
+  }>;
+  getTahunAjaranById(id: string): Promise<TahunAjaran>;
 }

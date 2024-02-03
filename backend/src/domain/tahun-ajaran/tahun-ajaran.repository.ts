@@ -15,8 +15,20 @@ export class TahunAjaranRepository implements ITahunAjaranRepository {
     return await this.tahunAjaranRepository.exists({ where: { tahun_ajaran } });
   }
 
-  async findAll(): Promise<TahunAjaran[]> {
-    return await this.tahunAjaranRepository.find();
+  async findAll(
+    limit: number,
+    skip: number,
+    latest: boolean,
+  ): Promise<{ data: TahunAjaran[]; count: number }> {
+    const [data, count] = await this.tahunAjaranRepository.findAndCount({
+      skip,
+      take: limit,
+      order: {
+        created_at: latest ? 'DESC' : 'ASC',
+      },
+    });
+
+    return { data, count };
   }
 
   async find(tahun_ajaran_id: string): Promise<TahunAjaran> {

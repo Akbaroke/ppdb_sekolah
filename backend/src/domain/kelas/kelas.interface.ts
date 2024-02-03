@@ -19,17 +19,28 @@ export interface ICreateKelas {
 export interface IKelasRepository {
   countKelas(jenjang: JENJANG, tahun_ajaran: TahunAjaran): Promise<number>;
   find(id: string): Promise<Kelas>;
-  findAll(): Promise<Kelas[]>;
+  findAll(
+    limit: number,
+    skip: number,
+    latest: boolean,
+  ): Promise<{ data: Kelas[]; count: number }>;
 }
-
-// findAll(): Promise<{ data: Kelas[]; totalCount: number }>;
 
 export interface IKelasService {
   createKelas({
     jenjang,
     tahun_ajaran,
   }: Pick<ICreateKelas, 'jenjang' | 'tahun_ajaran'>): Promise<void>;
-  getAllKelas(): Promise<Kelas[]>;
+  getAllKelas(
+    limit: number,
+    page: number,
+    latest: boolean,
+  ): Promise<{
+    limit_item: number;
+    start: number;
+    data: Kelas[];
+    count: number;
+  }>;
   getKelasById(kelas_id: string): Promise<Kelas>;
   updateKelas(
     kelas_id: string,

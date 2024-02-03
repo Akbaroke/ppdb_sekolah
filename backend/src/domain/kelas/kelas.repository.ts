@@ -26,16 +26,26 @@ export class KelasRepository implements IKelasRepository {
     return count;
   }
 
-  async findAll(): Promise<Kelas[]> {
-    const data = await this.kelasRepository.find({
+  async findAll(
+    limit: number,
+    skip: number,
+    latest: boolean,
+  ): Promise<{ data: Kelas[]; count: number }> {
+    const [data, count] = await this.kelasRepository.findAndCount({
       relations: ['tahun_ajaran'],
       select: {
         tahun_ajaran: {
           tahun_ajaran: true,
         },
       },
+      skip,
+      take: limit,
+      order: {
+        created_at: latest ? 'DESC' : 'ASC',
+      },
     });
-    return data;
+
+    return { data, count };
   }
 
   async find(id: string): Promise<Kelas> {

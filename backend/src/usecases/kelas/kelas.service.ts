@@ -1,4 +1,9 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JENJANG } from 'src/domain/kelas/kelas.interface';
 import { KelasService } from 'src/domain/kelas/kelas.service';
 import { TahunAjaranService } from 'src/domain/tahun-ajaran/tahun-ajaran.service';
@@ -6,12 +11,14 @@ import { IMessage } from '../message.interface';
 import { TahunAjaran } from 'src/domain/tahun-ajaran/tahun-ajaran.entity';
 import { IResponseDataKelas, IUsecaseKelasService } from './kelas.interface';
 import { Kelas } from 'src/domain/kelas/kelas.entity';
+import { PaginationService } from '../services/pagination.service';
 
 @Injectable()
 export class UsecaseKelasService implements IUsecaseKelasService {
   constructor(
     private kelasService: KelasService,
     private tahunAjaranService: TahunAjaranService,
+    private paginationService: PaginationService,
   ) {}
 
   private async getTahunAjaran(tahun_ajaran: string): Promise<TahunAjaran> {
@@ -65,22 +72,32 @@ export class UsecaseKelasService implements IUsecaseKelasService {
     }
   }
 
-  async getAllKelas(): Promise<IMessage & { data?: IResponseDataKelas[] }> {
+  async getAllKelas(
+    limit = 10,
+    page = 1,
+    latest = true,
+  ): Promise<IMessage & { data?: IResponseDataKelas[]; pagination?: object }> {
     try {
-      const getData = await this.kelasService.getAllKelas();
-
-      if (!getData) {
-        return {
-          httpStatus: HttpStatus.FOUND,
-          message: 'Kelas belum ada',
-        };
+      if (page < 1 || limit < 1) {
+        throw new BadRequestException('page minimal 1 dan limit minimal 1');
       }
 
-      const data = this.mapResponseData(getData);
+      const { data, count, limit_item, start } =
+        await this.kelasService.getAllKelas(limit, page, latest);
+
+      const res = this.mapResponseData(data);
+      const pagination = this.paginationService.createPagination(
+        count,
+        limit_item,
+        page,
+        start,
+      );
+
       return {
         httpStatus: HttpStatus.OK,
         message: 'Data kelas berhasil diambil',
-        data,
+        data: res,
+        pagination,
       };
     } catch (error) {
       throw error;

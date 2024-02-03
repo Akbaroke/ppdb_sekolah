@@ -102,13 +102,26 @@ export class KelasService implements IKelasService {
     }
   }
 
-  async getAllKelas(): Promise<Kelas[]> {
-    try {
-      const data = await this.kelasRepository.findAll();
-      return data;
-    } catch (error) {
-      throw error;
-    }
+  async getAllKelas(
+    limit: number,
+    page: number,
+    latest: boolean,
+  ): Promise<{
+    limit_item: number;
+    start: number;
+    data: Kelas[];
+    count: number;
+  }> {
+    const limit_item = limit > 20 ? 20 : limit;
+    const start = (page - 1) * limit_item;
+
+    const { data, count } = await this.kelasRepository.findAll(
+      limit_item,
+      start,
+      latest,
+    );
+
+    return { limit_item, start, data, count };
   }
 
   async getKelasById(kelas_id: string): Promise<Kelas> {
