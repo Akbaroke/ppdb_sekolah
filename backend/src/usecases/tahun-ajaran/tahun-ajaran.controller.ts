@@ -6,6 +6,7 @@ import {
   Param,
   ParseBoolPipe,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { Roles } from 'src/infrastucture/common/decorators/roles.decorator';
 import { ROLE_USER } from 'src/domain/user/user.interface';
 import { ValidationUUID } from 'src/infrastucture/common/filters/validationUUID.filter';
 import { UsecaseTahunAjaranService } from './tahun-ajaran.service';
+import { UpdateTahunAjaranDto } from './dtos/update-tahun-ajaran.dto';
 
 @Controller('tahun_ajaran')
 export class TahunAjaranController {
@@ -23,6 +25,16 @@ export class TahunAjaranController {
   @Post()
   async create_tahun_ajaran(@Body() body: CreateTahunAjaranDto) {
     return await this.tahunAjaranService.create(body);
+  }
+
+  @Roles(ROLE_USER.ADMIN)
+  @Patch(':id')
+  async update_tahun_ajaran(
+    @Param('id', ValidationUUID)
+    id: string,
+    @Body() body: UpdateTahunAjaranDto,
+  ) {
+    return await this.tahunAjaranService.update(id, body);
   }
 
   @Roles(ROLE_USER.ADMIN)

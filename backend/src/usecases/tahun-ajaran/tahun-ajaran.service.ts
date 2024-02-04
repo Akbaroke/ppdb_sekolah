@@ -19,6 +19,20 @@ export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
     private readonly paginationService: PaginationService,
   ) {}
 
+  private async checkTahunAjaran(id: string): Promise<TahunAjaran> {
+    try {
+      const data = await this.tahunAjaranService.getTahunAjaranById(id);
+
+      if (!data) {
+        throw new NotFoundException('Tahun ajaran tidak ditemukan');
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async create(data: ICreateTahunAjaran): Promise<IMessage> {
     try {
       const checkTahunAjaran = await this.tahunAjaranService.IsTahunAjaranExist(
@@ -42,15 +56,31 @@ export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
 
   async getById(id: string): Promise<IMessage & { data: TahunAjaran }> {
     try {
-      const data = await this.tahunAjaranService.getTahunAjaranById(id);
-
-      if (!data) {
-        throw new NotFoundException('Tahun ajaran tidak ditemukan');
-      }
+      const data = await this.checkTahunAjaran(id);
 
       return {
         data,
         message: 'Tahun ajaran berhasil diambil',
+        httpStatus: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async update(
+    id: string,
+    payload: Omit<ICreateTahunAjaran, 'tahun_ajaran'>,
+  ): Promise<IMessage> {
+    try {
+      const tahun_ajaran = await this.checkTahunAjaran(id);
+      await this.tahunAjaranService.updateTahunAjaran({
+        ...payload,
+        tahun_ajaran,
+      });
+
+      return {
+        message: 'Berhasil merubah tahun ajaran.',
         httpStatus: HttpStatus.OK,
       };
     } catch (error) {
