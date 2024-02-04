@@ -9,6 +9,8 @@ import renderRoute from './renderRoute';
 import ResetPassword from '../pages/ResetPassword';
 import FormulirPendaftaran from '../pages/FormulirPendaftaran';
 import DashboardLayout from '../layouts/DashboardLayout';
+import TahunAjaran from '../pages/TahunAjaran';
+import BuatAjaran from '../pages/BuatAjaran';
 export type DataRouteType = {
   path: string;
   element: React.ReactElement;
@@ -78,7 +80,15 @@ export default function Root() {
       withChildren: [
         {
           path: '/',
-          element: <DaftarSiswa />,
+          element: <TahunAjaran />,
+        },
+        {
+          path: '/tahun-ajaran',
+          element: <TahunAjaran />,
+        },
+        {
+          path: '/tahun-ajaran',
+          element: <BuatAjaran />,
         },
       ],
     },

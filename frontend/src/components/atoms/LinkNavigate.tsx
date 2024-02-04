@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { DataUser } from '../../interfaces/store';
+import { useSelector } from 'react-redux';
 
 export type LinkNavType = {
   icon: React.ReactNode;
@@ -7,7 +9,7 @@ export type LinkNavType = {
 };
 
 export default function LinkNavigate({ icon, title, to }: LinkNavType) {
-  const role = 'user';
+  const { role } = useSelector((state: { auth: DataUser }) => state.auth);
   return (
     <Link
       to={`/${role}${to}`}

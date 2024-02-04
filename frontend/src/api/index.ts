@@ -36,7 +36,7 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     // Tangani hanya jika respons dari server menunjukkan bahwa token akses tidak valid
-    if (error.response.status === 500 && !originalRequest._retry) {
+    if (error.response.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
         // Jika sedang melakukan refresh token, masukkan permintaan ke dalam antrian
         return new Promise((resolve) => {

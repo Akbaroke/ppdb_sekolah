@@ -7,14 +7,14 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function UserMiddleware({ children }: Props) {
+export default function AdminMiddleware({ children }: Props) {
   const location = useLocation();
   const { isLogin, role } = useSelector(
     (state: { auth: DataUser }) => state.auth
   );
   useSessionCheck(isLogin);
 
-  if (!isLogin || role !== 'user') {
+  if (!isLogin || role !== 'admin') {
     return <Navigate to="/login" state={{ from: location }} replace={true} />;
   }
 

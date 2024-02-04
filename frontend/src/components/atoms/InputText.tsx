@@ -74,7 +74,7 @@ const InputText: React.FC<Props> = ({
             className={`border border-[#EFF0F0] rounded-[10px] h-[37px] pl-3 text-[14px] [&>input]:placeholder:text-gray-300 ${
               disabled ? 'bg-[#F4F5F7]' : ''
             }`}
-            mask="+62 0000-0000-0000"
+            mask="0000-0000-0000"
           />
         </Input.Wrapper>
       ) : (

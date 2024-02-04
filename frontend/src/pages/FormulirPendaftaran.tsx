@@ -295,7 +295,7 @@ export default function FormulirPendaftaran() {
                 id="no_telepon"
                 type="no_phone"
                 required
-                placeholder="+62 8XXX-XXXX-XXXX"
+                placeholder="08XX-XXXX-XXXX"
                 value={form.values.no_telepon}
                 errorLabel={form.errors.no_telepon as string}
                 onChange={(e) => form.setFieldValue('no_telepon', e as string)}
@@ -431,7 +431,9 @@ export default function FormulirPendaftaran() {
             </div>
           </div>
         </div>
-        <Button className="mx-20 my-10" type='submit'>Simpan</Button>
+        <Button className="mx-20 my-10" type="submit">
+          Simpan
+        </Button>
       </form>
     </Card>
   );

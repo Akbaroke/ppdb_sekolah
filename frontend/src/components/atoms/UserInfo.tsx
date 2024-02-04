@@ -2,7 +2,7 @@ import { ADMIN_PROFILE, USER_PROFILE } from '../../assets';
 import Card from './Card';
 
 type Props = {
-  role: 'admin' | 'user';
+  role: string;
   email: string;
 };
 

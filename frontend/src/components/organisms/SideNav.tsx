@@ -6,14 +6,16 @@ import { MdOutlineDateRange } from 'react-icons/md';
 import { GiTeacher } from 'react-icons/gi';
 import { FaMoneyBillTransfer, FaUsers } from 'react-icons/fa6';
 import { BiSolidLock, BiSolidUserDetail } from 'react-icons/bi';
+import { useSelector } from 'react-redux';
+import { DataUser } from '../../interfaces/store';
 
 export default function SideNav() {
-  const role = 'user';
+  const { role } = useSelector((state: { auth: DataUser }) => state.auth);
   return (
     <div className="flex flex-col gap-3">
       <UserInfo email="ubay@gmail.com" role={role} />
       <CardLinkNavigate
-        data={role === 'user' ? dataUserNavLink : dataAdminNavLink}
+        data={role === 'siswa' ? dataUserNavLink : dataAdminNavLink}
       />
     </div>
   );
