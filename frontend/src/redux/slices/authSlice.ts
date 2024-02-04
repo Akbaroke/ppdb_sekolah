@@ -15,7 +15,7 @@ export const authSlice = createSlice({
     login: (state, action) => {
       state.isLogin = true;
       state.email = action.payload.email;
-      state.role = action.payload.role;
+      state.role = action.payload.role === 'guru' ? 'admin' : 'siswa';
       state.token = action.payload.token;
       localStorage.setItem('token', action.payload.token);
     },

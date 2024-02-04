@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import useSessionCheck from '../hooks/useSessionCheck';
 import { DataUser } from '../interfaces/store';
 
@@ -11,9 +11,12 @@ export default function GuestMiddleware({ children }: Props) {
   const { isLogin, role } = useSelector(
     (state: { auth: DataUser }) => state.auth
   );
-  const location = useLocation();
-  const from =
-    location?.state?.from?.pathname || (role === 'admin' ? '/admin' : '/user');
+  // const location = useLocation();
+  // const from =
+  //   location?.state?.from?.pathname ?? (role === 'guru' ? '/admin' : '/user');
+  const from = role === 'admin' ? '/admin' : '/user';
+  console.log(from);
+
   useSessionCheck(isLogin);
 
   if (isLogin) {
@@ -22,3 +25,4 @@ export default function GuestMiddleware({ children }: Props) {
 
   return <>{children}</>;
 }
+31;

@@ -14,7 +14,7 @@ export default function UserMiddleware({ children }: Props) {
   );
   useSessionCheck(isLogin);
 
-  if (!isLogin || role !== 'siswa') {
+  if (!isLogin || role !== 'user') {
     return <Navigate to="/login" state={{ from: location }} replace={true} />;
   }
 
