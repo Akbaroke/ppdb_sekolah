@@ -52,6 +52,26 @@ export class TahunAjaranService implements ITahunAjaranService {
     }
   }
 
+  async updateTahunAjaran(
+    {
+      tahun_ajaran,
+      besar_spp,
+      biaya_daftar,
+    }: Omit<ICreateTahunAjaran, 'tahun_ajaran'> & {
+      tahun_ajaran: TahunAjaran;
+    },
+    entityManager: EntityManager = this.entityManager,
+  ) {
+    try {
+      await entityManager.update(TahunAjaran, tahun_ajaran, {
+        besar_spp,
+        biaya_daftar,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async getAllTahunAjaran(
     limit: number,
     page: number,
