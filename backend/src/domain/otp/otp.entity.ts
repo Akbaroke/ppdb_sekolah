@@ -52,7 +52,7 @@ export class Otp implements IOtp {
   @CreateDateColumn({
     type: 'bigint',
     nullable: false,
-    default: Date.now() + 180_000,
+    default: new Date().setTime(Date.now() + 3 * 60 * 1000),
   })
   expires_at: number;
 

@@ -177,7 +177,7 @@ export class AuthService implements IAuthService {
             entityManager,
           );
 
-          return await this.emailService.sendForgotPassword(email, otp);
+          return this.emailService.sendForgotPassword(email, otp);
         }
 
         if (user.status !== 'active' && type_otp === 'register') {
@@ -189,7 +189,7 @@ export class AuthService implements IAuthService {
             entityManager,
           );
 
-          return await this.emailService.sendVerificationEmail(email, otp);
+          return this.emailService.sendVerificationEmail(email, otp);
         }
 
         throw new BadRequestException('Gagal kirim otp');

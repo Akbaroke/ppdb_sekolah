@@ -36,7 +36,11 @@ export class KelasService implements IKelasService {
     >,
     entityManager: EntityManager = this.entityManager,
   ): Promise<UpdateResult> {
-    return entityManager.update(Kelas, kelas, payload || {});
+    return entityManager.update(
+      Kelas,
+      { kelas_id: kelas.kelas_id },
+      payload || {},
+    );
   }
 
   private async findLastKelas(
@@ -45,7 +49,10 @@ export class KelasService implements IKelasService {
     entityManager: EntityManager,
   ): Promise<Kelas> {
     const data = await entityManager.findOne(Kelas, {
-      where: { jenjang, tahun_ajaran },
+      where: {
+        jenjang,
+        tahun_ajaran,
+      },
       order: { kode_kelas: 'DESC' },
       lock: { mode: 'pessimistic_write' },
     });
@@ -149,7 +156,6 @@ export class KelasService implements IKelasService {
           }
 
           if (findKelas && findKelas.jumlah_siswa > 0) {
-            console.log('kesini1');
             throw new BadRequestException('Tidak dapat diupdate');
           }
 
@@ -163,7 +169,6 @@ export class KelasService implements IKelasService {
             if (findLastKelas.jumlah_siswa > 0) {
               no = Number(findLastKelas.kode_kelas.split('-')[1]) + 1;
             } else {
-              console.log('kesini2');
               throw new BadRequestException('Tidak dapat diupdate');
             }
           } else {

@@ -18,10 +18,12 @@ export class OtpService implements IOtpService {
   }
 
   createTransactionOtp(email: string, otp: string, type_otp: TYPE_OTP): Otp {
+    const expires_at = new Date().getTime() + 180_000;
     return this.entityManager.create(Otp, {
       email,
       otp,
       type_otp,
+      expires_at,
     });
   }
 
@@ -30,7 +32,8 @@ export class OtpService implements IOtpService {
     type_otp: TYPE_OTP,
     otp?: string,
   ): Promise<boolean> {
-    return await this.otpRepository.exists(email, type_otp, otp);
+    const valid = await this.otpRepository.exists(email, type_otp, otp);
+    return valid;
   }
 
   async findOtpByEmail(email: string): Promise<Otp> {
