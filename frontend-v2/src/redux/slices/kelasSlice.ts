@@ -37,7 +37,6 @@ export const kelasSlice = createSlice({
 
 export const fetchKelas = createAsyncThunk('review/fetchKelas', async () => {
   const { data } = await api.get('/kelas');
-  console.log(data);
   return data.data;
 });
 

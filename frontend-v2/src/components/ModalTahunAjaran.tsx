@@ -59,7 +59,6 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
         form.values;
       if (type === 'edit') {
         const { data } = await api.patch(`/tahun_ajaran/${tahun_ajaran_id}`, {
-          tahun_ajaran,
           biaya_daftar,
           besar_spp,
         });
@@ -111,7 +110,22 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
             required
             label="Tahun Ajaran"
             placeholder="Tahun Ajaran"
-            data={['2023/2024', '2022/2023']}
+            data={[
+              '2023/2024',
+              '2022/2023',
+              '2021/2022',
+              '2020/2021',
+              '2019/2020',
+              '2018/2019',
+              '2017/2018',
+              '2016/2017',
+              '2015/2016',
+              '2014/2015',
+              '2013/2014',
+              '2012/2013',
+              '2011/2012',
+              '2010/2011',
+            ]}
             value={form.values.tahun_ajaran}
             error={form.errors.tahun_ajaran as string}
             onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
