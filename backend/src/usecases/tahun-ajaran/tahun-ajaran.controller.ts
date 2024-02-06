@@ -37,7 +37,7 @@ export class TahunAjaranController {
     return await this.tahunAjaranService.update(id, body);
   }
 
-  @Roles(ROLE_USER.ADMIN)
+  @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)
   @Get()
   async get_all_tahun_ajaran(
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe)
