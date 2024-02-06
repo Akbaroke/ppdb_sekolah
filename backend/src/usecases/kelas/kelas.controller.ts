@@ -28,7 +28,7 @@ export class KelasController {
     return await this.kelasService.createKelas(jenjang, tahun_ajaran);
   }
 
-  @Roles(ROLE_USER.ADMIN)
+  @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)
   @Get()
   async get_all_kelas(
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe)
@@ -50,7 +50,7 @@ export class KelasController {
     return await this.kelasService.getKelas(id);
   }
 
-  @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)
+  @Roles(ROLE_USER.ADMIN)
   @Patch(':id')
   async update_kelas(
     @Param('id', ValidationUUID)
@@ -60,7 +60,7 @@ export class KelasController {
     return await this.kelasService.updateKelas(id, jenjang, tahun_ajaran);
   }
 
-  @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)
+  @Roles(ROLE_USER.ADMIN)
   @Delete(':id')
   async delete_kelas(
     @Param('id', ValidationUUID)
