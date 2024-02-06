@@ -53,9 +53,7 @@ const refreshToken = async () => {
   const { data } = await axios.post(
     import.meta.env.VITE_APP_URL + '/refresh_token',
     {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
+      accessToken: localStorage.getItem('token'),
     }
   );
   return data.token;
