@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TahunAjaran } from './tahun-ajaran.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ITahunAjaranRepository } from './tahun-ajaran.interface';
 
@@ -20,11 +20,43 @@ export class TahunAjaranRepository implements ITahunAjaranRepository {
     skip: number,
     latest: boolean,
   ): Promise<{ data: TahunAjaran[]; count: number }> {
+    const order = latest ? 'desc' : 'asc';
+
     const [data, count] = await this.tahunAjaranRepository.findAndCount({
       skip,
       take: limit,
       order: {
-        created_at: latest ? 'DESC' : 'ASC',
+        created_at: order,
+      },
+    });
+
+    return { data, count };
+  }
+
+  async findAllBysearch(
+    limit: number,
+    skip: number,
+    latest: boolean,
+    search: string,
+  ): Promise<{ data: TahunAjaran[]; count: number }> {
+    const order = latest ? 'desc' : 'asc';
+
+    const [data, count] = await this.tahunAjaranRepository.findAndCount({
+      where: [
+        {
+          tahun_ajaran: Like(`%${search}%`),
+        },
+        {
+          besar_spp: Number(search) || 0,
+        },
+        {
+          biaya_daftar: Number(search) || 0,
+        },
+      ],
+      skip,
+      take: limit,
+      order: {
+        created_at: order,
       },
     });
 

@@ -37,8 +37,9 @@ export class KelasController {
     page?: number,
     @Query('latest', new DefaultValuePipe(false), ParseBoolPipe)
     latest?: boolean,
+    @Query('s', new DefaultValuePipe(null)) search?: string,
   ) {
-    return await this.kelasService.getAllKelas(limit, page, latest);
+    return await this.kelasService.getAllKelas(limit, page, latest, search);
   }
 
   @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)

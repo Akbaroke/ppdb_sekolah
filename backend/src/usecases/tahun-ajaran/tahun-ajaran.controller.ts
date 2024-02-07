@@ -46,8 +46,9 @@ export class TahunAjaranController {
     page?: number,
     @Query('latest', new DefaultValuePipe(false), ParseBoolPipe)
     latest?: boolean,
+    @Query('s', new DefaultValuePipe(null)) search?: string,
   ) {
-    return await this.tahunAjaranService.getAll(limit, page, latest);
+    return await this.tahunAjaranService.getAll(limit, page, latest, search);
   }
 
   @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)

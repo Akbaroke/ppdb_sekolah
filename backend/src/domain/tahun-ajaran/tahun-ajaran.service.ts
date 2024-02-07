@@ -33,6 +33,53 @@ export class TahunAjaranService implements ITahunAjaranService {
     return data;
   }
 
+  private async findAllTahunAjaranWithoutSearch(
+    limit_item: number,
+    start: number,
+    latest: boolean,
+  ): Promise<{
+    limit_item: number;
+    start: number;
+    data: TahunAjaran[];
+    count: number;
+  }> {
+    try {
+      const { data, count } = await this.tahunAjaranRepository.findAll(
+        limit_item,
+        start,
+        latest,
+      );
+
+      return { limit_item, start, data, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async findAllTahunAjaranWithSearch(
+    limit_item: number,
+    start: number,
+    latest: boolean,
+    search: string,
+  ): Promise<{
+    limit_item: number;
+    start: number;
+    data: TahunAjaran[];
+    count: number;
+  }> {
+    try {
+      const { data, count } = await this.tahunAjaranRepository.findAllBysearch(
+        limit_item,
+        start,
+        latest,
+        search,
+      );
+      return { limit_item, start, data, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async IsTahunAjaranExist(tahun_ajaran: string): Promise<boolean> {
     const isTahunAjaranExist = await this.tahunAjaranRepository.exists(
       tahun_ajaran,
@@ -76,22 +123,34 @@ export class TahunAjaranService implements ITahunAjaranService {
     limit: number,
     page: number,
     latest: boolean,
+    search: string = null,
   ): Promise<{
     limit_item: number;
     start: number;
     data: TahunAjaran[];
     count: number;
   }> {
-    const limit_item = limit > 20 ? 20 : limit;
-    const start = (page - 1) * limit_item;
+    try {
+      const limit_item = limit > 20 ? 20 : limit;
+      const start = (page - 1) * limit_item;
 
-    const { data, count } = await this.tahunAjaranRepository.findAll(
-      limit_item,
-      start,
-      latest,
-    );
-
-    return { limit_item, start, data, count };
+      if (search === null) {
+        return await this.findAllTahunAjaranWithoutSearch(
+          limit_item,
+          start,
+          latest,
+        );
+      } else {
+        return await this.findAllTahunAjaranWithSearch(
+          limit_item,
+          start,
+          latest,
+          search,
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getTahunAjaranById(id: string): Promise<TahunAjaran> {

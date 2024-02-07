@@ -76,6 +76,7 @@ export class UsecaseKelasService implements IUsecaseKelasService {
     limit = 10,
     page = 1,
     latest = true,
+    search = null,
   ): Promise<IMessage & { data?: IResponseDataKelas[]; pagination?: object }> {
     try {
       if (page < 1 || limit < 1) {
@@ -83,7 +84,7 @@ export class UsecaseKelasService implements IUsecaseKelasService {
       }
 
       const { data, count, limit_item, start } =
-        await this.kelasService.getAllKelas(limit, page, latest);
+        await this.kelasService.getAllKelas(limit, page, latest, search);
 
       const res = this.mapResponseData(data);
       const pagination = this.paginationService.createPagination(
