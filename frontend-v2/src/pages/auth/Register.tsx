@@ -10,6 +10,9 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { isEmail, matchesField, useForm } from '@mantine/form';
+import { useState } from 'react';
+import { Notify } from '../../components/Notify';
+import { ErrorResponse } from '../../interfaces/pages';
 
 type FormType = {
   email: string;
@@ -19,6 +22,7 @@ type FormType = {
 
 export function Register() {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<FormType>({
     validateInputOnChange: true,
     validateInputOnBlur: true,
@@ -43,16 +47,19 @@ export function Register() {
   });
 
   const handleSubmit = async () => {
-    console.log(form.values);
+    const { email, password } = form.values;
+    setIsLoading(true);
     try {
       const { data } = await api.post('/register', {
-        email: form.values.email,
-        password: form.values.password,
+        email,
+        password,
       });
-      console.log(data);
-      navigate(`/otp?email=${form.values.email}`);
+      Notify('success', data.message);
+      navigate(`/otp?email=${email}`);
     } catch (error) {
-      console.log(error);
+      Notify('error', (error as ErrorResponse).response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -74,6 +81,7 @@ export function Register() {
           value={form.values.email}
           error={form.errors.email as string}
           onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
+          readOnly={isLoading}
         />
         <PasswordInput
           label="Kata Sandi"
@@ -85,6 +93,7 @@ export function Register() {
           onChange={(e) =>
             form.setFieldValue('password', e.currentTarget.value)
           }
+          readOnly={isLoading}
         />
         <PasswordInput
           label="Ulangi Kata Sandi"
@@ -96,8 +105,14 @@ export function Register() {
           onChange={(e) =>
             form.setFieldValue('confirmPassword', e.currentTarget.value)
           }
+          readOnly={isLoading}
         />
-        <Button fullWidth mt="xl" type="submit" disabled={!form.isValid()}>
+        <Button
+          fullWidth
+          mt="xl"
+          type="submit"
+          disabled={!form.isValid()}
+          loading={isLoading}>
           Daftar
         </Button>
         <div className="mt-6 flex flex-col gap-1">

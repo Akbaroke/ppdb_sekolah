@@ -20,6 +20,8 @@ import { useEffect } from 'react';
 import ModalKelas from '../../components/ModalKelas';
 import ModalConfirm from '../../components/ModalConfirm';
 import api from '../../api';
+import { Notify } from '../../components/Notify';
+import { ErrorResponse } from '../../interfaces/pages';
 
 export default function Kelas() {
   const dispatch = useDispatch();
@@ -35,13 +37,19 @@ export default function Kelas() {
   }, []);
 
   const handleDeleteKelas = async (id: string) => {
+    Notify('loading', 'Menghapus kelas...' , 'delete-kelas');
     try {
-      await api.delete(`/kelas/${id}`);
+      const { data } = await api.delete(`/kelas/${id}`);
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       dispatch(fetchKelas());
+      Notify('success', data.message, 'delete-kelas');
     } catch (error) {
-      console.log(error);
+      Notify(
+        'error',
+        (error as ErrorResponse).response.data.message,
+        'delete-kelas'
+      );
     }
   };
 

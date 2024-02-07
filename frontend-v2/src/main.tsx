@@ -12,6 +12,7 @@ import { store } from './redux/index.ts';
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/dropzone/styles.css';
+import { Toaster } from 'sonner';
 
 const theme = createTheme({
   fontFamily: 'Plus Jakarta Sans, sans-serif',
@@ -29,6 +30,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       colorSchemeManager={colorSchemeManager}
       defaultColorScheme="auto">
       <Provider store={store}>
+        <Toaster expand={false} position="top-center" richColors />
         <App />
       </Provider>
     </MantineProvider>

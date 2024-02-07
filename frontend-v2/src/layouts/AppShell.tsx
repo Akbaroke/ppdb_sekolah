@@ -25,6 +25,7 @@ import { ADMIN_PROFILE, LOGO, USER_PROFILE } from '../assets';
 import { logout } from '../redux/slices/authSlice';
 import { IconListCheck } from '@tabler/icons-react';
 import ModalConfirm from '../components/ModalConfirm';
+import { Notify } from '../components/Notify';
 
 const dataUser = [
   { link: '/user/siswa-terdaftar', label: 'Siswa Terdaftar', icon: IconUsers },
@@ -134,7 +135,10 @@ export function AppShell() {
             type="danger"
             text="Apakah anda yakin ingin keluar ?"
             btnTitle="Ya, Keluar"
-            onAction={() => dispatch(logout())}>
+            onAction={() => {
+              Notify('success', 'Berhasil keluar');
+              dispatch(logout());
+            }}>
             <div className={classes.link}>
               <IconLogout className={classes.linkIcon} stroke={1.5} />
               <span>Keluar</span>

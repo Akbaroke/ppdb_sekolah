@@ -12,6 +12,9 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { login } from '../../redux/slices/authSlice';
+import { Notify } from '../../components/Notify';
+import { ErrorResponse } from '../../interfaces/pages';
+import { useState } from 'react';
 
 type FormType = {
   email: string;
@@ -21,6 +24,7 @@ type FormType = {
 export function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<FormType>({
     validateInputOnChange: true,
     validateInputOnBlur: true,
@@ -40,17 +44,20 @@ export function Login() {
   });
 
   const handleSubmit = async () => {
-    console.log(form.values);
     const { email, password } = form.values;
+    setIsLoading(true);
     try {
       const { data } = await api.post('/login', {
         email,
         password,
       });
+      Notify('success', data.message);
       dispatch(login(data));
       navigate('/user');
     } catch (error) {
-      console.log(error);
+      Notify('error', (error as ErrorResponse).response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,6 +80,7 @@ export function Login() {
           value={form.values.email}
           error={form.errors.email as string}
           onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
+          readOnly={isLoading}
         />
         <PasswordInput
           label="Kata Sandi"
@@ -84,8 +92,14 @@ export function Login() {
           onChange={(e) =>
             form.setFieldValue('password', e.currentTarget.value)
           }
+          readOnly={isLoading}
         />
-        <Button fullWidth mt="xl" type="submit" disabled={!form.isValid()}>
+        <Button
+          fullWidth
+          mt="xl"
+          type="submit"
+          disabled={!form.isValid()}
+          loading={isLoading}>
           Masuk
         </Button>
         <div className="mt-6 flex flex-col gap-1">

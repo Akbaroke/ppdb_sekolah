@@ -14,7 +14,9 @@ import {
   TahunAjaranAsync,
   fetchTahunAjaran,
 } from '../redux/slices/tahunAjaranSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Notify } from './Notify';
+import { ErrorResponse } from '../interfaces/pages';
 
 type Props = {
   children: React.ReactNode;
@@ -24,6 +26,7 @@ type Props = {
 
 export default function ModalTahunAjaran({ children, type, id }: Props) {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const tahunData = useSelector(
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
@@ -58,6 +61,7 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
   }, [dataEdit]);
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const { tahun_ajaran_id, tahun_ajaran, biaya_daftar, besar_spp } =
         form.values;
@@ -66,22 +70,26 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
           biaya_daftar,
           besar_spp,
         });
-        console.log(data);
+        Notify('success', data.message);
       } else {
         const { data } = await api.post('/tahun_ajaran', {
           tahun_ajaran,
           biaya_daftar,
           besar_spp,
         });
-        console.log(data);
+        Notify('success', data.message);
       }
       form.reset();
       close();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      dispatch(fetchTahunAjaran());
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        dispatch(fetchTahunAjaran());
+      }, 350);
     } catch (error) {
-      console.log(error);
+      Notify('error', (error as ErrorResponse).response.data.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -120,6 +128,7 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
             onChange={(e) =>
               form.setFieldValue('tahun_ajaran', e.currentTarget.value)
             }
+            readOnly={isLoading}
           />
           <NumberInput
             required
@@ -134,6 +143,7 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
             }
             error={form.errors.biaya_daftar as string}
             onChange={(e) => form.setFieldValue('biaya_daftar', e as number)}
+            readOnly={isLoading}
           />
           <NumberInput
             required
@@ -146,10 +156,12 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
             value={form.values.besar_spp === 0 ? '' : form.values.besar_spp}
             error={form.errors.besar_spp as string}
             onChange={(e) => form.setFieldValue('besar_spp', e as number)}
+            readOnly={isLoading}
           />
           <Button
             rightSection={<IconDeviceFloppy size={16} />}
             type="submit"
+            loading={isLoading}
             styles={{
               root: {
                 margin: '14px 30px',
