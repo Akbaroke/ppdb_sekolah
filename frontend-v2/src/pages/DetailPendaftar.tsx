@@ -1,5 +1,5 @@
 import { Button } from '@mantine/core';
-import Card from '../../components/Card';
+import Card from '../components/Card';
 import { useState } from 'react';
 // import { useParams } from 'react-router-dom';
 import TabProfile from './tabs/TabProfile';
@@ -38,7 +38,9 @@ export default function DetailSiswa() {
 
   return (
     <div className="flex flex-col gap-3">
-      <Card header={<h1 className="font-bold">Data Siswa</h1>} className="pb-0">
+      <Card
+        header={<h1 className="font-bold">Data Pendaftar</h1>}
+        className="pb-0">
         <div>
           {tabs.map((item) => (
             <Button

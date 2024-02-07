@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import FormSiswa from '../../../components/FormSiswa';
-import { FormType } from '../../../interfaces/components';
-import Card from '../../../components/Card';
+import FormSiswa from '../../components/FormSiswa';
+import { FormType } from '../../interfaces/components';
+import Card from '../../components/Card';
 
 export default function TabProfile() {
   const handleInputChange = async (url: string) => {

@@ -1,16 +1,16 @@
-import { ActionIcon, Badge, Grid } from '@mantine/core';
-import Card from '../../components/Card';
 import { IconSearch } from '@tabler/icons-react';
+import Card from '../../components/Card';
+import { ActionIcon, Badge, Grid } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
-import { listSiswaTerdaftarDummy } from '../../data/dummy';
+import { listPendaftarDummy } from '../../data/dummy';
 
-export default function SiswaTerdaftar() {
+export default function Pendaftar() {
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-5">
       <Card className="flex justify-between items-center">
-        <h1 className="font-bold text-lg">Siswa Terdaftar</h1>
+        <h1 className="font-bold text-lg">Pendaftar</h1>
         <div className="flex items-center gap-2">
           <ActionIcon variant="light" size="lg">
             <IconSearch size={18} />
@@ -18,12 +18,12 @@ export default function SiswaTerdaftar() {
         </div>
       </Card>
       <Grid gutter="xs">
-        {listSiswaTerdaftarDummy.map((item) => (
+        {listPendaftarDummy.map((item) => (
           <Grid.Col span={{ base: 12, md: 6 }}>
             <Card
               className="flex justify-between shadow-md cursor-pointer hover:shadow-none transition-all duration-300"
               key={item.id}
-              onClick={() => navigate(`/user/siswa-terdaftar/${item.id}`)}>
+              onClick={() => navigate(`/admin/pendaftar/${item.id}`)}>
               <div className="flex items-center gap-3 sm:gap-5">
                 <img
                   src={item.imgUrl}

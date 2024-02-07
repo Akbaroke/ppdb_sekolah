@@ -11,7 +11,11 @@ import DaftarSiswaBaru from '../pages/user/DaftarSiswaBaru';
 import GantiKataSandi from '../pages/GantiKataSandi';
 import TahunAjaran from '../pages/admin/TahunAjaran';
 import Kelas from '../pages/admin/Kelas';
-import DetailSiswa from '../pages/user/DetailSiswa';
+import DetailSiswa from '../pages/DetailSiswa';
+import Siswa from '../pages/admin/Siswa';
+import Pendaftar from '../pages/admin/Pendaftar';
+import DetailPendaftar from '../pages/DetailPendaftar';
+import Pembayaran from '../pages/admin/Pembayaran';
 export type DataRouteType = {
   path: string;
   element: React.ReactElement;
@@ -92,19 +96,27 @@ export default function Root() {
         },
         {
           path: '/siswa',
-          element: <h1>siswa</h1>,
+          element: <Siswa />,
         },
         {
           path: '/pendaftar',
-          element: <h1>pendaftar</h1>,
+          element: <Pendaftar />,
         },
         {
           path: '/pembayaran',
-          element: <h1>pembayaran</h1>,
+          element: <Pembayaran />,
         },
         {
           path: '/ganti-katasandi',
           element: <GantiKataSandi />,
+        },
+        {
+          path: '/siswa/:id',
+          element: <DetailSiswa />,
+        },
+        {
+          path: '/pendaftar/:id',
+          element: <DetailPendaftar />,
         },
       ],
     },

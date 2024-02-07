@@ -1,5 +1,5 @@
 import { Badge } from '@mantine/core';
-import Card from '../../../components/Card';
+import Card from '../../components/Card';
 
 const dummyData = [
   {
