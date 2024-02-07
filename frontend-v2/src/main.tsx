@@ -5,7 +5,7 @@ import './index.css';
 import {
   MantineProvider,
   createTheme,
-  localStorageColorSchemeManager,
+  // localStorageColorSchemeManager,
 } from '@mantine/core';
 import { Provider } from 'react-redux';
 import { store } from './redux/index.ts';
@@ -19,16 +19,16 @@ const theme = createTheme({
   cursorType: 'pointer',
 });
 
-const colorSchemeManager = localStorageColorSchemeManager({
-  key: 'my-app-color-scheme',
-});
+// const colorSchemeManager = localStorageColorSchemeManager({
+//   key: 'my-app-color-scheme',
+// });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <MantineProvider
       theme={theme}
-      colorSchemeManager={colorSchemeManager}
-      defaultColorScheme="auto">
+      // colorSchemeManager={colorSchemeManager}
+      defaultColorScheme="light">
       <Provider store={store}>
         <Toaster expand={false} position="top-center" richColors />
         <App />
