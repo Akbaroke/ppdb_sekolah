@@ -60,6 +60,54 @@ export class KelasService implements IKelasService {
     return data;
   }
 
+  private async findAllWithoutSearch(
+    limit_item: number,
+    start: number,
+    latest: boolean,
+  ): Promise<{
+    limit_item: number;
+    start: number;
+    data: Kelas[];
+    count: number;
+  }> {
+    try {
+      const { data, count } = await this.kelasRepository.findAll(
+        limit_item,
+        start,
+        latest,
+      );
+
+      return { limit_item, start, data, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async findAllWithSearch(
+    limit_item: number,
+    start: number,
+    latest: boolean,
+    search: string,
+  ): Promise<{
+    limit_item: number;
+    start: number;
+    data: Kelas[];
+    count: number;
+  }> {
+    try {
+      const { data, count } = await this.kelasRepository.findAllBySearch(
+        limit_item,
+        start,
+        latest,
+        search,
+      );
+
+      return { limit_item, start, data, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   async createKelas({
     jenjang,
     tahun_ajaran,
@@ -113,22 +161,25 @@ export class KelasService implements IKelasService {
     limit: number,
     page: number,
     latest: boolean,
+    search: string = null,
   ): Promise<{
     limit_item: number;
     start: number;
     data: Kelas[];
     count: number;
   }> {
-    const limit_item = limit > 20 ? 20 : limit;
-    const start = (page - 1) * limit_item;
+    try {
+      const limit_item = limit > 20 ? 20 : limit;
+      const start = (page - 1) * limit_item;
 
-    const { data, count } = await this.kelasRepository.findAll(
-      limit_item,
-      start,
-      latest,
-    );
-
-    return { limit_item, start, data, count };
+      if (search === null || !search) {
+        return await this.findAllWithoutSearch(limit_item, start, latest);
+      } else {
+        return await this.findAllWithSearch(limit_item, start, latest, search);
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getKelasById(kelas_id: string): Promise<Kelas> {

@@ -92,6 +92,7 @@ export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
     limit = 10,
     page = 1,
     latest = true,
+    search: string = null,
   ): Promise<IMessage & { data?: TahunAjaran[]; pagination?: object }> {
     try {
       if (page < 1 || limit < 1) {
@@ -99,7 +100,12 @@ export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
       }
 
       const { data, count, limit_item, start } =
-        await this.tahunAjaranService.getAllTahunAjaran(limit, page, latest);
+        await this.tahunAjaranService.getAllTahunAjaran(
+          limit,
+          page,
+          latest,
+          search,
+        );
 
       const pagination = this.paginationService.createPagination(
         count,

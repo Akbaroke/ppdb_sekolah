@@ -35,6 +35,7 @@ export interface IKelasService {
     limit: number,
     page: number,
     latest: boolean,
+    search: string,
   ): Promise<{
     limit_item: number;
     start: number;

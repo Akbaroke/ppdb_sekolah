@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Kelas } from './kelas.entity';
 import { TahunAjaran } from '../tahun-ajaran/tahun-ajaran.entity';
@@ -31,6 +31,7 @@ export class KelasRepository implements IKelasRepository {
     skip: number,
     latest: boolean,
   ): Promise<{ data: Kelas[]; count: number }> {
+    const order = latest ? 'desc' : 'asc';
     const [data, count] = await this.kelasRepository.findAndCount({
       relations: ['tahun_ajaran'],
       select: {
@@ -38,11 +39,52 @@ export class KelasRepository implements IKelasRepository {
           tahun_ajaran: true,
         },
       },
+      order: {
+        created_at: order,
+      },
       skip,
       take: limit,
-      order: {
-        created_at: latest ? 'DESC' : 'ASC',
+    });
+
+    return { data, count };
+  }
+
+  async findAllBySearch(
+    limit: number,
+    skip: number,
+    latest: boolean,
+    search: string,
+  ): Promise<{ data: Kelas[]; count: number }> {
+    const order = latest ? 'desc' : 'asc';
+
+    const [data, count] = await this.kelasRepository.findAndCount({
+      where: [
+        {
+          kelas: search,
+        },
+        {
+          kode_kelas: search,
+        },
+        {
+          jenjang: search as JENJANG,
+        },
+        {
+          tahun_ajaran: {
+            tahun_ajaran: Like(`%${search}%`),
+          },
+        },
+      ],
+      relations: ['tahun_ajaran'],
+      select: {
+        tahun_ajaran: {
+          tahun_ajaran: true,
+        },
       },
+      order: {
+        created_at: order,
+      },
+      skip,
+      take: limit,
     });
 
     return { data, count };
