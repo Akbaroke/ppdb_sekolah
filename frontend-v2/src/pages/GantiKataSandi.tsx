@@ -46,7 +46,7 @@ export default function GantiKataSandi() {
   };
 
   return (
-    <Card header={<h1 className="font-bold">Data Siswa</h1>}>
+    <Card header={<h1 className="font-bold">Ganti Kata Sandi</h1>}>
       <form
         className="px-2 flex flex-col gap-1"
         onSubmit={form.onSubmit(handleSubmit)}>
