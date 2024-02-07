@@ -11,6 +11,7 @@ import DaftarSiswaBaru from '../pages/user/DaftarSiswaBaru';
 import GantiKataSandi from '../pages/GantiKataSandi';
 import TahunAjaran from '../pages/admin/TahunAjaran';
 import Kelas from '../pages/admin/Kelas';
+import DetailSiswa from '../pages/user/DetailSiswa';
 export type DataRouteType = {
   path: string;
   element: React.ReactElement;
@@ -68,6 +69,10 @@ export default function Root() {
         {
           path: '/ganti-katasandi',
           element: <GantiKataSandi />,
+        },
+        {
+          path: '/siswa-terdaftar/:id',
+          element: <DetailSiswa />,
         },
       ],
     },

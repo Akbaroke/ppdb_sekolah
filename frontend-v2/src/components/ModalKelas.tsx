@@ -8,6 +8,7 @@ import { KelasAsync, fetchKelas } from '../redux/slices/kelasSlice';
 import { TahunAjaranAsync } from '../redux/slices/tahunAjaranSlice';
 import { Kelas } from '../interfaces/store';
 import { useEffect } from 'react';
+import { jenjangConfig } from '../data/config';
 
 type Props = {
   children: React.ReactNode;
@@ -104,20 +105,7 @@ export default function ModalKelas({ children, type, id }: Props) {
             required
             label="Jenjang"
             placeholder="Jenjang"
-            data={[
-              {
-                value: 'pg',
-                label: 'PG',
-              },
-              {
-                value: 'tka',
-                label: 'TKA',
-              },
-              {
-                value: 'tkb',
-                label: 'TKB',
-              },
-            ]}
+            data={jenjangConfig}
             value={form.values.jenjang}
             error={form.errors.jenjang as string}
             onChange={(e) => form.setFieldValue('jenjang', e as string)}

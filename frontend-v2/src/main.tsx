@@ -10,6 +10,8 @@ import {
 import { Provider } from 'react-redux';
 import { store } from './redux/index.ts';
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
+import '@mantine/dropzone/styles.css';
 
 const theme = createTheme({
   fontFamily: 'Plus Jakarta Sans, sans-serif',

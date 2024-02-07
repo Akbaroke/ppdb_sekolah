@@ -2,7 +2,7 @@ import {
   Button,
   Modal as MantineModal,
   NumberInput,
-  Select,
+  TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
@@ -32,12 +32,16 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
     (item: TahunAjaran) => item.tahun_ajaran_id === id
   );
 
+  const tahunAjaranNow = `${new Date().getFullYear().toString()}/${(
+    new Date().getFullYear() + 1
+  ).toString()}`;
+
   const form = useForm<TahunAjaran>({
     validateInputOnChange: true,
     validateInputOnBlur: true,
     initialValues: {
       tahun_ajaran_id: id || '',
-      tahun_ajaran: '',
+      tahun_ajaran: tahunAjaranNow || '',
       biaya_daftar: 0,
       besar_spp: 0,
     },
@@ -106,30 +110,16 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
         <form
           className="flex flex-col gap-3"
           onSubmit={form.onSubmit(handleSubmit)}>
-          <Select
-            required
+          <TextInput
             label="Tahun Ajaran"
-            placeholder="Tahun Ajaran"
-            data={[
-              '2023/2024',
-              '2022/2023',
-              '2021/2022',
-              '2020/2021',
-              '2019/2020',
-              '2018/2019',
-              '2017/2018',
-              '2016/2017',
-              '2015/2016',
-              '2014/2015',
-              '2013/2014',
-              '2012/2013',
-              '2011/2012',
-              '2010/2011',
-            ]}
+            placeholder="Tahun ajaran"
+            required
+            disabled
             value={form.values.tahun_ajaran}
             error={form.errors.tahun_ajaran as string}
-            onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
-            disabled={type === 'edit'}
+            onChange={(e) =>
+              form.setFieldValue('tahun_ajaran', e.currentTarget.value)
+            }
           />
           <NumberInput
             required

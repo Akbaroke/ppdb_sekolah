@@ -143,7 +143,7 @@ export function AppShell() {
         </MantineAppShell.Section>
       </MantineAppShell.Navbar>
       <MantineAppShell.Main className="bg-gray-50">
-        <Container size={1200} my={10}>
+        <Container size={1200} my={10} p={0}>
           <Outlet />
         </Container>
       </MantineAppShell.Main>
