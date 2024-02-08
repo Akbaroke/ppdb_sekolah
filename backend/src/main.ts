@@ -31,8 +31,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.enableCors({
-    methods: '*',
-    origin: configService.get('frontend_url', '*'),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: true,
+    credentials: true,
   });
 
   const port = await configService.get('port', 3000);
