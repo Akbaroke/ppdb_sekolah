@@ -31,12 +31,12 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.enableCors({
-    credentials: true,
-    origin: configService.getOrThrow('frontend_url'),
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Accept, Authorization',
+    origin: '*',
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
     preflightContinue: false,
     optionsSuccessStatus: 204,
+    credentials: true,
+    allowedHeaders: ['Accept', 'Content-Type', 'Authorization'],
   });
 
   const port = await configService.get('port', 3000);
