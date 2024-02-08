@@ -19,7 +19,7 @@ import Pembayaran from '../pages/admin/Pembayaran';
 export type DataRouteType = {
   path: string;
   element: React.ReactElement;
-  middleware: 'guest' | 'user' | 'admin';
+  middleware?: 'guest' | 'user' | 'admin';
   defaultElement?: React.ReactElement;
   withChildren?: OutletChildrenType[];
 };
@@ -34,7 +34,6 @@ export default function Root() {
     {
       path: '/',
       element: <LandingPage />,
-      middleware: 'guest',
     },
     {
       path: '/login',

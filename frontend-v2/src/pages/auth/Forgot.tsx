@@ -13,6 +13,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
 import { Notify } from '../../components/Notify';
 import { ErrorResponse } from '../../interfaces/pages';
+import Layout from '../../layouts';
 
 type Form1Type = {
   email: string;
@@ -205,8 +206,8 @@ export default function Forgot() {
   );
 
   return (
-    <Container size={420} my={40}>
-      {!token ? Page1() : Page2()}
-    </Container>
+    <Layout>
+      <Container size={420}>{!token ? Page1() : Page2()}</Container>
+    </Layout>
   );
 }

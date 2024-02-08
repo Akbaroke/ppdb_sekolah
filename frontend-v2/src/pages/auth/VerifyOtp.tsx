@@ -16,6 +16,7 @@ import api from '../../api';
 import { Notify } from '../../components/Notify';
 import { ErrorResponse } from '../../interfaces/pages';
 import { useDisclosure } from '@mantine/hooks';
+import Layout from '../../layouts';
 
 type FormType = {
   email: string;
@@ -77,7 +78,7 @@ export default function VerifyOtp() {
       Notify('error', (error as ErrorResponse).response.data.message);
       setIsErrorOtp(true);
       setOtp('');
-      toggle()
+      toggle();
     } finally {
       setIsLoading(false);
     }
@@ -194,8 +195,10 @@ export default function VerifyOtp() {
   );
 
   return (
-    <Container size={420} my={40}>
-      {!paramEmail ? Page1() : Page2()}
-    </Container>
+    <Layout>
+      <Container size={420} my={40}>
+        {!paramEmail ? Page1() : Page2()}
+      </Container>
+    </Layout>
   );
 }
