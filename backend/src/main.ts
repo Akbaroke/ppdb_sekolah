@@ -32,6 +32,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.enableCors({
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
     origin: configService.getOrThrow('frontend_url'),
   });
 
