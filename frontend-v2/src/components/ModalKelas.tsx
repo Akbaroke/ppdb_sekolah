@@ -10,7 +10,7 @@ import { Kelas } from '../interfaces/store';
 import { useEffect, useState } from 'react';
 import { jenjangConfig } from '../data/config';
 import { Notify } from './Notify';
-import { ErrorResponse } from '../interfaces/pages';
+import handleErrorResponse from '../services/handleErrorResponse';
 
 type Props = {
   children: React.ReactNode;
@@ -78,7 +78,7 @@ export default function ModalKelas({ children, type, id }: Props) {
         dispatch(fetchKelas());
       }, 350);
     } catch (error) {
-      Notify('error', (error as ErrorResponse).response.data.message);
+      handleErrorResponse(error);
     } finally {
       setIsLoading(false);
     }

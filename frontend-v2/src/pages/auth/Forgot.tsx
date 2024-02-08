@@ -12,8 +12,8 @@ import { isEmail, matchesField, useForm } from '@mantine/form';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
 import { Notify } from '../../components/Notify';
-import { ErrorResponse } from '../../interfaces/pages';
 import Layout from '../../layouts';
+import handleErrorResponse from '../../services/handleErrorResponse';
 
 type Form1Type = {
   email: string;
@@ -77,7 +77,7 @@ export default function Forgot() {
         replace: true,
       });
     } catch (error) {
-      Notify('error', (error as ErrorResponse).response.data.message);
+      handleErrorResponse(error);
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +95,7 @@ export default function Forgot() {
       localStorage.removeItem('email');
       navigate('/login', { replace: true });
     } catch (error) {
-      Notify('error', (error as ErrorResponse).response.data.message);
+      handleErrorResponse(error);
     } finally {
       setIsLoading(false);
     }

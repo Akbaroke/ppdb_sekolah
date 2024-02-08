@@ -13,9 +13,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../../api';
 import { login } from '../../redux/slices/authSlice';
 import { Notify } from '../../components/Notify';
-import { ErrorResponse } from '../../interfaces/pages';
 import { useState } from 'react';
 import Layout from '../../layouts';
+import handleErrorResponse from '../../services/handleErrorResponse';
 
 type FormType = {
   email: string;
@@ -56,7 +56,7 @@ export function Login() {
       dispatch(login(data));
       navigate('/user');
     } catch (error) {
-      Notify('error', (error as ErrorResponse).response.data.message);
+      handleErrorResponse(error);
     } finally {
       setIsLoading(false);
     }

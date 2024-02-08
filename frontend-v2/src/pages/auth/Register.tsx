@@ -12,8 +12,8 @@ import api from '../../api';
 import { isEmail, matchesField, useForm } from '@mantine/form';
 import { useState } from 'react';
 import { Notify } from '../../components/Notify';
-import { ErrorResponse } from '../../interfaces/pages';
 import Layout from '../../layouts';
+import handleErrorResponse from '../../services/handleErrorResponse';
 
 type FormType = {
   email: string;
@@ -58,7 +58,7 @@ export function Register() {
       Notify('success', data.message);
       navigate(`/otp?email=${email}`);
     } catch (error) {
-      Notify('error', (error as ErrorResponse).response.data.message);
+      handleErrorResponse(error);
     } finally {
       setIsLoading(false);
     }

@@ -14,9 +14,9 @@ import {
 import useCountdown from '../../hooks/useCountdown';
 import api from '../../api';
 import { Notify } from '../../components/Notify';
-import { ErrorResponse } from '../../interfaces/pages';
 import { useDisclosure } from '@mantine/hooks';
 import Layout from '../../layouts';
+import handleErrorResponse from '../../services/handleErrorResponse';
 
 type FormType = {
   email: string;
@@ -75,7 +75,7 @@ export default function VerifyOtp() {
         navigate('/login', { replace: true });
       }
     } catch (error) {
-      Notify('error', (error as ErrorResponse).response.data.message);
+      handleErrorResponse(error);
       setIsErrorOtp(true);
       setOtp('');
       toggle();
@@ -97,7 +97,7 @@ export default function VerifyOtp() {
       Notify('success', data.message);
       setOtp('');
     } catch (error) {
-      Notify('error', (error as ErrorResponse).response.data.message);
+      handleErrorResponse(error);
     } finally {
       setIsLoading(false);
     }
