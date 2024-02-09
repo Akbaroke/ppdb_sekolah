@@ -5,11 +5,13 @@ import { RoleGuard } from 'src/infrastucture/common/guards/role.guard';
 import { TokenModule } from 'src/domain/token/token.module';
 import { UsecaseTahunAjaranModule } from './tahun-ajaran/tahun-ajaran.module';
 import { UsecaseKelasModule } from './kelas/kelas.module';
+import { DaftarSiswaModule } from './daftar-siswa/daftar-siswa.module';
 
 @Module({
   imports: [
     TokenModule,
     AuthModule,
+    DaftarSiswaModule,
     UsecaseTahunAjaranModule,
     UsecaseKelasModule,
   ],

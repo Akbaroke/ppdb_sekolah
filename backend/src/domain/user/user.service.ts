@@ -18,6 +18,11 @@ export class UserService implements IUserService {
     });
   }
 
+  async findOne(user_id: string): Promise<User> {
+    const data = await this.userRepository.findOne(user_id);
+    return data;
+  }
+
   async findOneByEmail(email: string): Promise<User> {
     const data = await this.userRepository.findOneByEmail(email);
     return data;

@@ -12,7 +12,7 @@ import { TokenRepository } from './token.repository';
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         global: true,
-        secret: configService.getOrThrow('jwt_public_key'),
+        secret: configService.getOrThrow('JWT_PUBLIC_KEY'),
         signOptions: {
           expiresIn: '1d',
         },

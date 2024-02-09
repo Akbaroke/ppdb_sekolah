@@ -31,7 +31,7 @@ export class TokenService implements ITokenService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.generateAccessToken(payload),
       this.jwtService.generateRefreshToken(payload, {
-        secret: this.configService.getOrThrow('jwt_secret_key'),
+        secret: this.configService.getOrThrow('JWT_SECRET_KEY'),
         expiresIn: '7d',
       }),
     ]);
@@ -43,7 +43,7 @@ export class TokenService implements ITokenService {
     payload: IPayloadTokenForgotPassword,
   ): Promise<string> {
     const token = await this.jwtService.generateTokenForgotPassword(payload, {
-      secret: this.configService.getOrThrow('jwt_forgot_password_key'),
+      secret: this.configService.getOrThrow('JWT_FORGOT_PASSWORD_KEY'),
       expiresIn: '5m',
     });
     return token;
@@ -92,7 +92,7 @@ export class TokenService implements ITokenService {
   async refreshToken(token: Token): Promise<string> {
     const accessToken = await this.jwtService
       .verifyRefreshToken(token.refreshToken, {
-        secret: this.configService.getOrThrow('jwt_secret_key'),
+        secret: this.configService.getOrThrow('JWT_SECRET_KEY'),
       })
       .then(async ({ id, email, role }) => {
         const createAccessToken = await this.jwtService.generateAccessToken({
@@ -136,7 +136,7 @@ export class TokenService implements ITokenService {
     token: string,
   ): Promise<IPayloadTokenForgotPassword> {
     const payload = await this.jwtService.verifyTokenForgotPassword(token, {
-      secret: this.configService.getOrThrow('jwt_forgot_password_key'),
+      secret: this.configService.getOrThrow('JWT_FORGOT_PASSWORD_KEY'),
     });
 
     return payload;

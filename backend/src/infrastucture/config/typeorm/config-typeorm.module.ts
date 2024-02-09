@@ -7,12 +7,12 @@ import { ConfigService } from '@nestjs/config';
     TypeOrmModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
         type: 'mysql',
-        host: configService.getOrThrow('database_host'),
-        port: configService.getOrThrow('database_port'),
-        database: configService.getOrThrow('database_name'),
-        username: configService.getOrThrow('database_username'),
-        password: configService.getOrThrow('database_password'),
-        synchronize: configService.getOrThrow('database_synchronize'),
+        host: configService.getOrThrow('DATABASE_HOST'),
+        port: configService.getOrThrow('DATABASE_PORT'),
+        database: configService.getOrThrow('DATABASE_NAME'),
+        username: configService.getOrThrow('DATABASE_USERNAME'),
+        password: configService.getOrThrow('DATABASE_PASSWORD'),
+        synchronize: configService.getOrThrow('DATABASE_SYNCHRONIZE'),
         autoLoadEntities: true,
       }),
       inject: [ConfigService],

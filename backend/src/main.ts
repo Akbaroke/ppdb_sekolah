@@ -5,7 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
   const configService = app.get(ConfigService);
 
   app.useGlobalPipes(
@@ -19,7 +19,7 @@ async function bootstrap() {
     }),
   );
 
-  if (configService.get('node_env') !== 'production') {
+  if (configService.get('NODE_ENV') !== 'production') {
     const config = new DocumentBuilder()
       .setTitle('Portal')
       .setDescription('')
@@ -31,8 +31,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.enableCors({
-    methods: '*',
-    origin: configService.get('frontend_url', '*'),
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    origin: configService.getOrThrow('FRONTEND_URL'),
   });
 
   const port = await configService.get('port', 3000);

@@ -3,11 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Kelas } from './kelas.entity';
 import { KelasRepository } from './kelas.repository';
 import { KelasService } from './kelas.service';
-import { TahunAjaran } from '../tahun-ajaran/tahun-ajaran.entity';
 import { KelasSubscriber } from './kelas.subscriber';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Kelas, TahunAjaran])],
+  imports: [TypeOrmModule.forFeature([Kelas])],
   providers: [KelasRepository, KelasService, KelasSubscriber],
   exports: [KelasService],
 })

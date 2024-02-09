@@ -5,9 +5,11 @@ import {
   Index,
   CreateDateColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { ROLE_USER, STATUS_USER } from './user.interface';
 import { Token } from '../token/token.entity';
+import { Siswa } from '../siswa/siswa.entity';
 
 interface IUser {
   user_id: string;
@@ -46,6 +48,9 @@ export class User implements IUser {
 
   @OneToOne(() => Token, (token) => token.user)
   token: Token;
+
+  @OneToMany(() => Siswa, (siswa) => siswa.user)
+  siswa: Siswa[];
 
   @CreateDateColumn({
     type: 'bigint',

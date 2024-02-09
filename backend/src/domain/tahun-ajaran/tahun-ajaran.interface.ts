@@ -14,6 +14,12 @@ export interface ITahunAjaranRepository {
     latest: boolean,
   ): Promise<{ data: TahunAjaran[]; count: number }>;
   find(tahun_ajaran_id: string): Promise<TahunAjaran>;
+  findAllBysearch(
+    limit: number,
+    skip: number,
+    latest: boolean,
+    search: string,
+  ): Promise<{ data: TahunAjaran[]; count: number }>;
 }
 
 export interface ITahunAjaranService {
@@ -23,6 +29,7 @@ export interface ITahunAjaranService {
     limit: number,
     page: number,
     latest: boolean,
+    search: string,
   ): Promise<{
     limit_item: number;
     start: number;

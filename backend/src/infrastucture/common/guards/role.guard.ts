@@ -20,6 +20,7 @@ export class RoleGuard implements CanActivate {
         const token = request.headers['authorization'].split(' ')[1];
         const payload = await this.tokenService.verifyToken(token);
         if (roles.includes(payload.role)) {
+          request.user = payload;
           return true;
         }
         return false;

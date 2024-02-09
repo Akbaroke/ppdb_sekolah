@@ -24,6 +24,12 @@ export interface IKelasRepository {
     skip: number,
     latest: boolean,
   ): Promise<{ data: Kelas[]; count: number }>;
+  findAllBySearch(
+    limit: number,
+    skip: number,
+    latest: boolean,
+    search: string,
+  ): Promise<{ data: Kelas[]; count: number }>;
 }
 
 export interface IKelasService {

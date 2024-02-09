@@ -12,8 +12,8 @@ export class NodemailerService implements IEmailService {
       return nodemailer.createTransport({
         host: 'smtp.gmail.com',
         auth: {
-          user: this.configService.getOrThrow('smtp_user'),
-          pass: this.configService.getOrThrow('smtp_password'),
+          user: this.configService.getOrThrow('SMTP_USER'),
+          pass: this.configService.getOrThrow('SMTP_PASSWORD'),
         },
       });
     } catch (error) {
@@ -28,7 +28,7 @@ export class NodemailerService implements IEmailService {
   ): Promise<void> {
     try {
       await this.transporter().sendMail({
-        from: this.configService.getOrThrow('smtp_user'),
+        from: this.configService.getOrThrow('SMTP_USER'),
         to,
         subject,
         html: body,
