@@ -30,9 +30,9 @@ export default function DaftarSiswaBaru() {
           pekerjaan: '',
           no_telepon: '',
           alamat: '',
-          akta: null,
-          kartu_keluarga: null,
-          foto: null,
+          akta: '',
+          kartu_keluarga: '',
+          foto: '',
           jenjang: '',
           tahun_ajaran: '',
         }}
