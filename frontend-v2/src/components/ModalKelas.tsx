@@ -8,7 +8,7 @@ import { KelasAsync, fetchKelas } from '../redux/slices/kelasSlice';
 import { TahunAjaranAsync } from '../redux/slices/tahunAjaranSlice';
 import { Kelas } from '../interfaces/store';
 import { useEffect, useState } from 'react';
-import { jenjangConfig } from '../data/config';
+import { JENJANG_LIST } from '../data/config';
 import { Notify } from './Notify';
 import handleErrorResponse from '../services/handleErrorResponse';
 
@@ -116,7 +116,7 @@ export default function ModalKelas({ children, type, id }: Props) {
             required
             label="Jenjang"
             placeholder="Jenjang"
-            data={jenjangConfig}
+            data={JENJANG_LIST}
             value={form.values.jenjang}
             error={form.errors.jenjang as string}
             onChange={(e) => form.setFieldValue('jenjang', e as string)}

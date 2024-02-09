@@ -1,4 +1,4 @@
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   AppShell as MantineAppShell,
   Burger,
@@ -65,14 +65,25 @@ const warnFeatureOnDevelop = [
 
 export function AppShell() {
   const dispatch = useDispatch();
-  const [opened, { toggle }] = useDisclosure();
+  const navigate = useNavigate();
   const { role, email } = useSelector(
     (state: { auth: DataUser }) => state.auth
   );
   const isAdmin = role === 'admin';
+  const [opened, { toggle }] = useDisclosure();
+  const location = useLocation().pathname;
+
   const [active, setActive] = useState(
     isAdmin ? '/admin/tahun-ajaran' : '/user/siswa-terdaftar'
   );
+  useEffect(() => {
+    const spiter = location.split('/').filter((item) => item !== '');
+    const pathLocation =
+      spiter.length > 1
+        ? `/${spiter[0]}/${spiter[1]}`
+        : `/${spiter[0]}/${isAdmin ? 'tahun-ajaran' : 'siswa-terdaftar'}`;
+    setActive(pathLocation);
+  }, [isAdmin, location]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -172,6 +183,7 @@ export function AppShell() {
             onAction={() => {
               Notify('success', 'Berhasil keluar');
               dispatch(logout());
+              navigate('/login', { replace: true });
             }}>
             <div className={classes.link}>
               <IconLogout className={classes.linkIcon} stroke={1.5} />

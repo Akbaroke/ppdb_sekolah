@@ -5,6 +5,7 @@ import { useState } from 'react';
 import TabProfile from './tabs/TabProfile';
 import TabStatus from './tabs/TabStatus';
 import TabRiwayatPembayaran from './tabs/TabRiwayatPembayaran';
+import { useSearchParams } from 'react-router-dom';
 
 const tabs = [
   {
@@ -22,7 +23,10 @@ const tabs = [
 ];
 
 export default function DetailSiswa() {
-  const [activeTab, setActiveTab] = useState<string | null>(tabs[0].key);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<string | null>(
+    searchParams.get('tab') || tabs[0].key
+  );
   // const { id } = useParams();
 
   const TabsRender = () => {
@@ -46,7 +50,10 @@ export default function DetailSiswa() {
               key={item.key}
               radius="xs"
               color={activeTab === item.key ? 'blue' : 'gray'}
-              onClick={() => setActiveTab(item.key)}
+              onClick={() => {
+                setActiveTab(item.key);
+                setSearchParams({ tab: item.key });
+              }}
               styles={{
                 root: {
                   color: activeTab === item.key ? '' : 'gray',

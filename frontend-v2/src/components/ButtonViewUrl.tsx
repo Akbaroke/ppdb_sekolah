@@ -17,6 +17,7 @@ export default function ButtonViewUrl({ title, url, type, className }: Props) {
   return (
     <>
       <Modal
+        centered
         opened={opened}
         onClose={close}
         title={title}

@@ -18,20 +18,45 @@ import { IconDeviceFloppy } from '@tabler/icons-react';
 import calculateAge from '../utils/calculateAge';
 import { IMaskInput } from 'react-imask';
 import {
-  agamaConfig,
-  jenisKelaminConfig,
-  jenjangConfig,
-  jobsConfig,
+  AGAMA_LIST,
+  GENDER_LIST,
+  JENJANG_LIST,
+  JOBS_LIST,
 } from '../data/config';
 import { FormType } from '../interfaces/components';
 import InputFile from './InputFile';
 
 type Props = {
   handleSubmit: (e: FormType) => void;
-  initialValue: FormType;
+  initialValue?: FormType;
 };
 
-export default function FormSiswa({ handleSubmit, initialValue }: Props) {
+const defaultValue: FormType = {
+  nama_lengkap: '',
+  tanggal_lahir: null,
+  jenis_kelamin: '',
+  tinggi_badan: 0,
+  tempat_lahir: '',
+  umur: '',
+  agama: '',
+  berat_badan: 0,
+  nama_ibu: '',
+  nama_bapak: '',
+  nama_wali: '',
+  pekerjaan: '',
+  no_telepon: '',
+  alamat: '',
+  akta: '',
+  kartu_keluarga: '',
+  foto: '',
+  jenjang: '',
+  tahun_ajaran: '',
+};
+
+export default function FormSiswa({
+  handleSubmit,
+  initialValue = defaultValue,
+}: Props) {
   const dispatch = useDispatch();
   const tahunData = useSelector(
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
@@ -149,7 +174,7 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               required
               label="Jenis Kelamin"
               placeholder="Jenis kelamin"
-              data={jenisKelaminConfig}
+              data={GENDER_LIST}
               value={form.values.jenis_kelamin}
               error={form.errors.jenis_kelamin as string}
               onChange={(e) => form.setFieldValue('jenis_kelamin', e as string)}
@@ -196,7 +221,7 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               required
               label="Agama"
               placeholder="Agama"
-              data={agamaConfig}
+              data={AGAMA_LIST}
               value={form.values.agama}
               error={form.errors.agama as string}
               onChange={(e) => form.setFieldValue('agama', e as string)}
@@ -248,7 +273,7 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               required
               label="Pekerjaan"
               placeholder="Pekerjaan"
-              data={jobsConfig}
+              data={JOBS_LIST}
               value={form.values.pekerjaan}
               error={form.errors.pekerjaan as string}
               onChange={(e) => form.setFieldValue('pekerjaan', e as string)}
@@ -342,7 +367,7 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               required
               label="Jenjang"
               placeholder="Jenjang"
-              data={jenjangConfig}
+              data={JENJANG_LIST}
               value={form.values.jenjang}
               error={form.errors.jenjang as string}
               onChange={(e) => form.setFieldValue('jenjang', e as string)}
