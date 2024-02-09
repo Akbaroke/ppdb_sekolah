@@ -7,7 +7,6 @@ import {
 } from '../redux/slices/tahunAjaranSlice';
 import {
   Button,
-  FileInput,
   Input,
   NumberInput,
   Select,
@@ -25,6 +24,7 @@ import {
   jobsConfig,
 } from '../data/config';
 import { FormType } from '../interfaces/components';
+import InputFile from './InputFile';
 
 type Props = {
   handleSubmit: (e: FormType) => void;
@@ -95,19 +95,19 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
           : 'Minimal 3 karakter. Hanya boleh huruf, angka, titik, koma, dan spasi diantara kata',
       akta: (value) =>
         value
-          ? isFileSizeValid(value)
+          ? isFileSizeValid(value as File)
             ? null
             : 'File tidak boleh melebihi 1MB'
           : 'Wajib diisi',
       kartu_keluarga: (value) =>
         value
-          ? isFileSizeValid(value)
+          ? isFileSizeValid(value as File)
             ? null
             : 'File tidak boleh melebihi 1MB'
           : 'Wajib diisi',
       foto: (value) =>
         value
-          ? isFileSizeValid(value)
+          ? isFileSizeValid(value as File)
             ? null
             : 'File tidak boleh melebihi 1MB'
           : 'Wajib diisi',
@@ -299,44 +299,38 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
       <div>
         <h1 className="font-semibold">Berkas Dokumen Siswa</h1>
         <div className="flex flex-col gap-3 p-2">
-          <FileInput
+          <InputFile
             label="Akta"
             description="Unggah Akta dalam format PDF,JPEG,PNG dengan ukuran maksimal 1MB"
             placeholder="Pilih File"
-            required
-            value={form.values.akta}
+            value={form.values.akta as File}
             error={form.errors.akta as string}
             onChange={(e) => {
-              form.setFieldValue('akta', e);
+              form.setFieldValue('akta', e as File);
             }}
-            clearable
-            accept="image/png,image/jpeg,application/pdf"
+            accept={['image/png', 'image/jpeg', 'application/pdf']}
           />
-          <FileInput
+          <InputFile
             label="Kartu Keluarga"
             description="Unggah Kartu Keluarga dalam format PDF,JPEG,PNG dengan ukuran maksimal 1MB"
             placeholder="Pilih File"
-            required
-            value={form.values.kartu_keluarga}
+            value={form.values.kartu_keluarga as File}
             error={form.errors.kartu_keluarga as string}
             onChange={(e) => {
-              form.setFieldValue('kartu_keluarga', e);
+              form.setFieldValue('kartu_keluarga', e as File);
             }}
-            clearable
-            accept="image/png,image/jpeg,application/pdf"
+            accept={['image/png', 'image/jpeg', 'application/pdf']}
           />
-          <FileInput
+          <InputFile
             label="Foto"
             description="Unggah Foto dalam format JPEG,PNG dengan ukuran maksimal 1MB (Berpakaian rapi dan sopan)"
             placeholder="Pilih File"
-            required
-            value={form.values.foto}
+            value={form.values.foto as File}
             error={form.errors.foto as string}
             onChange={(e) => {
-              form.setFieldValue('foto', e);
+              form.setFieldValue('foto', e as File);
             }}
-            clearable
-            accept="image/png,image/jpeg"
+            accept={['image/png', 'image/jpeg']}
           />
         </div>
       </div>

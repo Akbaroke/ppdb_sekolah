@@ -9,12 +9,12 @@ import Card from '../../components/Card';
 import { IconPencil, IconPlus, IconSearch } from '@tabler/icons-react';
 import ModalTahunAjaran from '../../components/ModalTahunAjaran';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import {
   TahunAjaranAsync,
   fetchTahunAjaran,
 } from '../../redux/slices/tahunAjaranSlice';
 import NotDataFound from '../../components/NotDataFound';
+import ButtonRefresh from '../../components/ButtonRefresh';
 
 type TahunAjaran = {
   id: string;
@@ -28,12 +28,6 @@ export default function TahunAjaran() {
   const { data, isLoading } = useSelector(
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
   );
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    dispatch(fetchTahunAjaran());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const rows = data?.map((element) => (
     <Table.Tr key={element.tahun_ajaran_id}>
@@ -73,6 +67,12 @@ export default function TahunAjaran() {
     </Table.Tr>
   );
 
+  const refresh = () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    dispatch(fetchTahunAjaran());
+  };
+
   return (
     <div className="flex flex-col gap-5">
       <Card className="flex justify-between items-center">
@@ -81,6 +81,7 @@ export default function TahunAjaran() {
           <ActionIcon variant="light" size="lg">
             <IconSearch size={18} />
           </ActionIcon>
+          <ButtonRefresh isLoading={isLoading} onClick={refresh} />
           <ModalTahunAjaran type="create">
             <ActionIcon variant="light" size="lg">
               <IconPlus size={18} />

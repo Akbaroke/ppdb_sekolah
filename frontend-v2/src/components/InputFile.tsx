@@ -1,126 +1,91 @@
-import * as React from 'react';
-import { Button, Loader } from '@mantine/core';
-import { Dropzone, FileWithPath, MIME_TYPES } from '@mantine/dropzone';
-import cn from '../utils/cn';
+import { FileInput } from '@mantine/core';
+import convertUrlToFile from '../utils/convertUrlToFile';
+import { useEffect, useState } from 'react';
+import ButtonViewUrl from './ButtonViewUrl';
 
-interface InputProps {
+type Props = {
   label: string;
-  id: string;
-  value: string;
-  errorLabel?: string;
-  readOnly?: boolean;
-  isLoading?: boolean;
-  onChange: (e: FileWithPath | string) => void;
-  required?: boolean;
-  placeholder?: string;
-  isDisablePdf?: boolean;
-  isDisableImage?: boolean;
-}
+  description: string;
+  placeholder: string;
+  value: File | string;
+  error: string;
+  onChange: (e: File | string) => void;
+  accept: Accept[];
+};
 
-const InputFile: React.FC<InputProps> = ({
+type Accept = 'application/pdf' | 'image/png' | 'image/jpeg';
+
+export default function InputFile({
   label,
-  id,
-  value,
-  errorLabel,
-  isLoading,
-  onChange,
-  required,
+  description,
   placeholder,
-  isDisablePdf,
-  isDisableImage,
-}) => {
-  const openRef = React.useRef<() => void>(null);
-  const [error, setError] = React.useState('');
-  const [blob, setBlob] = React.useState<string>(value);
-  const [fileName, setFileName] = React.useState<string>(value);
+  value,
+  error,
+  onChange,
+  accept,
+}: Props) {
+  const [inputValue, setinputValue] = useState<File | null>(null);
+  const [imgUrl, setImgUrl] = useState<string>('');
+  const [showType, setShowType] = useState<'image' | 'pdf' | null>(null);
 
-  const handleDrop = (e: FileWithPath[]) => {
-    const file = e[0];
-
-    if (file.size > 1000000) {
-      setError('File tidak boleh melebihi 1MB');
-      onChange('');
-      setFileName('');
-      setBlob('');
+  const valueValidate = async (value: string | File): Promise<File> => {
+    if (typeof value === 'string') {
+      setImgUrl(value);
+      const file = await convertUrlToFile(value);
+      checkFileType(file);
+      return file;
     } else {
-      setFileName(file.name);
-      if (file.type !== 'application/pdf') {
-        setBlob(URL.createObjectURL(file));
-      } else {
-        setBlob('');
-      }
-      onChange(file);
-      setError('');
+      checkFileType(value);
+      setImgUrl(URL.createObjectURL(value));
+      return value;
     }
   };
 
-  return (
-    <div className="flex flex-col my-2 relative">
-      <label htmlFor={id} className="text-[14px] font-medium">
-        {label} {required ? <span className="text-red-500">*</span> : null}
-      </label>
-      <p className="text-gray-400 text-[12px] mb-1">{placeholder}</p>
-      <div className="relative">
-        <Dropzone
-          p={15}
-          openRef={openRef}
-          accept={
-            isDisableImage
-              ? [MIME_TYPES.pdf]
-              : isDisablePdf
-              ? [MIME_TYPES.png, MIME_TYPES.jpeg]
-              : [MIME_TYPES.png, MIME_TYPES.jpeg, MIME_TYPES.pdf]
-          }
-          onDrop={handleDrop}
-          activateOnClick={false}
-          onErrorCapture={() => console.log('File tidak boleh melebihi 1MB')}
-          className={cn(
-            'border border-two border-dashed border-gray-300 rounded-sm min-h-[90px] hover:bg-transparent cursor-default',
-            !value
-              ? 'grid place-items-center'
-              : '[&>div]:flex [&>div]:flex-col [&>div]:gap-4'
-          )}>
-          {!value ? (
-            <Button
-              variant="filled"
-              size="xs"
-              onClick={() => openRef.current && openRef.current()}>
-              Pilih File
-            </Button>
-          ) : (
-            <div className="flex flex-col gap-3">
-              <p className="text-[14px] italic font-medium">{fileName}</p>
-              {blob && (
-                <img
-                  src={blob}
-                  alt="tes"
-                  width={100}
-                  height={100}
-                  className="w-max h-[150px] sm:h-[200px] object-cover rounded-md shadow-xl"
-                />
-              )}
-            </div>
-          )}
-          {value && (
-            <Button
-              variant="default"
-              className="ml-auto"
-              size="xs"
-              onClick={() => openRef.current && openRef.current()}>
-              Ganti File
-            </Button>
-          )}
-        </Dropzone>
-      </div>
+  const checkFileType = (value: File) => {
+    if (value.type === 'application/pdf') {
+      setShowType('pdf');
+    } else {
+      setShowType('image');
+    }
+  };
 
-      {errorLabel || error ? (
-        <p className="text-red-500 text-[12px]">{errorLabel || error}</p>
-      ) : null}
-      {isLoading ? (
-        <Loader color="gray" size="xs" className="absolute bottom-2 right-3" />
-      ) : null}
+  useEffect(() => {
+    if (!value) return;
+    valueValidate(value).then((file) => {
+      setinputValue(file);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
+  const handleOnChange = (e: File) => {
+    setinputValue(e);
+    onChange(e);
+  };
+
+  const isShowButtonView = !error && inputValue !== null && value !== '';
+
+  return (
+    <div className="flex items-end gap-2 w-full">
+      <FileInput
+        label={label}
+        description={description}
+        placeholder={placeholder}
+        required
+        value={inputValue}
+        error={error}
+        onChange={(e) => handleOnChange(e as File)}
+        clearable
+        accept={accept.join(',')}
+        className="w-full flex-1"
+      />
+      {isShowButtonView && (
+        <ButtonViewUrl
+          className="mb-[2px]"
+          url={imgUrl}
+          title={label}
+          type={showType}
+        />
+      )}
     </div>
   );
-};
-
-export default InputFile;
+}

@@ -16,41 +16,40 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { KelasAsync, fetchKelas } from '../../redux/slices/kelasSlice';
 import NotDataFound from '../../components/NotDataFound';
-import { useEffect } from 'react';
 import ModalKelas from '../../components/ModalKelas';
 import ModalConfirm from '../../components/ModalConfirm';
 import api from '../../api';
 import { Notify } from '../../components/Notify';
-import { ErrorResponse } from '../../interfaces/pages';
+import ButtonRefresh from '../../components/ButtonRefresh';
+import handleErrorResponse from '../../services/handleErrorResponse';
+import { useState } from 'react';
+import ButtonDelete from '../../components/ButtonDelete';
 
 export default function Kelas() {
   const dispatch = useDispatch();
+  const [loadingDelete, setLoadingDelete] = useState('');
   const { data, isLoading } = useSelector(
     (state: { kelas: KelasAsync }) => state.kelas
   );
 
-  useEffect(() => {
+  const handleDeleteKelas = async (id: string) => {
+    setLoadingDelete(id);
+    Notify('loading', 'Menghapus kelas...', 'delete-kelas');
+    try {
+      const { data } = await api.delete(`/kelas/${id}`);
+      refresh();
+      Notify('success', data.message, 'delete-kelas');
+    } catch (error) {
+      handleErrorResponse(error, 'delete-kelas');
+    } finally {
+      setLoadingDelete('');
+    }
+  };
+
+  const refresh = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     dispatch(fetchKelas());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleDeleteKelas = async (id: string) => {
-    Notify('loading', 'Menghapus kelas...' , 'delete-kelas');
-    try {
-      const { data } = await api.delete(`/kelas/${id}`);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      dispatch(fetchKelas());
-      Notify('success', data.message, 'delete-kelas');
-    } catch (error) {
-      Notify(
-        'error',
-        (error as ErrorResponse).response.data.message,
-        'delete-kelas'
-      );
-    }
   };
 
   const rows = data?.map((element) => (
@@ -83,9 +82,7 @@ export default function Kelas() {
           }
           btnTitle="Ya, Hapus"
           onAction={() => handleDeleteKelas(element.id)}>
-          <ActionIcon variant="light" color="red" size="lg">
-            <IconTrash size={18} />
-          </ActionIcon>
+          <ButtonDelete isLoading={loadingDelete === element.id} />
         </ModalConfirm>
         <ModalKelas type="edit" id={element.id}>
           <ActionIcon variant="light" size="lg">
@@ -115,6 +112,7 @@ export default function Kelas() {
           <ActionIcon variant="light" size="lg">
             <IconSearch size={18} />
           </ActionIcon>
+          <ButtonRefresh isLoading={isLoading} onClick={refresh} />
           <ModalKelas type="create">
             <ActionIcon variant="light" size="lg">
               <IconPlus size={18} />

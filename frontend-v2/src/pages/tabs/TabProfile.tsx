@@ -1,31 +1,8 @@
-import { useEffect } from 'react';
 import FormSiswa from '../../components/FormSiswa';
 import { FormType } from '../../interfaces/components';
 import Card from '../../components/Card';
 
 export default function TabProfile() {
-  const handleInputChange = async (url: string) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const convertedFile = new File([blob], 'filename.png', {
-        type: 'image/png',
-      });
-      return convertedFile;
-    } catch (error) {
-      console.error('Error converting URL to File:', error);
-      return false;
-    }
-  };
-
-  useEffect(() => {
-    handleInputChange(
-      'https://upload.wikimedia.org/wikipedia/id/thumb/e/e0/Iron_Man_bleeding_edge.jpg/250px-Iron_Man_bleeding_edge.jpg'
-    ).then((file) => {
-      console.log(file);
-    });
-  }, []);
-
   const handleSubmit = async (e: FormType) => {
     try {
       console.log(e);
@@ -53,9 +30,9 @@ export default function TabProfile() {
           pekerjaan: '',
           no_telepon: '',
           alamat: '',
-          akta: null,
-          kartu_keluarga: null,
-          foto: null,
+          akta: '',
+          kartu_keluarga: '',
+          foto: '',
           jenjang: '',
           tahun_ajaran: '',
         }}

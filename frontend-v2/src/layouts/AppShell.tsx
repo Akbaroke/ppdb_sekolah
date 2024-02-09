@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import {
   AppShell as MantineAppShell,
   Burger,
@@ -18,7 +18,7 @@ import {
   IconArrowsLeftRight,
 } from '@tabler/icons-react';
 import classes from '../styles/AppShell.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { DataUser } from '../interfaces/store';
 import { ADMIN_PROFILE, LOGO, USER_PROFILE } from '../assets';
@@ -26,6 +26,8 @@ import { logout } from '../redux/slices/authSlice';
 import { IconListCheck } from '@tabler/icons-react';
 import ModalConfirm from '../components/ModalConfirm';
 import { Notify } from '../components/Notify';
+import { fetchTahunAjaran } from '../redux/slices/tahunAjaranSlice';
+import { fetchKelas } from '../redux/slices/kelasSlice';
 
 const dataUser = [
   { link: '/user/siswa-terdaftar', label: 'Siswa Terdaftar', icon: IconUsers },
@@ -50,6 +52,17 @@ const dataAdmin = [
   { link: '/admin/ganti-katasandi', label: 'Ganti Kata Sandi', icon: IconKey },
 ];
 
+const warnFeatureOnDevelop = [
+  '/admin/siswa',
+  '/admin/siswa',
+  '/admin/pendaftar',
+  '/admin/pembayaran',
+  '/admin/ganti-katasandi',
+  '/user/ganti-katasandi',
+  '/user/daftar-siswa-baru',
+  '/user/siswa-terdaftar',
+];
+
 export function AppShell() {
   const dispatch = useDispatch();
   const [opened, { toggle }] = useDisclosure();
@@ -60,6 +73,27 @@ export function AppShell() {
   const [active, setActive] = useState(
     isAdmin ? '/admin/tahun-ajaran' : '/user/siswa-terdaftar'
   );
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    dispatch(fetchTahunAjaran());
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    dispatch(fetchKelas());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const path = useLocation().pathname;
+  useEffect(() => {
+    if (warnFeatureOnDevelop.includes(path)) {
+      Notify(
+        'warning',
+        'Mohon maaf fitur ini masih dalam tahap pengembangan',
+        path
+      );
+    }
+  }, [path]);
 
   const links = isAdmin
     ? dataAdmin.map((item) => (

@@ -48,7 +48,11 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
       biaya_daftar: 0,
       besar_spp: 0,
     },
-    validate: {},
+    validate: {
+      tahun_ajaran: (value: string) => (value ? null : 'Wajib diisi'),
+      biaya_daftar: (value: number) => (value > 0 ? null : 'Wajib diisi'),
+      besar_spp: (value: number) => (value > 0 ? null : 'Wajib diisi'),
+    },
   });
 
   useEffect(() => {
@@ -162,6 +166,7 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
             rightSection={<IconDeviceFloppy size={16} />}
             type="submit"
             loading={isLoading}
+            disabled={!form.isValid()}
             styles={{
               root: {
                 margin: '14px 30px',

@@ -42,7 +42,10 @@ export default function ModalKelas({ children, type, id }: Props) {
       jenjang: '',
       tahun_ajaran: '',
     },
-    validate: {},
+    validate: {
+      jenjang: (value: string) => (value ? null : 'Wajib diisi'),
+      tahun_ajaran: (value: string) => (value ? null : 'Wajib diisi'),
+    },
   });
 
   useEffect(() => {
@@ -133,6 +136,7 @@ export default function ModalKelas({ children, type, id }: Props) {
             rightSection={<IconDeviceFloppy size={16} />}
             type="submit"
             loading={isLoading}
+            disabled={!form.isValid()}
             styles={{
               root: {
                 margin: '14px 30px',

@@ -13,9 +13,9 @@ interface FormType {
   pekerjaan: string;
   no_telepon: string;
   alamat: string;
-  akta: File | null;
-  kartu_keluarga: File | null;
-  foto: File | null;
+  akta: File | string;
+  kartu_keluarga: File | string;
+  foto: File | string;
   jenjang: string;
   tahun_ajaran: string;
 }
