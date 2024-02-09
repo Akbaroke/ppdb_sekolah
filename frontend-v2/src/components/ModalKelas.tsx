@@ -7,7 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { KelasAsync, fetchKelas } from '../redux/slices/kelasSlice';
 import { TahunAjaranAsync } from '../redux/slices/tahunAjaranSlice';
 import { Kelas } from '../interfaces/store';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { jenjangConfig } from '../data/config';
+import { Notify } from './Notify';
+import handleErrorResponse from '../services/handleErrorResponse';
 
 type Props = {
   children: React.ReactNode;
@@ -23,6 +26,7 @@ type FormType = {
 
 export default function ModalKelas({ children, type, id }: Props) {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const tahunData = useSelector(
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
@@ -50,6 +54,7 @@ export default function ModalKelas({ children, type, id }: Props) {
   }, [dataEdit]);
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const { id, jenjang, tahun_ajaran } = form.values;
       if (type === 'edit') {
@@ -57,21 +62,25 @@ export default function ModalKelas({ children, type, id }: Props) {
           jenjang: jenjang.toLowerCase(),
           tahun_ajaran,
         });
-        console.log(data);
+        Notify('success', data.message);
       } else {
         const { data } = await api.post('/kelas', {
           jenjang: jenjang.toLowerCase(),
           tahun_ajaran,
         });
-        console.log(data);
+        Notify('success', data.message);
       }
       form.reset();
       close();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      dispatch(fetchKelas());
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        dispatch(fetchKelas());
+      }, 350);
     } catch (error) {
-      console.log(error);
+      handleErrorResponse(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -104,23 +113,11 @@ export default function ModalKelas({ children, type, id }: Props) {
             required
             label="Jenjang"
             placeholder="Jenjang"
-            data={[
-              {
-                value: 'pg',
-                label: 'PG',
-              },
-              {
-                value: 'tka',
-                label: 'TKA',
-              },
-              {
-                value: 'tkb',
-                label: 'TKB',
-              },
-            ]}
+            data={jenjangConfig}
             value={form.values.jenjang}
             error={form.errors.jenjang as string}
             onChange={(e) => form.setFieldValue('jenjang', e as string)}
+            readOnly={isLoading}
           />
           <Select
             required
@@ -130,11 +127,12 @@ export default function ModalKelas({ children, type, id }: Props) {
             value={form.values.tahun_ajaran}
             error={form.errors.tahun_ajaran as string}
             onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
+            readOnly={isLoading}
           />
-
           <Button
             rightSection={<IconDeviceFloppy size={16} />}
             type="submit"
+            loading={isLoading}
             styles={{
               root: {
                 margin: '14px 30px',

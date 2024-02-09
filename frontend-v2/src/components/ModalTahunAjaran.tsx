@@ -2,7 +2,7 @@ import {
   Button,
   Modal as MantineModal,
   NumberInput,
-  Select,
+  TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
@@ -14,7 +14,9 @@ import {
   TahunAjaranAsync,
   fetchTahunAjaran,
 } from '../redux/slices/tahunAjaranSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Notify } from './Notify';
+import handleErrorResponse from '../services/handleErrorResponse';
 
 type Props = {
   children: React.ReactNode;
@@ -24,6 +26,7 @@ type Props = {
 
 export default function ModalTahunAjaran({ children, type, id }: Props) {
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
   const tahunData = useSelector(
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
@@ -32,12 +35,16 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
     (item: TahunAjaran) => item.tahun_ajaran_id === id
   );
 
+  const tahunAjaranNow = `${new Date().getFullYear().toString()}/${(
+    new Date().getFullYear() + 1
+  ).toString()}`;
+
   const form = useForm<TahunAjaran>({
     validateInputOnChange: true,
     validateInputOnBlur: true,
     initialValues: {
       tahun_ajaran_id: id || '',
-      tahun_ajaran: '',
+      tahun_ajaran: tahunAjaranNow || '',
       biaya_daftar: 0,
       besar_spp: 0,
     },
@@ -54,31 +61,35 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
   }, [dataEdit]);
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const { tahun_ajaran_id, tahun_ajaran, biaya_daftar, besar_spp } =
         form.values;
       if (type === 'edit') {
         const { data } = await api.patch(`/tahun_ajaran/${tahun_ajaran_id}`, {
-          tahun_ajaran,
           biaya_daftar,
           besar_spp,
         });
-        console.log(data);
+        Notify('success', data.message);
       } else {
         const { data } = await api.post('/tahun_ajaran', {
           tahun_ajaran,
           biaya_daftar,
           besar_spp,
         });
-        console.log(data);
+        Notify('success', data.message);
       }
       form.reset();
       close();
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      dispatch(fetchTahunAjaran());
+      setTimeout(() => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        dispatch(fetchTahunAjaran());
+      }, 350);
     } catch (error) {
-      console.log(error);
+      handleErrorResponse(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -107,15 +118,17 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
         <form
           className="flex flex-col gap-3"
           onSubmit={form.onSubmit(handleSubmit)}>
-          <Select
-            required
+          <TextInput
             label="Tahun Ajaran"
-            placeholder="Tahun Ajaran"
-            data={['2023/2024', '2022/2023']}
+            placeholder="Tahun ajaran"
+            required
+            disabled
             value={form.values.tahun_ajaran}
             error={form.errors.tahun_ajaran as string}
-            onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
-            disabled={type === 'edit'}
+            onChange={(e) =>
+              form.setFieldValue('tahun_ajaran', e.currentTarget.value)
+            }
+            readOnly={isLoading}
           />
           <NumberInput
             required
@@ -130,6 +143,7 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
             }
             error={form.errors.biaya_daftar as string}
             onChange={(e) => form.setFieldValue('biaya_daftar', e as number)}
+            readOnly={isLoading}
           />
           <NumberInput
             required
@@ -142,10 +156,12 @@ export default function ModalTahunAjaran({ children, type, id }: Props) {
             value={form.values.besar_spp === 0 ? '' : form.values.besar_spp}
             error={form.errors.besar_spp as string}
             onChange={(e) => form.setFieldValue('besar_spp', e as number)}
+            readOnly={isLoading}
           />
           <Button
             rightSection={<IconDeviceFloppy size={16} />}
             type="submit"
+            loading={isLoading}
             styles={{
               root: {
                 margin: '14px 30px',

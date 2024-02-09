@@ -24,6 +24,8 @@ import { DataUser } from '../interfaces/store';
 import { ADMIN_PROFILE, LOGO, USER_PROFILE } from '../assets';
 import { logout } from '../redux/slices/authSlice';
 import { IconListCheck } from '@tabler/icons-react';
+import ModalConfirm from '../components/ModalConfirm';
+import { Notify } from '../components/Notify';
 
 const dataUser = [
   { link: '/user/siswa-terdaftar', label: 'Siswa Terdaftar', icon: IconUsers },
@@ -68,6 +70,7 @@ export function AppShell() {
           key={item.label}
           onClick={() => {
             setActive(item.link);
+            toggle();
           }}>
           <item.icon className={classes.linkIcon} stroke={1.5} />
           <span>{item.label}</span>
@@ -81,6 +84,7 @@ export function AppShell() {
           key={item.label}
           onClick={() => {
             setActive(item.link);
+            toggle();
           }}>
           <item.icon className={classes.linkIcon} stroke={1.5} />
           <span>{item.label}</span>
@@ -125,14 +129,25 @@ export function AppShell() {
           {links}
         </MantineAppShell.Section>
         <MantineAppShell.Section className="border-t border-gray-100 pt-3">
-          <div className={classes.link} onClick={() => dispatch(logout())}>
-            <IconLogout className={classes.linkIcon} stroke={1.5} />
-            <span>Logout</span>
-          </div>
+          <ModalConfirm
+            title="Keluar Akun"
+            icon={<IconLogout />}
+            type="danger"
+            text="Apakah anda yakin ingin keluar ?"
+            btnTitle="Ya, Keluar"
+            onAction={() => {
+              Notify('success', 'Berhasil keluar');
+              dispatch(logout());
+            }}>
+            <div className={classes.link}>
+              <IconLogout className={classes.linkIcon} stroke={1.5} />
+              <span>Keluar</span>
+            </div>
+          </ModalConfirm>
         </MantineAppShell.Section>
       </MantineAppShell.Navbar>
       <MantineAppShell.Main className="bg-gray-50">
-        <Container size={1200} my={10}>
+        <Container size={1200} my={10} p={0}>
           <Outlet />
         </Container>
       </MantineAppShell.Main>

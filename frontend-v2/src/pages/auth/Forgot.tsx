@@ -10,6 +10,10 @@ import {
 import api from '../../api';
 import { isEmail, matchesField, useForm } from '@mantine/form';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import { Notify } from '../../components/Notify';
+import Layout from '../../layouts';
+import handleErrorResponse from '../../services/handleErrorResponse';
 
 type Form1Type = {
   email: string;
@@ -24,6 +28,7 @@ export default function Forgot() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
+  const [isLoading, setIsLoading] = useState(false);
 
   const form1 = useForm<Form1Type>({
     validateInputOnChange: true,
@@ -58,41 +63,41 @@ export default function Forgot() {
   });
 
   const handleSubmitEmail = async () => {
-    console.log(form1.values);
+    setIsLoading(true);
     try {
-      await api.get('/otp', {
+      const { data } = await api.get('/otp', {
         params: {
           email: form1.values.email,
           type_otp: 'forgot',
         },
       });
+      Notify('success', data.message);
       localStorage.setItem('email', form1.values.email);
       navigate(`/otp?email=${form1.values.email}&type=forgot`, {
         replace: true,
       });
     } catch (error) {
-      console.log(error);
+      handleErrorResponse(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSubmitResetPassword = async () => {
-    console.log(form2.values);
-    console.log({
-      token,
-      email: localStorage.getItem('email'),
-      new_password: form2.values.newPassword,
-    });
+    setIsLoading(true);
     try {
       const { data } = await api.patch('/reset_password', {
         token,
         email: localStorage.getItem('email'),
         new_password: form2.values.newPassword,
       });
-      console.log(data);
+      Notify('success', data.message);
       localStorage.removeItem('email');
       navigate('/login', { replace: true });
     } catch (error) {
-      console.log(error);
+      handleErrorResponse(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -121,8 +126,14 @@ export default function Forgot() {
         value={form1.values.email}
         error={form1.errors.email as string}
         onChange={(e) => form1.setFieldValue('email', e.currentTarget.value)}
+        readOnly={isLoading}
       />
-      <Button fullWidth mt="xl" type="submit" disabled={!form1.isValid()}>
+      <Button
+        fullWidth
+        mt="xl"
+        type="submit"
+        disabled={!form1.isValid()}
+        loading={isLoading}>
         Lanjutkan
       </Button>
       <div className="mt-6 flex flex-col gap-1">
@@ -195,8 +206,8 @@ export default function Forgot() {
   );
 
   return (
-    <Container size={420} my={40}>
-      {!token ? Page1() : Page2()}
-    </Container>
+    <Layout>
+      <Container size={420}>{!token ? Page1() : Page2()}</Container>
+    </Layout>
   );
 }

@@ -5,6 +5,7 @@ import {
   Anchor,
   Button,
   Container,
+  FocusTrap,
   Paper,
   PinInput,
   Text,
@@ -12,6 +13,10 @@ import {
 } from '@mantine/core';
 import useCountdown from '../../hooks/useCountdown';
 import api from '../../api';
+import { Notify } from '../../components/Notify';
+import { useDisclosure } from '@mantine/hooks';
+import Layout from '../../layouts';
+import handleErrorResponse from '../../services/handleErrorResponse';
 
 type FormType = {
   email: string;
@@ -23,10 +28,17 @@ export default function VerifyOtp() {
   const paramEmail = searchParams.get('email');
   const paramType = searchParams.get('type');
   const [otp, setOtp] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isErrorOtp, setIsErrorOtp] = useState(false);
   const { time, setTime } = useCountdown();
+  const [active, { toggle }] = useDisclosure(false);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => setTime(60), []);
+
+  useEffect(() => {
+    otp.length > 0 && setIsErrorOtp(false);
+  }, [otp]);
 
   const form = useForm<FormType>({
     validateInputOnChange: true,
@@ -40,50 +52,54 @@ export default function VerifyOtp() {
   });
 
   const handleSubmitEmail = () => {
-    console.log(form.values);
     setSearchParams({ email: form.values.email });
   };
 
   const handleSubmitOtp = async () => {
-    if (paramType === 'forgot') {
-      try {
+    try {
+      if (paramType === 'forgot') {
         const { data } = await api.post('/otp', {
           type_otp: 'forgot',
           email: form.values.email,
           otp,
         });
-        console.log(data);
+        Notify('success', data.message);
         navigate(`/forgot?token=${data.token}`, { replace: true });
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      try {
+      } else {
         const { data } = await api.post('/otp', {
           type_otp: 'register',
           email: form.values.email,
           otp,
         });
-        console.log(data);
+        Notify('success', data.message);
         navigate('/login', { replace: true });
-      } catch (error) {
-        console.log(error);
       }
+    } catch (error) {
+      handleErrorResponse(error);
+      setIsErrorOtp(true);
+      setOtp('');
+      toggle();
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleResendOtp = async () => {
+    setIsLoading(true);
     try {
       setTime(60);
-      await api.get('/otp', {
+      const { data } = await api.get('/otp', {
         params: {
           email: paramEmail,
           type_otp: paramType ? 'forgot' : 'register',
         },
       });
+      Notify('success', data.message);
       setOtp('');
     } catch (error) {
-      console.log(error);
+      handleErrorResponse(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -112,6 +128,7 @@ export default function VerifyOtp() {
         value={form.values.email}
         error={form.errors.email as string}
         onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
+        readOnly={isLoading}
       />
       <Button fullWidth mt="xl" type="submit" disabled={!form.isValid()}>
         Lanjutkan
@@ -140,23 +157,26 @@ export default function VerifyOtp() {
           diberikan!
         </p>
       </div>
-      <PinInput
-        type="number"
-        placeholder="•"
-        length={5}
-        value={otp}
-        error={false}
-        disabled={false}
-        onChange={(e) => setOtp(e)}
-        oneTimeCode
-        autoFocus
-        className="w-max m-auto"
-      />
+      <FocusTrap active={active}>
+        <PinInput
+          type="number"
+          placeholder="•"
+          length={5}
+          value={otp}
+          error={isErrorOtp}
+          readOnly={isLoading}
+          onChange={(e) => setOtp(e)}
+          oneTimeCode
+          autoFocus
+          className="w-max m-auto"
+        />
+      </FocusTrap>
       <Button
         fullWidth
         mt="xl"
         onClick={handleSubmitOtp}
-        disabled={otp.length < 5}>
+        disabled={otp.length < 5}
+        loading={isLoading}>
         Verifikasi
       </Button>
       <div className="mt-6 flex flex-col gap-1">
@@ -175,8 +195,10 @@ export default function VerifyOtp() {
   );
 
   return (
-    <Container size={420} my={40}>
-      {!paramEmail ? Page1() : Page2()}
-    </Container>
+    <Layout>
+      <Container size={420} my={40}>
+        {!paramEmail ? Page1() : Page2()}
+      </Container>
+    </Layout>
   );
 }

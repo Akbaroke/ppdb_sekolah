@@ -39,7 +39,6 @@ export const fetchTahunAjaran = createAsyncThunk(
   'review/fetchTahunAjaran',
   async () => {
     const { data } = await api.get('/tahun_ajaran');
-    console.log(data);
     return data.data;
   }
 );
