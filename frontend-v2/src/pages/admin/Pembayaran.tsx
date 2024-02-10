@@ -1,6 +1,6 @@
-import { ActionIcon, Badge, Grid } from '@mantine/core';
+import { Badge, Grid } from '@mantine/core';
 import Card from '../../components/Card';
-import { IconSearch } from '@tabler/icons-react';
+import InputSearch from '../../components/InputSearch';
 
 const pembayaran = [
   {
@@ -35,9 +35,7 @@ export default function Pembayaran() {
       <Card className="flex justify-between items-center">
         <h1 className="font-bold text-lg">Pembayaran</h1>
         <div className="flex items-center gap-2">
-          <ActionIcon variant="light" size="lg">
-            <IconSearch size={18} />
-          </ActionIcon>
+          <InputSearch />
         </div>
       </Card>
       <Grid gutter="xs">

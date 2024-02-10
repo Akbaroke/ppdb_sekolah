@@ -6,7 +6,7 @@ import {
   Table,
 } from '@mantine/core';
 import Card from '../../components/Card';
-import { IconPencil, IconPlus, IconSearch } from '@tabler/icons-react';
+import { IconPencil, IconPlus } from '@tabler/icons-react';
 import ModalTahunAjaran from '../../components/ModalTahunAjaran';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,6 +15,7 @@ import {
 } from '../../redux/slices/tahunAjaranSlice';
 import NotDataFound from '../../components/NotDataFound';
 import ButtonRefresh from '../../components/ButtonRefresh';
+import InputSearch from '../../components/InputSearch';
 
 type TahunAjaran = {
   id: string;
@@ -78,9 +79,7 @@ export default function TahunAjaran() {
       <Card className="flex justify-between items-center">
         <h1 className="font-bold text-lg">Tahun Ajaran</h1>
         <div className="flex items-center gap-2">
-          <ActionIcon variant="light" size="lg">
-            <IconSearch size={18} />
-          </ActionIcon>
+          <InputSearch />
           <ButtonRefresh isLoading={isLoading} onClick={refresh} />
           <ModalTahunAjaran type="create">
             <ActionIcon variant="light" size="lg">

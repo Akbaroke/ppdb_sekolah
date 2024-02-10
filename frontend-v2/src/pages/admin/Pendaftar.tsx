@@ -1,9 +1,9 @@
-import { IconSearch } from '@tabler/icons-react';
 import Card from '../../components/Card';
-import { ActionIcon, Badge, Grid } from '@mantine/core';
+import { Badge, Grid } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { listPendaftarDummy } from '../../data/dummy';
 import ButtonRefresh from '../../components/ButtonRefresh';
+import InputSearch from '../../components/InputSearch';
 
 export default function Pendaftar() {
   const navigate = useNavigate();
@@ -13,9 +13,7 @@ export default function Pendaftar() {
       <Card className="flex justify-between items-center">
         <h1 className="font-bold text-lg">Pendaftar</h1>
         <div className="flex items-center gap-2">
-          <ActionIcon variant="light" size="lg">
-            <IconSearch size={18} />
-          </ActionIcon>
+          <InputSearch />
           <ButtonRefresh isLoading={false} onClick={() => null} />
         </div>
       </Card>

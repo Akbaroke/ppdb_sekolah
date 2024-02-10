@@ -7,12 +7,7 @@ import {
   Table,
 } from '@mantine/core';
 import Card from '../../components/Card';
-import {
-  IconPencil,
-  IconPlus,
-  IconSearch,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KelasAsync, fetchKelas } from '../../redux/slices/kelasSlice';
 import NotDataFound from '../../components/NotDataFound';
@@ -24,6 +19,7 @@ import ButtonRefresh from '../../components/ButtonRefresh';
 import handleErrorResponse from '../../services/handleErrorResponse';
 import { useState } from 'react';
 import ButtonDelete from '../../components/ButtonDelete';
+import InputSearch from '../../components/InputSearch';
 
 export default function Kelas() {
   const dispatch = useDispatch();
@@ -109,9 +105,7 @@ export default function Kelas() {
       <Card className="flex justify-between items-center">
         <h1 className="font-bold text-lg">Kelas</h1>
         <div className="flex items-center gap-2">
-          <ActionIcon variant="light" size="lg">
-            <IconSearch size={18} />
-          </ActionIcon>
+          <InputSearch />
           <ButtonRefresh isLoading={isLoading} onClick={refresh} />
           <ModalKelas type="create">
             <ActionIcon variant="light" size="lg">

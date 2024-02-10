@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import TabSiswa from './TabSiswa';
 import Card from '../../../components/Card';
-import { ActionIcon, Button } from '@mantine/core';
+import { Button } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
 import TabLulus from './TabLulus';
 import TabKeluar from './TabKeluar';
-import { IconSearch } from '@tabler/icons-react';
 import ButtonRefresh from '../../../components/ButtonRefresh';
+import InputSearch from '../../../components/InputSearch';
 
 const tabs = [
   {
@@ -47,9 +47,7 @@ export default function Siswa() {
           <div className="flex justify-between items-center">
             <h1 className="font-bold text-lg">Siswa</h1>
             <div className="flex items-center gap-2">
-              <ActionIcon variant="light" size="lg">
-                <IconSearch size={18} />
-              </ActionIcon>
+              <InputSearch />
               <ButtonRefresh isLoading={false} onClick={() => null} />
             </div>
           </div>
