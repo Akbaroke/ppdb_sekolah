@@ -2,6 +2,7 @@ import FormSiswa from '../../components/FormSiswa';
 import { FormType } from '../../interfaces/components';
 import Card from '../../components/Card';
 
+
 export default function TabProfile() {
   const handleSubmit = async (e: FormType) => {
     try {
@@ -14,6 +15,7 @@ export default function TabProfile() {
   return (
     <Card>
       <FormSiswa
+        type="edit"
         handleSubmit={handleSubmit}
         initialValue={{
           nama_lengkap: 'Muhammad Akbar',

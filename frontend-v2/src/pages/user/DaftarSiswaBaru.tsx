@@ -41,7 +41,7 @@ export default function DaftarSiswaBaru() {
 
   return (
     <Card header={<h1 className="font-bold">Formulir Pendaftaran</h1>}>
-      <FormSiswa handleSubmit={handleSubmit} />
+      <FormSiswa handleSubmit={handleSubmit} type="create" />
     </Card>
   );
 }

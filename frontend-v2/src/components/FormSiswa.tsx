@@ -1,10 +1,6 @@
 import { useForm } from '@mantine/form';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  TahunAjaranAsync,
-  fetchTahunAjaran,
-} from '../redux/slices/tahunAjaranSlice';
+import { useSelector } from 'react-redux';
+import { TahunAjaranAsync } from '../redux/slices/tahunAjaranSlice';
 import {
   Button,
   Input,
@@ -14,7 +10,11 @@ import {
   Textarea,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { IconDeviceFloppy } from '@tabler/icons-react';
+import {
+  IconDeviceFloppy,
+  IconSchool,
+  IconTransferOut,
+} from '@tabler/icons-react';
 import calculateAge from '../utils/calculateAge';
 import { IMaskInput } from 'react-imask';
 import {
@@ -25,8 +25,10 @@ import {
 } from '../data/config';
 import { FormType } from '../interfaces/components';
 import InputFile from './InputFile';
+import { DataUser } from '../interfaces/store';
 
 type Props = {
+  type: 'create' | 'edit';
   handleSubmit: (e: FormType) => void;
   initialValue?: FormType;
 };
@@ -54,20 +56,16 @@ const defaultValue: FormType = {
 };
 
 export default function FormSiswa({
+  type,
   handleSubmit,
   initialValue = defaultValue,
 }: Props) {
-  const dispatch = useDispatch();
   const tahunData = useSelector(
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
   );
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    dispatch(fetchTahunAjaran());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { role } = useSelector((state: { auth: DataUser }) => state.auth);
+  const isAdmin = role === 'admin';
+  const isUserEditble = type === 'edit' && !isAdmin;
 
   const isMinimumLength = (value: string) => value.length >= 3;
   const isAlphabeticWithSpaces = (value: string) =>
@@ -158,6 +156,7 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('nama_lengkap', e.currentTarget.value)
               }
+              disabled={isUserEditble}
             />
             <DateInput
               label="Tanggal Lahir"
@@ -169,6 +168,7 @@ export default function FormSiswa({
                 form.setFieldValue('tanggal_lahir', e);
                 form.setFieldValue('umur', calculateAge(e as Date).toString());
               }}
+              disabled={isUserEditble}
             />
             <Select
               required
@@ -178,6 +178,7 @@ export default function FormSiswa({
               value={form.values.jenis_kelamin}
               error={form.errors.jenis_kelamin as string}
               onChange={(e) => form.setFieldValue('jenis_kelamin', e as string)}
+              disabled={isUserEditble}
             />
             <NumberInput
               required
@@ -206,6 +207,7 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('tempat_lahir', e.currentTarget.value)
               }
+              disabled={isUserEditble}
             />
             <TextInput
               label="Umur"
@@ -258,6 +260,7 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('nama_bapak', e.currentTarget.value)
               }
+              disabled={isUserEditble}
             />
             <TextInput
               label="Nama Ibu"
@@ -268,6 +271,7 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('nama_ibu', e.currentTarget.value)
               }
+              disabled={isUserEditble}
             />
             <Select
               required
@@ -371,6 +375,7 @@ export default function FormSiswa({
               value={form.values.jenjang}
               error={form.errors.jenjang as string}
               onChange={(e) => form.setFieldValue('jenjang', e as string)}
+              disabled={isUserEditble}
             />
           </div>
           <div className="w-full flex flex-col">
@@ -382,21 +387,40 @@ export default function FormSiswa({
               value={form.values.tahun_ajaran}
               error={form.errors.tahun_ajaran as string}
               onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
+              disabled={isUserEditble}
             />
           </div>
         </div>
       </div>
-      <Button
-        rightSection={<IconDeviceFloppy size={16} />}
-        type="submit"
-        disabled={!form.isValid()}
-        styles={{
-          root: {
-            margin: '14px 30px',
-          },
-        }}>
-        Simpan
-      </Button>
+      <div className="flex justify-center w-full gap-5 p-5">
+        {isAdmin && type === 'edit' && (
+          <Button
+            variant="outline"
+            color="red"
+            className="w-full flex-1"
+            rightSection={<IconTransferOut size={16} />}>
+            Keluarkan
+          </Button>
+        )}
+
+        <Button
+          className="w-full flex-1"
+          rightSection={<IconDeviceFloppy size={16} />}
+          type="submit"
+          disabled={!form.isValid()}>
+          Simpan
+        </Button>
+
+        {isAdmin && type === 'edit' && (
+          <Button
+            variant="outline"
+            color="indigo"
+            className="w-full flex-1"
+            rightSection={<IconSchool size={16} />}>
+            Luluskan
+          </Button>
+        )}
+      </div>
     </form>
   );
 }

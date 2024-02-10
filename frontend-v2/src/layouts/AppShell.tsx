@@ -13,9 +13,9 @@ import {
   IconLogout,
   IconUserPlus,
   IconCalendarEvent,
-  IconSchool,
   IconFriends,
   IconArrowsLeftRight,
+  IconTheater,
 } from '@tabler/icons-react';
 import classes from '../styles/AppShell.module.css';
 import { useEffect, useState } from 'react';
@@ -45,7 +45,7 @@ const dataAdmin = [
     label: 'Tahun Ajaran',
     icon: IconCalendarEvent,
   },
-  { link: '/admin/kelas', label: 'Kelas', icon: IconSchool },
+  { link: '/admin/kelas', label: 'Kelas', icon: IconTheater },
   { link: '/admin/siswa', label: 'Siswa', icon: IconFriends },
   { link: '/admin/pendaftar', label: 'Pendaftar', icon: IconListCheck },
   { link: '/admin/pembayaran', label: 'Pembayaran', icon: IconArrowsLeftRight },

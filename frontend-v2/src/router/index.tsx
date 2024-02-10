@@ -12,10 +12,11 @@ import GantiKataSandi from '../pages/GantiKataSandi';
 import TahunAjaran from '../pages/admin/TahunAjaran';
 import Kelas from '../pages/admin/Kelas';
 import DetailSiswa from '../pages/DetailSiswa';
-import Siswa from '../pages/admin/Siswa';
 import Pendaftar from '../pages/admin/Pendaftar';
 import DetailPendaftar from '../pages/DetailPendaftar';
 import Pembayaran from '../pages/admin/Pembayaran';
+import Siswa from '../pages/admin/siswa/Siswa';
+
 export type DataRouteType = {
   path: string;
   element: React.ReactElement;
