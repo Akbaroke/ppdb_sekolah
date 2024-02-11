@@ -15,16 +15,24 @@ export class TahunAjaranService implements ITahunAjaranService {
   ) {}
 
   private createTransactionTahunAjaran(data: ICreateTahunAjaran): TahunAjaran {
-    return this.entityManager.create(TahunAjaran, {
-      ...data,
-    });
+    try {
+      return this.entityManager.create(TahunAjaran, {
+        ...data,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async saveTransactionTahunAjaran(
     tahunAjaran: TahunAjaran,
     entityManager: EntityManager = this.entityManager,
   ): Promise<TahunAjaran> {
-    return await entityManager.save(tahunAjaran);
+    try {
+      return await entityManager.save(tahunAjaran);
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async findTahunAjaranById(id: string): Promise<TahunAjaran> {
@@ -154,13 +162,21 @@ export class TahunAjaranService implements ITahunAjaranService {
   }
 
   async getTahunAjaranById(id: string): Promise<TahunAjaran> {
-    return await this.findTahunAjaranById(id);
+    try {
+      return await this.findTahunAjaranById(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findTahunAjaran(tahun_ajaran: string) {
-    const data = await this.tahunAjaranRepository.findByTahunAjaran(
-      tahun_ajaran,
-    );
-    return data;
+    try {
+      const data = await this.tahunAjaranRepository.findByTahunAjaran(
+        tahun_ajaran,
+      );
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 }

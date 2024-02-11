@@ -1,11 +1,15 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
+  Patch,
   Post,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { PendaftaranSiswaDto } from './dtos/pendaftaran-siswa.dto';
+import { CreatePendaftaranSiswaDto } from './dtos/create-pendaftaran-siswa.dto';
+import { UpdatePendaftaranSiswaDto } from './dtos/update-pendaftaran-siswa.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { DaftarSiswaService } from './daftar-siswa.service';
 import { ParseFilesPipe } from 'src/infrastucture/common/pipe/parseFiles.pipe';
@@ -17,7 +21,7 @@ import { ROLE_USER } from 'src/domain/user/user.interface';
 export class DaftarSiswaController {
   constructor(private readonly daftarSiswaService: DaftarSiswaService) {}
 
-  @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)
+  @Roles(ROLE_USER.USER, ROLE_USER.ADMIN)
   @Post()
   @UseInterceptors(
     FileFieldsInterceptor([
@@ -28,7 +32,7 @@ export class DaftarSiswaController {
   )
   async daftar_siswa(
     @GetUser() { id }: { id: string },
-    @Body() body: PendaftaranSiswaDto,
+    @Body() body: CreatePendaftaranSiswaDto,
     @UploadedFiles(ParseFilesPipe)
     berkas: {
       akta: Express.Multer.File;
@@ -36,6 +40,46 @@ export class DaftarSiswaController {
       foto: Express.Multer.File;
     },
   ) {
-    return await this.daftarSiswaService.pendaftaranSiswa(id, body, berkas);
+    return await this.daftarSiswaService.daftarSiswa(id, body, berkas);
+  }
+
+  @Roles(ROLE_USER.USER, ROLE_USER.ADMIN)
+  @Get()
+  async get_all_daftar_siswa(@GetUser() { id }: { id: string }) {
+    return await this.daftarSiswaService.getAllDaftarSiswa(id);
+  }
+
+  @Roles(ROLE_USER.USER, ROLE_USER.ADMIN)
+  @Get(':id')
+  async get_daftar_siswa(@Param('id') siswa_id: string) {
+    return await this.daftarSiswaService.getDataSiswa(siswa_id);
+  }
+
+  @Roles(ROLE_USER.USER, ROLE_USER.ADMIN)
+  @Patch(':id')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'akta', maxCount: 1 },
+      { name: 'kartu_keluarga', maxCount: 1 },
+      { name: 'foto', maxCount: 1 },
+    ]),
+  )
+  async update_daftar_siswa(
+    @GetUser() { id }: { id: string },
+    @Param('id') siswa_id: string,
+    @Body() body: UpdatePendaftaranSiswaDto,
+    @UploadedFiles(ParseFilesPipe)
+    berkas: {
+      akta?: Express.Multer.File;
+      kartu_keluarga?: Express.Multer.File;
+      foto?: Express.Multer.File;
+    },
+  ) {
+    return await this.daftarSiswaService.updateDaftarSiswa(
+      siswa_id,
+      id,
+      body,
+      berkas,
+    );
   }
 }

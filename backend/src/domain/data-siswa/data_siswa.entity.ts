@@ -1,6 +1,8 @@
 import {
+  Column,
   CreateDateColumn,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   OneToOne,
@@ -10,13 +12,10 @@ import {
 import { Siswa } from '../siswa/siswa.entity';
 import { WaliSiswa } from '../wali-siswa/wali-siswa.entity';
 import { File } from '../file/file.entity';
-
-export enum STATUS_SISWA {
-  DAFTAR = 'daftar',
-  SISWA = 'siswa',
-  KELUAR = 'keluar',
-  LULUS = 'lulus',
-}
+import { JENJANG } from '../kelas/kelas.interface';
+import { TahunAjaran } from '../tahun-ajaran/tahun-ajaran.entity';
+import { STATUS_SISWA } from './data_siswa.interface';
+import { Kelas } from '../kelas/kelas.entity';
 
 @Entity()
 @Unique('u_siswa_and_wali_siswa', ['siswa', 'wali_siswa'])
@@ -24,7 +23,7 @@ export class DataSiswa {
   @PrimaryGeneratedColumn('uuid')
   data_siswa_id: string;
 
-  @ManyToOne(() => WaliSiswa, (wali_siswa) => wali_siswa.data_siswa)
+  @OneToOne(() => WaliSiswa)
   @JoinColumn({ name: 'wali_siswa' })
   wali_siswa: WaliSiswa;
 
@@ -44,10 +43,44 @@ export class DataSiswa {
   @JoinColumn({ name: 'foto' })
   foto: File;
 
+  @OneToOne(() => File, { nullable: true })
+  @JoinColumn({ name: 'ijazah' })
+  ijazah?: File;
+
+  @Column({ name: 'jenjang', type: 'enum', enum: JENJANG, nullable: false })
+  jenjang: JENJANG;
+
+  @Column({
+    name: 'status',
+    type: 'enum',
+    enum: STATUS_SISWA,
+    default: STATUS_SISWA.PENDAFTAR,
+  })
+  status: STATUS_SISWA;
+
+  @Column({ name: 'nis', nullable: true, unique: true })
+  nis?: string;
+
+  @Column({ name: 'no_pendaftaran', unique: true, nullable: false })
+  @Index('i_no_pendaftaran')
+  no_pendaftaran: string;
+
+  @ManyToOne(() => TahunAjaran, { eager: true })
+  @JoinColumn({ name: 'tahun_ajaran' })
+  tahun_ajaran: TahunAjaran;
+
+  @ManyToOne(() => Kelas, { eager: true, nullable: true })
+  @JoinColumn({ name: 'kelas' })
+  kelas?: Kelas;
+
+  @Column({ name: 'keterangan', type: 'text', nullable: true })
+  keterangan?: string;
+
   @CreateDateColumn({
     type: 'bigint',
     nullable: false,
     default: Date.now(),
+    unsigned: true,
   })
   created_at: number;
 
@@ -55,6 +88,7 @@ export class DataSiswa {
     type: 'bigint',
     nullable: false,
     default: Date.now(),
+    unsigned: true,
   })
   updated_at: number;
 }

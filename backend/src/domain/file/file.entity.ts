@@ -1,18 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class File {
-  @PrimaryGeneratedColumn('uuid')
-  file_id: string;
-
-  @Column({
-    name: 'id',
+  @PrimaryColumn({
+    name: 'file_id',
     type: 'varchar',
-    unique: true,
     nullable: false,
   })
-  id: string;
+  file_id: string;
 
-  @Column({ name: 'url', type: 'varchar', nullable: false })
+  @Column({ name: 'url', type: 'varchar', nullable: false, length: 500 })
   url: string;
 }

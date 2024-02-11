@@ -1,3 +1,5 @@
+import { User } from '../user/user.entity';
+
 export interface ICreateWaliSiswa {
   alamat: string;
   nama_bapak: string;
@@ -5,4 +7,8 @@ export interface ICreateWaliSiswa {
   nama_wali?: string | null;
   no_telepon: string;
   pekerjaan: string;
+}
+
+export interface IPayloadWaliSiswa extends ICreateWaliSiswa {
+  user: User;
 }

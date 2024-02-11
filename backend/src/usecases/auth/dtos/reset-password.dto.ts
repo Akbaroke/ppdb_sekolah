@@ -39,8 +39,4 @@ export class ResetPasswordDto {
     },
   )
   new_password: string;
-
-  constructor(partial: Partial<ResetPasswordDto>) {
-    Object.assign(this, partial);
-  }
 }

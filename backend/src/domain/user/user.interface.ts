@@ -15,12 +15,14 @@ export enum ROLE_USER {
 export interface IUserRepository {
   findOneByEmail(email: string): Promise<User>;
   existsByEmail(email: string): Promise<boolean>;
+  findOne(id: string): Promise<User>;
 }
 
 export interface IUserService extends Pick<IUserRepository, 'findOneByEmail'> {
   createTransactionUser(email: string, password: string): User;
   saveTransactionUser(user: User, entityManager: EntityManager): Promise<User>;
   existsByEmail(email: string): Promise<boolean>;
+  findOne(user_id: string): Promise<User>;
   verificationUser(
     user: User,
     entityManager: EntityManager,

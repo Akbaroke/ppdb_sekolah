@@ -6,12 +6,14 @@ import { DaftarSiswaService } from './daftar-siswa.service';
 import { UserModule } from 'src/domain/user/user.module';
 import { FileModule } from 'src/domain/file/file.module';
 import { DataSiswaModule } from 'src/domain/data-siswa/data_siswa.module';
+import { TahunAjaranModule } from 'src/domain/tahun-ajaran/tahun-ajaran.module';
 
 @Module({
   imports: [
     FileModule,
     UserModule,
     SiswaModule,
+    TahunAjaranModule,
     WaliSiswaModule,
     DataSiswaModule,
   ],

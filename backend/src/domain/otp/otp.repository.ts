@@ -15,22 +15,30 @@ export class OtpRepository implements IOtpRepository {
     type_otp: TYPE_OTP,
     otp?: string,
   ): Promise<boolean> {
-    const now = new Date().getTime();
-    const data = await this.otpRepository.exists({
-      where: {
-        email,
-        otp,
-        type_otp,
-        expires_at: MoreThanOrEqual(now),
-        used: false,
-      },
-    });
+    try {
+      const now = new Date().getTime();
+      const data = await this.otpRepository.exists({
+        where: {
+          email,
+          otp,
+          type_otp,
+          expires_at: MoreThanOrEqual(now),
+          used: false,
+        },
+      });
 
-    return data;
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOtpByEmail(email: string): Promise<Otp> {
-    const data = await this.otpRepository.findOne({ where: { email } });
-    return data;
+    try {
+      const data = await this.otpRepository.findOne({ where: { email } });
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 }

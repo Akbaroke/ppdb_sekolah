@@ -31,8 +31,4 @@ export class VerificationUserDto {
   @IsString({ message: 'Type type_otp harus string' })
   @IsEnum(TYPE_OTP)
   type_otp: TYPE_OTP;
-
-  constructor(partial: Partial<VerificationUserDto>) {
-    Object.assign(this, partial);
-  }
 }

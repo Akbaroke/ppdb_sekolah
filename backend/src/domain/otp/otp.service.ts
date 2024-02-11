@@ -14,17 +14,25 @@ export class OtpService implements IOtpService {
   ) {}
 
   generateOtp(): string {
-    return this.otpGenerator.createOtp(5);
+    try {
+      return this.otpGenerator.createOtp(5);
+    } catch (error) {
+      throw error;
+    }
   }
 
   createTransactionOtp(email: string, otp: string, type_otp: TYPE_OTP): Otp {
-    const expires_at = new Date().getTime() + 180_000;
-    return this.entityManager.create(Otp, {
-      email,
-      otp,
-      type_otp,
-      expires_at,
-    });
+    try {
+      const expires_at = new Date().getTime() + 180_000;
+      return this.entityManager.create(Otp, {
+        email,
+        otp,
+        type_otp,
+        expires_at,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async checkOtp(
@@ -32,33 +40,53 @@ export class OtpService implements IOtpService {
     type_otp: TYPE_OTP,
     otp?: string,
   ): Promise<boolean> {
-    const valid = await this.otpRepository.exists(email, type_otp, otp);
-    return valid;
+    try {
+      const valid = await this.otpRepository.exists(email, type_otp, otp);
+      return valid;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOtpByEmail(email: string): Promise<Otp> {
-    return await this.otpRepository.findOtpByEmail(email);
+    try {
+      return await this.otpRepository.findOtpByEmail(email);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async saveTransactionOtp(
     otp: Otp,
     entityManager: EntityManager = this.entityManager,
   ): Promise<Otp> {
-    return await entityManager.save(otp);
+    try {
+      return await entityManager.save(otp);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async consumeOtp(
     email: string,
     entityManager: EntityManager = this.entityManager,
   ): Promise<UpdateResult> {
-    const now = new Date().getTime();
-    const payload = {
-      updated_at: now,
-      expires_at: now,
-      used: true,
-    };
-    const data = await this.updateTransactionOtp(email, payload, entityManager);
-    return data;
+    try {
+      const now = new Date().getTime();
+      const payload = {
+        updated_at: now,
+        expires_at: now,
+        used: true,
+      };
+      const data = await this.updateTransactionOtp(
+        email,
+        payload,
+        entityManager,
+      );
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateOtpOnRequest(
@@ -67,19 +95,27 @@ export class OtpService implements IOtpService {
     type_otp: TYPE_OTP,
     entityManager: EntityManager = this.entityManager,
   ): Promise<UpdateResult> {
-    const now = new Date().getTime();
-    const updated_at = now;
-    const expires_at = now + 180_000;
-    const payload = {
-      updated_at,
-      expires_at,
-      otp,
-      type_otp,
-      used: false,
-    };
+    try {
+      const now = new Date().getTime();
+      const updated_at = now;
+      const expires_at = now + 180_000;
+      const payload = {
+        updated_at,
+        expires_at,
+        otp,
+        type_otp,
+        used: false,
+      };
 
-    const data = await this.updateTransactionOtp(email, payload, entityManager);
-    return data;
+      const data = await this.updateTransactionOtp(
+        email,
+        payload,
+        entityManager,
+      );
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async updateTransactionOtp(
@@ -89,6 +125,10 @@ export class OtpService implements IOtpService {
     >,
     entityManager: EntityManager = this.entityManager,
   ): Promise<UpdateResult> {
-    return await entityManager.update(Otp, { email }, payload);
+    try {
+      return await entityManager.update(Otp, { email }, payload);
+    } catch (error) {
+      throw error;
+    }
   }
 }

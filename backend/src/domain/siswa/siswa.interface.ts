@@ -21,4 +21,10 @@ export interface ICreateSiswa {
   tempat_lahir: string;
   tinggi_badan: number;
   umur: number;
+  user_id?: string;
+}
+
+export interface IFindSiswa {
+  user_id: string;
+  nama?: string;
 }

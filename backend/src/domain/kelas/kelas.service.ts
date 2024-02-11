@@ -17,30 +17,45 @@ export class KelasService implements IKelasService {
   ) {}
 
   private createTransactionKelas(data: ICreateKelas): Kelas {
-    return this.entityManager.create(Kelas, {
-      ...data,
-    });
+    try {
+      return this.entityManager.create(Kelas, {
+        ...data,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async saveTransactionKelas(
     kelas: Kelas,
     entityManager: EntityManager = this.entityManager,
   ): Promise<Kelas> {
-    return await entityManager.save(kelas);
+    try {
+      return await entityManager.save(kelas);
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async updateTransactionKelas(
     kelas: Kelas,
     payload: Partial<
-      Pick<Kelas, 'jenjang' | 'tahun_ajaran' | 'kelas' | 'kode_kelas'>
+      Pick<
+        Kelas,
+        'jenjang' | 'tahun_ajaran' | 'kelas' | 'kode_kelas' | 'jumlah_siswa'
+      >
     >,
     entityManager: EntityManager = this.entityManager,
   ): Promise<UpdateResult> {
-    return entityManager.update(
-      Kelas,
-      { kelas_id: kelas.kelas_id },
-      payload || {},
-    );
+    try {
+      return entityManager.update(
+        Kelas,
+        { kelas_id: kelas.kelas_id },
+        payload || {},
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async findLastKelas(
@@ -48,16 +63,19 @@ export class KelasService implements IKelasService {
     tahun_ajaran: TahunAjaran,
     entityManager: EntityManager,
   ): Promise<Kelas> {
-    const data = await entityManager.findOne(Kelas, {
-      where: {
-        jenjang,
-        tahun_ajaran,
-      },
-      order: { kode_kelas: 'DESC' },
-      lock: { mode: 'pessimistic_write' },
-    });
-
-    return data;
+    try {
+      const data = await entityManager.findOne(Kelas, {
+        where: {
+          jenjang,
+          tahun_ajaran,
+        },
+        order: { kode_kelas: 'DESC' },
+        lock: { mode: 'pessimistic_write' },
+      });
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async findAllWithoutSearch(
@@ -244,6 +262,39 @@ export class KelasService implements IKelasService {
       );
 
       return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getKelasAndLock(
+    kelas_id: string,
+    entityManager: EntityManager = this.entityManager,
+  ): Promise<Kelas> {
+    const kelas = await entityManager.findOne(Kelas, {
+      where: {
+        kelas_id,
+      },
+      relations: {
+        tahun_ajaran: true,
+      },
+      order: { kode_kelas: 'DESC' },
+      lock: { mode: 'pessimistic_write' },
+    });
+
+    return kelas;
+  }
+
+  async updateJumlahSiswaKelas(
+    kelas: Kelas,
+    entityManager: EntityManager = this.entityManager,
+  ) {
+    try {
+      return await this.updateTransactionKelas(
+        kelas,
+        { jumlah_siswa: kelas.jumlah_siswa + 1 },
+        entityManager,
+      );
     } catch (error) {
       throw error;
     }

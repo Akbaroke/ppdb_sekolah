@@ -22,123 +22,163 @@ export class TokenService implements ITokenService {
     accessToken: string,
     payload?: { accessToken?: string; refreshToken?: string },
   ) {
-    return await this.tokenRepository.updateToken(accessToken, payload || {});
+    try {
+      return await this.tokenRepository.updateToken(accessToken, payload || {});
+    } catch (error) {
+      throw error;
+    }
   }
 
   async generateAccessTokenAndRefreshToken(
     payload: IPayloadToken,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.generateAccessToken(payload),
-      this.jwtService.generateRefreshToken(payload, {
-        secret: this.configService.getOrThrow('JWT_SECRET_KEY'),
-        expiresIn: '7d',
-      }),
-    ]);
+    try {
+      const [accessToken, refreshToken] = await Promise.all([
+        this.jwtService.generateAccessToken(payload),
+        this.jwtService.generateRefreshToken(payload, {
+          secret: this.configService.getOrThrow('JWT_SECRET_KEY'),
+          expiresIn: '7d',
+        }),
+      ]);
 
-    return { accessToken, refreshToken };
+      return { accessToken, refreshToken };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async generateTokenForgotPassword(
     payload: IPayloadTokenForgotPassword,
   ): Promise<string> {
-    const token = await this.jwtService.generateTokenForgotPassword(payload, {
-      secret: this.configService.getOrThrow('JWT_FORGOT_PASSWORD_KEY'),
-      expiresIn: '5m',
-    });
-    return token;
+    try {
+      const token = await this.jwtService.generateTokenForgotPassword(payload, {
+        secret: this.configService.getOrThrow('JWT_FORGOT_PASSWORD_KEY'),
+        expiresIn: '5m',
+      });
+      return token;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async saveToken(payload: IPayloadSaveToken): Promise<Token> {
-    return await this.tokenRepository.saveToken(payload);
+    try {
+      return await this.tokenRepository.saveToken(payload);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findTokenByUser(payload: IGetToken): Promise<string> {
-    const data = await this.tokenRepository.findToken(payload);
-    if (!data) {
-      return null;
+    try {
+      const data = await this.tokenRepository.findToken(payload);
+      if (!data) {
+        return null;
+      }
+      return data.accessToken;
+    } catch (error) {
+      throw error;
     }
-    return data.accessToken;
   }
 
   async verifyToken(accessToken: string): Promise<TPayloadVerifyToken> {
-    const data = await this.jwtService.verifyAccessToken(accessToken);
-    return data;
+    try {
+      const data = await this.jwtService.verifyAccessToken(accessToken);
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async checkExpiredAccessToken(accessToken: string): Promise<boolean> {
-    const isExpired = await this.jwtService
-      .verifyAccessToken(accessToken)
-      .then(() => false)
-      .catch((error) => {
-        if (error.message === 'jwt expired') {
-          return true;
-        }
+    try {
+      const isExpired = await this.jwtService
+        .verifyAccessToken(accessToken)
+        .then(() => false)
+        .catch((error) => {
+          if (error.message === 'jwt expired') {
+            return true;
+          }
 
-        throw new BadRequestException('Token tidak sah');
-      });
+          throw new BadRequestException('Token tidak sah');
+        });
 
-    return isExpired;
+      return isExpired;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findToken(accessToken: string): Promise<Token> {
-    const token = await this.tokenRepository.findTokenByAccessToken(
-      accessToken,
-    );
+    try {
+      const token = await this.tokenRepository.findTokenByAccessToken(
+        accessToken,
+      );
 
-    return token;
+      return token;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async refreshToken(token: Token): Promise<string> {
-    const accessToken = await this.jwtService
-      .verifyRefreshToken(token.refreshToken, {
-        secret: this.configService.getOrThrow('JWT_SECRET_KEY'),
-      })
-      .then(async ({ id, email, role }) => {
-        const createAccessToken = await this.jwtService.generateAccessToken({
-          id,
-          email,
-          role,
-        });
-
-        await this.updateToken(token.accessToken, {
-          accessToken: createAccessToken,
-        });
-        return createAccessToken;
-      })
-      .catch(async (error) => {
-        if (error.message === 'jwt expired') {
-          const payload = {
-            id: token.user.user_id,
-            email: token.user.email,
-            role: token.user.role,
-          };
-
-          const generateToken = await this.generateAccessTokenAndRefreshToken(
-            payload,
-          );
-
-          await this.updateToken(token.accessToken, {
-            accessToken: generateToken.accessToken,
-            refreshToken: generateToken.refreshToken,
+    try {
+      const accessToken = await this.jwtService
+        .verifyRefreshToken(token.refreshToken, {
+          secret: this.configService.getOrThrow('JWT_SECRET_KEY'),
+        })
+        .then(async ({ id, email, role }) => {
+          const createAccessToken = await this.jwtService.generateAccessToken({
+            id,
+            email,
+            role,
           });
 
-          return generateToken.accessToken;
-        }
+          await this.updateToken(token.accessToken, {
+            accessToken: createAccessToken,
+          });
+          return createAccessToken;
+        })
+        .catch(async (error) => {
+          if (error.message === 'jwt expired') {
+            const payload = {
+              id: token.user.user_id,
+              email: token.user.email,
+              role: token.user.role,
+            };
 
-        throw new BadRequestException('token tidak sah');
-      });
+            const generateToken = await this.generateAccessTokenAndRefreshToken(
+              payload,
+            );
 
-    return accessToken;
+            await this.updateToken(token.accessToken, {
+              accessToken: generateToken.accessToken,
+              refreshToken: generateToken.refreshToken,
+            });
+
+            return generateToken.accessToken;
+          }
+
+          throw new BadRequestException('token tidak sah');
+        });
+
+      return accessToken;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async verifyTokenForgotPassword(
     token: string,
   ): Promise<IPayloadTokenForgotPassword> {
-    const payload = await this.jwtService.verifyTokenForgotPassword(token, {
-      secret: this.configService.getOrThrow('JWT_FORGOT_PASSWORD_KEY'),
-    });
+    try {
+      const payload = await this.jwtService.verifyTokenForgotPassword(token, {
+        secret: this.configService.getOrThrow('JWT_FORGOT_PASSWORD_KEY'),
+      });
 
-    return payload;
+      return payload;
+    } catch (error) {
+      throw error;
+    }
   }
 }

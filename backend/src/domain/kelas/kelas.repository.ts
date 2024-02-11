@@ -16,14 +16,18 @@ export class KelasRepository implements IKelasRepository {
     jenjang: JENJANG,
     tahun_ajaran: TahunAjaran,
   ): Promise<number> {
-    const count = await this.kelasRepository.count({
-      where: {
-        jenjang,
-        tahun_ajaran,
-      },
-    });
+    try {
+      const count = await this.kelasRepository.count({
+        where: {
+          jenjang,
+          tahun_ajaran,
+        },
+      });
 
-    return count;
+      return count;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findAll(
@@ -31,22 +35,26 @@ export class KelasRepository implements IKelasRepository {
     skip: number,
     latest: boolean,
   ): Promise<{ data: Kelas[]; count: number }> {
-    const order = latest ? 'desc' : 'asc';
-    const [data, count] = await this.kelasRepository.findAndCount({
-      relations: ['tahun_ajaran'],
-      select: {
-        tahun_ajaran: {
-          tahun_ajaran: true,
+    try {
+      const order = latest ? 'desc' : 'asc';
+      const [data, count] = await this.kelasRepository.findAndCount({
+        relations: ['tahun_ajaran'],
+        select: {
+          tahun_ajaran: {
+            tahun_ajaran: true,
+          },
         },
-      },
-      order: {
-        created_at: order,
-      },
-      skip,
-      take: limit,
-    });
+        order: {
+          updated_at: order,
+        },
+        skip,
+        take: limit,
+      });
 
-    return { data, count };
+      return { data, count };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findAllBySearch(
@@ -55,52 +63,60 @@ export class KelasRepository implements IKelasRepository {
     latest: boolean,
     search: string,
   ): Promise<{ data: Kelas[]; count: number }> {
-    const order = latest ? 'desc' : 'asc';
+    try {
+      const order = latest ? 'desc' : 'asc';
 
-    const [data, count] = await this.kelasRepository.findAndCount({
-      where: [
-        {
-          kelas: search,
-        },
-        {
-          kode_kelas: search,
-        },
-        {
-          jenjang: search as JENJANG,
-        },
-        {
+      const [data, count] = await this.kelasRepository.findAndCount({
+        where: [
+          {
+            kelas: search,
+          },
+          {
+            kode_kelas: search,
+          },
+          {
+            jenjang: search as JENJANG,
+          },
+          {
+            tahun_ajaran: {
+              tahun_ajaran: Like(`%${search}%`),
+            },
+          },
+        ],
+        relations: ['tahun_ajaran'],
+        select: {
           tahun_ajaran: {
-            tahun_ajaran: Like(`%${search}%`),
+            tahun_ajaran: true,
           },
         },
-      ],
-      relations: ['tahun_ajaran'],
-      select: {
-        tahun_ajaran: {
-          tahun_ajaran: true,
+        order: {
+          created_at: order,
         },
-      },
-      order: {
-        created_at: order,
-      },
-      skip,
-      take: limit,
-    });
+        skip,
+        take: limit,
+      });
 
-    return { data, count };
+      return { data, count };
+    } catch (error) {
+      throw error;
+    }
   }
 
   async find(id: string): Promise<Kelas> {
-    const data = await this.kelasRepository.findOne({
-      where: { kelas_id: id },
-      relations: ['tahun_ajaran'],
-      select: {
-        tahun_ajaran: {
-          tahun_ajaran: true,
+    try {
+      const data = await this.kelasRepository.findOne({
+        where: { kelas_id: id },
+        relations: ['tahun_ajaran'],
+        select: {
+          tahun_ajaran: {
+            tahun_ajaran: true,
+          },
         },
-      },
-    });
+      });
 
-    return data;
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 }

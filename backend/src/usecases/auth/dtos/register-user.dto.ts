@@ -34,8 +34,4 @@ export class RegisterDto {
     },
   )
   password: string;
-
-  constructor(partial: Partial<RegisterDto>) {
-    Object.assign(this, partial);
-  }
 }

@@ -17,7 +17,7 @@ export class ParseFilesPipe implements PipeTransform {
       }
 
       for (const file of files) {
-        if (!/(jpg|webp|png|jpeg|pdf)/.test(file.mimetype)) {
+        if (!/(jpg|png|jpeg|pdf)/.test(file.mimetype)) {
           throw new UnsupportedMediaTypeException(
             `type file tidak diperbolehkan ${propertyName}: ${file.originalname}`,
           );

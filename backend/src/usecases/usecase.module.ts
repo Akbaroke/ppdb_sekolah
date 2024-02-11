@@ -6,6 +6,7 @@ import { TokenModule } from 'src/domain/token/token.module';
 import { UsecaseTahunAjaranModule } from './tahun-ajaran/tahun-ajaran.module';
 import { UsecaseKelasModule } from './kelas/kelas.module';
 import { DaftarSiswaModule } from './daftar-siswa/daftar-siswa.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DaftarSiswaModule } from './daftar-siswa/daftar-siswa.module';
     DaftarSiswaModule,
     UsecaseTahunAjaranModule,
     UsecaseKelasModule,
+    AdminModule,
   ],
   providers: [
     {

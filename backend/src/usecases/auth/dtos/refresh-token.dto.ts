@@ -10,8 +10,4 @@ export class RefreshTokenDto {
   @IsString()
   @IsNotEmpty({ message: 'token harus diisi' })
   accessToken: string;
-
-  constructor(partial: Partial<RefreshTokenDto>) {
-    Object.assign(this, partial);
-  }
 }

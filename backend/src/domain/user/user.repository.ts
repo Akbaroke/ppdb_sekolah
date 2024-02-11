@@ -11,27 +11,39 @@ export class UserRepository implements IUserRepository {
   ) {}
 
   async findOneByEmail(email: string): Promise<User> {
-    const data = await this.userRepository.findOne({
-      where: {
-        email,
-      },
-    });
+    try {
+      const data = await this.userRepository.findOne({
+        where: {
+          email,
+        },
+      });
 
-    if (!data) return null;
+      if (!data) return null;
 
-    return data;
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async existsByEmail(email: string): Promise<boolean> {
-    const data = await this.userRepository.exists({ where: { email } });
-    return data;
+    try {
+      const data = await this.userRepository.exists({ where: { email } });
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOne(id: string): Promise<User> {
-    const data = await this.userRepository.findOne({
-      where: { user_id: id },
-    });
+    try {
+      const data = await this.userRepository.findOne({
+        where: { user_id: id },
+      });
 
-    return data;
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -16,35 +16,51 @@ export class TokenRepository implements ITokenRepository {
   ) {}
 
   async findToken(payload: IGetToken): Promise<Token> {
-    const data = await this.tokenRepository.findOne({
-      where: {
-        user: payload.user,
-      },
-    });
+    try {
+      const data = await this.tokenRepository.findOne({
+        where: {
+          user: payload.user,
+        },
+      });
 
-    return data;
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findTokenByAccessToken(accessToken: string): Promise<Token> {
-    const data = await this.tokenRepository.findOne({
-      where: {
-        accessToken,
-      },
-      relations: { user: true },
-      select: { user: { user_id: true, email: true, role: true } },
-    });
+    try {
+      const data = await this.tokenRepository.findOne({
+        where: {
+          accessToken,
+        },
+        relations: { user: true },
+        select: { user: { user_id: true, email: true, role: true } },
+      });
 
-    return data;
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async saveToken(payload: IPayloadSaveToken): Promise<Token> {
-    return await this.tokenRepository.save(payload);
+    try {
+      return await this.tokenRepository.save(payload);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateToken(
     accessToken: string,
     payload?: { accessToken?: string; refreshToken?: string },
   ): Promise<UpdateResult> {
-    return await this.tokenRepository.update({ accessToken }, payload);
+    try {
+      return await this.tokenRepository.update({ accessToken }, payload);
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -1,6 +1,5 @@
 import {
   ExecutionContext,
-  NotFoundException,
   UnauthorizedException,
   createParamDecorator,
 } from '@nestjs/common';
@@ -10,7 +9,7 @@ export const GetUser = createParamDecorator(
     const { user } = context.switchToHttp().getRequest();
     try {
       if (!user) {
-        throw new NotFoundException();
+        throw new UnauthorizedException('siapa anda?');
       }
       return user;
     } catch (error) {

@@ -8,16 +8,21 @@ import {
   IsPhoneNumber,
   IsString,
   Max,
+  MinLength,
   Min,
   ValidateNested,
 } from 'class-validator';
+import { STATUS_SISWA } from 'src/domain/data-siswa/data_siswa.interface';
+import { JENJANG } from 'src/domain/kelas/kelas.interface';
 import { AGAMA, JENIS_KELAMIN } from 'src/domain/siswa/siswa.interface';
 import { ICreateWaliSiswa } from 'src/domain/wali-siswa/wali-siswa.interface';
 import { IsAlphaAndSpace } from 'src/infrastucture/common/decorators/isAlphaAndSpace.decorator';
+import { validationTahunAjaran } from 'src/infrastucture/common/decorators/validationTahunAjaran.decorator';
 
 class SiswaDto {
   @IsString({ message: 'type nama harus string' })
   @IsNotEmpty({ message: 'nama harus diisi' })
+  @MinLength(3)
   @IsAlphaAndSpace()
   nama: string;
 
@@ -25,6 +30,7 @@ class SiswaDto {
     message:
       'pilihan agama hanya ada islam, protestan, katolik, buddha, dan khonghucu',
   })
+  @IsNotEmpty({ message: 'agama harus diisi' })
   agama: AGAMA;
 
   @IsEnum(JENIS_KELAMIN, {
@@ -85,7 +91,7 @@ class WaliSiswaDto implements ICreateWaliSiswa {
   alamat: string;
 }
 
-export class PendaftaranSiswaDto {
+export class CreatePendaftaranSiswaDto {
   @IsNotEmpty({ message: 'siswa harus diisi' })
   @Type(() => SiswaDto)
   @ValidateNested()
@@ -95,4 +101,19 @@ export class PendaftaranSiswaDto {
   @Type(() => WaliSiswaDto)
   @ValidateNested()
   wali_siswa: WaliSiswaDto;
+
+  @IsString({ message: 'type tahun_ajaran harus string' })
+  @IsNotEmpty({ message: 'tahun_ajaran harus diisi' })
+  @validationTahunAjaran()
+  tahun_ajaran: string;
+
+  @IsEnum(JENJANG, { message: 'jenjang hanya memiliki pg, tka, dan tkb' })
+  @IsNotEmpty({ message: 'jenjang harus diisi' })
+  jenjang: JENJANG;
+
+  @IsEnum(STATUS_SISWA, {
+    message: 'status_siswa hanya memiliki pendaftar, lulus, keluar, dan siswa',
+  })
+  @IsNotEmpty({ message: 'status_siswa harus diisi' })
+  status: STATUS_SISWA;
 }

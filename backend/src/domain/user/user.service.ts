@@ -12,44 +12,68 @@ export class UserService implements IUserService {
   ) {}
 
   createTransactionUser(email: string, password: string): User {
-    return this.entityManager.create(User, {
-      email,
-      password,
-    });
+    try {
+      return this.entityManager.create(User, {
+        email,
+        password,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOne(user_id: string): Promise<User> {
-    const data = await this.userRepository.findOne(user_id);
-    return data;
+    try {
+      const data = await this.userRepository.findOne(user_id);
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOneByEmail(email: string): Promise<User> {
-    const data = await this.userRepository.findOneByEmail(email);
-    return data;
+    try {
+      const data = await this.userRepository.findOneByEmail(email);
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async existsByEmail(email: string): Promise<boolean> {
-    return await this.userRepository.existsByEmail(email);
+    try {
+      return await this.userRepository.existsByEmail(email);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async verificationUser(
     user: User,
     entityManager: EntityManager = this.entityManager,
   ): Promise<UpdateResult> {
-    return await this.updateTransactionUser(
-      user,
-      {
-        status: STATUS_USER.ACTIVE,
-      },
-      entityManager,
-    );
+    try {
+      return await this.updateTransactionUser(
+        user,
+        {
+          status: STATUS_USER.ACTIVE,
+        },
+        entityManager,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   async saveTransactionUser(
     user: User,
     entityManager: EntityManager = this.entityManager,
   ): Promise<User> {
-    return await entityManager.save(user);
+    try {
+      return await entityManager.save(user);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateUser(
@@ -57,7 +81,15 @@ export class UserService implements IUserService {
     payload: Partial<Pick<User, 'password' | 'status'>>,
     entityManager: EntityManager = this.entityManager,
   ): Promise<UpdateResult> {
-    return await this.updateTransactionUser({ email }, payload, entityManager);
+    try {
+      return await this.updateTransactionUser(
+        { email },
+        payload,
+        entityManager,
+      );
+    } catch (error) {
+      throw error;
+    }
   }
 
   private async updateTransactionUser(
@@ -65,6 +97,10 @@ export class UserService implements IUserService {
     payload: Partial<Pick<User, 'password' | 'status'>>,
     entityManager: EntityManager = this.entityManager,
   ): Promise<UpdateResult> {
-    return entityManager.update(User, user, payload || {});
+    try {
+      return entityManager.update(User, user, payload || {});
+    } catch (error) {
+      throw error;
+    }
   }
 }

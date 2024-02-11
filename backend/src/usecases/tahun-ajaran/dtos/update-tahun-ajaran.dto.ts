@@ -8,8 +8,4 @@ export class UpdateTahunAjaranDto {
   @IsNumber({}, { message: 'type besar_spp harus number' })
   @Min(0, { message: 'besar_spp minimal 0' })
   besar_spp: number;
-
-  constructor(partial: Partial<UpdateTahunAjaranDto>) {
-    Object.assign(this, partial);
-  }
 }

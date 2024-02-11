@@ -28,31 +28,54 @@ export class Siswa implements ISiswa {
   @PrimaryGeneratedColumn('uuid')
   siswa_id: string;
 
-  @Column({ type: 'varchar', length: 60, nullable: false })
+  @Column({ name: 'nama', type: 'varchar', length: 60, nullable: false })
   nama: string;
 
-  @Column({ type: 'varchar', length: 100, nullable: false })
+  @Column({
+    name: 'tempat_lahir',
+    type: 'varchar',
+    length: 100,
+    nullable: false,
+  })
   tempat_lahir: string;
 
-  @Column({ type: 'date', nullable: false })
+  @Column({ name: 'tanggal_lahir', type: 'date', nullable: false })
   tanggal_lahir: Date;
 
-  @Column({ type: 'tinyint', unsigned: true, nullable: false })
+  @Column({ name: 'umur', type: 'tinyint', unsigned: true, nullable: false })
   umur: number;
 
-  @Column({ type: 'enum', enum: JENIS_KELAMIN, default: JENIS_KELAMIN.L })
+  @Column({
+    name: 'jenis_kelamin',
+    type: 'enum',
+    enum: JENIS_KELAMIN,
+    default: JENIS_KELAMIN.L,
+  })
   jenis_kelamin: JENIS_KELAMIN;
 
-  @Column({ type: 'enum', enum: AGAMA, default: AGAMA.ISLAM })
+  @Column({ name: 'agama', type: 'enum', enum: AGAMA, default: AGAMA.ISLAM })
   agama: AGAMA;
 
-  @Column({ type: 'integer', nullable: false })
+  @Column({
+    name: 'tinggi_badan',
+    type: 'tinyint',
+    nullable: false,
+    unsigned: true,
+  })
   tinggi_badan: number;
 
-  @Column({ type: 'integer', nullable: false })
+  @Column({
+    name: 'berat_badan',
+    type: 'tinyint',
+    nullable: false,
+    unsigned: true,
+  })
   berat_badan: number;
 
-  @ManyToOne(() => User, (user) => user.siswa)
-  @JoinColumn({ name: 'user' })
+  @Column({ name: 'user_id', type: 'varchar', nullable: false })
+  user_id: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
   user: User;
 }

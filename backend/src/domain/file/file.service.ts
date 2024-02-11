@@ -2,21 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { File } from './file.entity';
 import { EntityManager } from 'typeorm';
 import { FirebaseService } from 'src/infrastucture/config/firebase/firebase.service';
-
-// interface ICreateBerkas {
-//   id_akta: string;
-//   url_akta: string;
-//   id_kartu_keluarga: string;
-//   url_kartu_keluarga: string;
-//   id_foto: string;
-//   url_foto: string;
-// }
-
-interface ICreateBerkas {
-  akta: Express.Multer.File;
-  kartu_keluarga: Express.Multer.File;
-  foto: Express.Multer.File;
-}
+import { ICreateBerkas } from './file.interface';
 
 @Injectable()
 export class FileService {
@@ -25,24 +11,52 @@ export class FileService {
     private readonly firebaseService: FirebaseService,
   ) {}
 
-  async createBerkas(
-    user_id: string,
-    { akta, foto, kartu_keluarga }: ICreateBerkas,
-  ): Promise<File[]> {
+  private getFileId(fileId: string): string {
+    const id = fileId.split('_').slice(1).join('_');
+    return id;
+  }
+
+  async createBerkas(user_id: string, files: ICreateBerkas): Promise<File[]> {
     try {
-      const data = await Promise.all([
-        this.firebaseService.uploadImage(akta, user_id),
-        this.firebaseService.uploadImage(foto, user_id),
-        this.firebaseService.uploadImage(kartu_keluarga, user_id),
+      const [akta, kartu_keluarga, foto] = await Promise.all([
+        this.firebaseService.upload(files.akta, user_id),
+        this.firebaseService.upload(files.kartu_keluarga, user_id),
+        this.firebaseService.upload(files.foto, user_id),
       ]);
 
       const berkas = this.entityManager.create(File, [
-        { id: data[0].id, url: data[0].url },
-        { id: data[1].id, url: data[1].url },
-        { id: data[2].id, url: data[2].url },
+        { file_id: `akta_${akta.id}`, url: akta.url },
+        {
+          file_id: `kk_${kartu_keluarga.id}`,
+          url: kartu_keluarga.url,
+        },
+        { file_id: `foto_${foto.id}`, url: foto.url },
       ]);
 
       return berkas;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteBerkas(folder: string, fileId: string): Promise<void> {
+    try {
+      const id = this.getFileId(fileId);
+      await this.firebaseService.delete(`${folder}/${id}`);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateBerkas(
+    folder: string,
+    file_id: string,
+    file: Express.Multer.File,
+  ): Promise<void> {
+    try {
+      const id = this.getFileId(file_id);
+      await this.deleteBerkas(folder, id);
+      await this.firebaseService.update(`${folder}/${id}`, file);
     } catch (error) {
       throw error;
     }
@@ -52,6 +66,10 @@ export class FileService {
     files: File[],
     entityManager: EntityManager = this.entityManager,
   ): Promise<File[]> {
-    return await entityManager.save(files);
+    try {
+      return await entityManager.save(files);
+    } catch (error) {
+      throw error;
+    }
   }
 }

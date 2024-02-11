@@ -56,6 +56,7 @@ export class User implements IUser {
     type: 'bigint',
     nullable: false,
     default: Date.now(),
+    unsigned: true,
   })
   created_at: number;
 
@@ -63,6 +64,7 @@ export class User implements IUser {
     type: 'bigint',
     nullable: false,
     default: Date.now(),
+    unsigned: true,
   })
   updated_at: number;
 }

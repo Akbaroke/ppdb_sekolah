@@ -11,8 +11,4 @@ export class CreateKelasDto {
   @IsNotEmpty({ message: 'tahun_ajaran harus diisi' })
   @validationTahunAjaran()
   tahun_ajaran: string;
-
-  constructor(partial: Partial<CreateKelasDto>) {
-    Object.assign(this, partial);
-  }
 }

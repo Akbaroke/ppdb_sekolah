@@ -46,6 +46,7 @@ export class Otp implements IOtp {
     type: 'bigint',
     nullable: false,
     default: Date.now(),
+    unsigned: true,
   })
   created_at: number;
 
@@ -53,6 +54,7 @@ export class Otp implements IOtp {
     type: 'bigint',
     nullable: false,
     default: new Date().setTime(Date.now() + 3 * 60 * 1000),
+    unsigned: true,
   })
   expires_at: number;
 
@@ -60,6 +62,7 @@ export class Otp implements IOtp {
     type: 'bigint',
     nullable: false,
     default: Date.now(),
+    unsigned: true,
   })
   updated_at: number;
 }
