@@ -94,7 +94,7 @@ export default function FormTahunAjaran({ id, type, close }: Props) {
         label="Tahun Ajaran"
         placeholder="Tahun ajaran"
         required
-        // disabled
+        disabled
         value={form.values.tahun_ajaran}
         error={form.errors.tahun_ajaran as string}
         onChange={(e) =>
