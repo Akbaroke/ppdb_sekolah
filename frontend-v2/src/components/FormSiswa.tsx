@@ -179,6 +179,12 @@ export default function FormSiswa({
               error={form.errors.jenis_kelamin as string}
               onChange={(e) => form.setFieldValue('jenis_kelamin', e as string)}
               disabled={isUserEditble}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
             <NumberInput
               required
@@ -227,6 +233,12 @@ export default function FormSiswa({
               value={form.values.agama}
               error={form.errors.agama as string}
               onChange={(e) => form.setFieldValue('agama', e as string)}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
             <NumberInput
               required
@@ -281,6 +293,12 @@ export default function FormSiswa({
               value={form.values.pekerjaan}
               error={form.errors.pekerjaan as string}
               onChange={(e) => form.setFieldValue('pekerjaan', e as string)}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
             <Input.Wrapper required label="No. Telepon">
               <Input
@@ -376,6 +394,12 @@ export default function FormSiswa({
               error={form.errors.jenjang as string}
               onChange={(e) => form.setFieldValue('jenjang', e as string)}
               disabled={isUserEditble}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
           </div>
           <div className="w-full flex flex-col">
@@ -388,6 +412,12 @@ export default function FormSiswa({
               error={form.errors.tahun_ajaran as string}
               onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
               disabled={isUserEditble}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
           </div>
         </div>

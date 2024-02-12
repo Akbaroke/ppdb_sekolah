@@ -1,4 +1,4 @@
-import { ActionIcon, Autocomplete, CloseButton, rem } from '@mantine/core';
+import { ActionIcon, CloseButton, Input, rem } from '@mantine/core';
 import {
   useClickOutside,
   useDebouncedValue,
@@ -7,23 +7,36 @@ import {
 import { IconSearch } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
 
-export default function InputSearch() {
-  const [value, setValue] = useState('');
+type Props = {
+  searchValue: string;
+  setSearchValue: (value: string) => void;
+};
+
+export default function InputSearch({ searchValue, setSearchValue }: Props) {
+  const [value, setValue] = useState(searchValue || '');
   const [debounced] = useDebouncedValue(value, 500);
   const [opened, { open, close }] = useDisclosure(false);
   const ref = useClickOutside(close);
 
   useEffect(() => {
-    console.log(debounced);
+    setSearchValue(debounced);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced]);
+
+  useEffect(() => {
+    setValue(searchValue);
+  }, [searchValue]);
 
   return (
     <>
       {opened ? (
         <div ref={ref}>
-          <Autocomplete
+          <Input
             autoFocus
-            placeholder="Search"
+            placeholder="Cari..."
+            value={value}
+            onChange={(e) => setValue(e.currentTarget.value)}
+            rightSectionPointerEvents="all"
             leftSection={
               <IconSearch
                 style={{ width: rem(16), height: rem(16) }}
@@ -38,13 +51,6 @@ export default function InputSearch() {
                 style={{ display: value ? undefined : 'none', color: 'gray' }}
               />
             }
-            data={[]}
-            visibleFrom="xs"
-            value={value}
-            onChange={setValue}
-            comboboxProps={{
-              transitionProps: { transition: 'pop', duration: 200 },
-            }}
           />
         </div>
       ) : (

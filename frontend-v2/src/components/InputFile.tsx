@@ -1,7 +1,8 @@
-import { FileInput } from '@mantine/core';
+import { ActionIcon, FileInput } from '@mantine/core';
 import convertUrlToFile from '../utils/convertUrlToFile';
 import { useEffect, useState } from 'react';
 import ButtonViewUrl from './ButtonViewUrl';
+import { IconEye } from '@tabler/icons-react';
 
 type Props = {
   label: string;
@@ -83,8 +84,14 @@ export default function InputFile({
           className="mb-[2px]"
           url={imgUrl}
           title={label}
-          type={showType}
-        />
+          type={showType}>
+          <ActionIcon
+            variant="light"
+            aria-label="Settings"
+            size="lg">
+            <IconEye style={{ width: '70%', height: '70%' }} stroke={1.5} />
+          </ActionIcon>
+        </ButtonViewUrl>
       )}
     </div>
   );

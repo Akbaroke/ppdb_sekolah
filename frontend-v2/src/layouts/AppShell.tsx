@@ -26,8 +26,8 @@ import { logout } from '../redux/slices/authSlice';
 import { IconListCheck } from '@tabler/icons-react';
 import ModalConfirm from '../components/ModalConfirm';
 import { Notify } from '../components/Notify';
-import { fetchTahunAjaran } from '../redux/slices/tahunAjaranSlice';
-import { fetchKelas } from '../redux/slices/kelasSlice';
+import { fetchPaginatedKelas } from '../redux/slices/kelasSlice';
+import { fetchPaginatedTahunAjaran } from '../redux/slices/tahunAjaranSlice';
 
 const dataUser = [
   { link: '/user/siswa-terdaftar', label: 'Siswa Terdaftar', icon: IconUsers },
@@ -88,10 +88,10 @@ export function AppShell() {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    dispatch(fetchTahunAjaran());
+    dispatch(fetchPaginatedTahunAjaran({}));
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    dispatch(fetchKelas());
+    dispatch(fetchPaginatedKelas({}));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

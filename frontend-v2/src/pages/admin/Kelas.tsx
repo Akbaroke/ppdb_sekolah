@@ -4,27 +4,33 @@ import {
   Loader,
   LoadingOverlay,
   NumberFormatter,
+  Pagination,
   Table,
 } from '@mantine/core';
 import Card from '../../components/Card';
 import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { KelasAsync, fetchKelas } from '../../redux/slices/kelasSlice';
+import {
+  KelasAsync,
+  fetchPaginatedKelas,
+  fetchSearchKelas,
+} from '../../redux/slices/kelasSlice';
 import NotDataFound from '../../components/NotDataFound';
-import ModalKelas from '../../components/ModalKelas';
 import ModalConfirm from '../../components/ModalConfirm';
 import api from '../../api';
 import { Notify } from '../../components/Notify';
 import ButtonRefresh from '../../components/ButtonRefresh';
 import handleErrorResponse from '../../services/handleErrorResponse';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ButtonDelete from '../../components/ButtonDelete';
 import InputSearch from '../../components/InputSearch';
+import ModalForm from '../../components/ModalForm';
 
 export default function Kelas() {
   const dispatch = useDispatch();
+  const [searchValue, setSearchValue] = useState('');
   const [loadingDelete, setLoadingDelete] = useState('');
-  const { data, isLoading } = useSelector(
+  const { data, pagination, isLoading } = useSelector(
     (state: { kelas: KelasAsync }) => state.kelas
   );
 
@@ -42,10 +48,34 @@ export default function Kelas() {
     }
   };
 
+  useEffect(() => {
+    dispatch(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      fetchSearchKelas({ searchQuery: searchValue })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchValue]);
+
   const refresh = () => {
+    setSearchValue('');
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    dispatch(fetchKelas());
+    dispatch(fetchPaginatedKelas({}));
+  };
+
+  const handleChangePage = (page: number) => {
+    if (searchValue) {
+      dispatch(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        fetchSearchKelas({ page: page, searchQuery: searchValue })
+      );
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    dispatch(fetchPaginatedKelas({ page: page }));
   };
 
   const rows = data?.map((element) => (
@@ -80,11 +110,15 @@ export default function Kelas() {
           onAction={() => handleDeleteKelas(element.id)}>
           <ButtonDelete isLoading={loadingDelete === element.id} />
         </ModalConfirm>
-        <ModalKelas type="edit" id={element.id}>
+        <ModalForm
+          title="Ubah Kelas"
+          formType="kelas"
+          actionType="edit"
+          id={element.id}>
           <ActionIcon variant="light" size="lg">
             <IconPencil size={18} />
           </ActionIcon>
-        </ModalKelas>
+        </ModalForm>
       </Table.Td>
     </Table.Tr>
   ));
@@ -105,13 +139,16 @@ export default function Kelas() {
       <Card className="flex justify-between items-center">
         <h1 className="font-bold text-lg">Kelas</h1>
         <div className="flex items-center gap-2">
-          <InputSearch />
+          <InputSearch
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+          />
           <ButtonRefresh isLoading={isLoading} onClick={refresh} />
-          <ModalKelas type="create">
+          <ModalForm title="Tambah Kelas" formType="kelas" actionType="create">
             <ActionIcon variant="light" size="lg">
               <IconPlus size={18} />
             </ActionIcon>
-          </ModalKelas>
+          </ModalForm>
         </div>
       </Card>
       <Card>
@@ -146,6 +183,12 @@ export default function Kelas() {
         ) : (
           <NotDataFound />
         )}
+        <Pagination
+          value={pagination.currentPage}
+          total={pagination.totalPage}
+          onChange={handleChangePage}
+          className="mt-5 ml-auto w-max"
+        />
       </Card>
     </div>
   );

@@ -1,6 +1,5 @@
-import { ActionIcon, Modal } from '@mantine/core';
+import { Modal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconEye } from '@tabler/icons-react';
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 
@@ -9,9 +8,16 @@ type Props = {
   url: string;
   type: 'image' | 'pdf' | null;
   className?: string;
+  children: React.ReactNode;
 };
 
-export default function ButtonViewUrl({ title, url, type, className }: Props) {
+export default function ButtonViewUrl({
+  title,
+  url,
+  type,
+  className,
+  children,
+}: Props) {
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -53,14 +59,9 @@ export default function ButtonViewUrl({ title, url, type, className }: Props) {
         )}
       </Modal>
 
-      <ActionIcon
-        variant="light"
-        aria-label="Settings"
-        size="lg"
-        onClick={open}
-        className={className}>
-        <IconEye style={{ width: '70%', height: '70%' }} stroke={1.5} />
-      </ActionIcon>
+      <div onClick={open} className={className}>
+        {children}
+      </div>
     </>
   );
 }

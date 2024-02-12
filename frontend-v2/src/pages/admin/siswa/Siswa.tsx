@@ -47,7 +47,7 @@ export default function Siswa() {
           <div className="flex justify-between items-center">
             <h1 className="font-bold text-lg">Siswa</h1>
             <div className="flex items-center gap-2">
-              <InputSearch />
+              <InputSearch searchValue="" setSearchValue={() => null} />
               <ButtonRefresh isLoading={false} onClick={() => null} />
             </div>
           </div>
