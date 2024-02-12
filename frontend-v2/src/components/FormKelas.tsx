@@ -11,7 +11,9 @@ import { fetchPaginatedKelas } from '../redux/slices/kelasSlice';
 import {
   TahunAjaranAsync,
   fetchPaginatedTahunAjaran,
+  fetchSearchTahunAjaran,
 } from '../redux/slices/tahunAjaranSlice';
+import { useDebouncedValue } from '@mantine/hooks';
 
 type Props = {
   id?: string;
@@ -28,9 +30,12 @@ type FormType = {
 export default function FormKelas({ id, type, close }: Props) {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const { data: dataTahunAjaran, isLoading: isLoadingTahunAjaran } = useSelector(
-    (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
-  );
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [debounced] = useDebouncedValue(searchValue, 500);
+  const { data: dataTahunAjaran, isLoading: isLoadingTahunAjaran } =
+    useSelector(
+      (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
+    );
 
   const form = useForm<FormType>({
     validateInputOnChange: true,
@@ -95,6 +100,17 @@ export default function FormKelas({ id, type, close }: Props) {
     }
   };
 
+  useEffect(() => {
+    if (debounced !== null) {
+      dispatch(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        fetchSearchTahunAjaran({ searchQuery: debounced })
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounced]);
+
   return (
     <form
       className="flex flex-col gap-3"
@@ -120,9 +136,12 @@ export default function FormKelas({ id, type, close }: Props) {
         label="Tahun Ajaran"
         placeholder="Tahun Ajaran"
         data={dataTahunAjaran.map((item) => item.tahun_ajaran).sort() || []}
-        value={form.values.tahun_ajaran}
+        // value={form.values.tahun_ajaran}
         error={form.errors.tahun_ajaran as string}
         onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
+        searchable
+        searchValue={searchValue as string}
+        onSearchChange={setSearchValue}
         readOnly={isLoading}
         comboboxProps={{
           transitionProps: {

@@ -1,6 +1,9 @@
 import { useForm } from '@mantine/form';
-import { useSelector } from 'react-redux';
-import { TahunAjaranAsync } from '../redux/slices/tahunAjaranSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  TahunAjaranAsync,
+  fetchSearchTahunAjaran,
+} from '../redux/slices/tahunAjaranSlice';
 import {
   Button,
   Input,
@@ -26,6 +29,8 @@ import {
 import { FormType } from '../interfaces/components';
 import InputFile from './InputFile';
 import { DataUser } from '../interfaces/store';
+import { useEffect, useState } from 'react';
+import { useDebouncedValue } from '@mantine/hooks';
 
 type Props = {
   type: 'create' | 'edit';
@@ -60,6 +65,9 @@ export default function FormSiswa({
   handleSubmit,
   initialValue = defaultValue,
 }: Props) {
+  const dispatch = useDispatch();
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [debounced] = useDebouncedValue(searchValue, 500);
   const tahunData = useSelector(
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
   );
@@ -138,6 +146,17 @@ export default function FormSiswa({
       tahun_ajaran: (value: string) => (value ? null : 'Wajib diisi'),
     },
   });
+
+  useEffect(() => {
+    if (debounced !== null){
+      dispatch(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        fetchSearchTahunAjaran({ searchQuery: debounced })
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounced]);
 
   return (
     <form
@@ -408,9 +427,12 @@ export default function FormSiswa({
               label="Tahun Ajaran"
               placeholder="Tahun ajaran"
               data={tahunData.data?.map((item) => item.tahun_ajaran).sort()}
-              value={form.values.tahun_ajaran}
+              // value={form.values.tahun_ajaran}
               error={form.errors.tahun_ajaran as string}
               onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
+              searchable
+              searchValue={searchValue as string}
+              onSearchChange={setSearchValue}
               disabled={isUserEditble}
               comboboxProps={{
                 transitionProps: {
