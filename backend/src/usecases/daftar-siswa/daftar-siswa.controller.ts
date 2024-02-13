@@ -16,6 +16,8 @@ import { ParseFilesPipe } from 'src/infrastucture/common/pipe/parseFiles.pipe';
 import { GetUser } from 'src/infrastucture/common/decorators/getUser.decorator';
 import { Roles } from 'src/infrastucture/common/decorators/roles.decorator';
 import { ROLE_USER } from 'src/domain/user/user.interface';
+import { ValidationUUID } from 'src/infrastucture/common/filters/validationUUID.filter';
+import { IPayloadToken } from 'src/infrastucture/authentication/token-management/token.interface';
 
 @Controller('daftar_siswa')
 export class DaftarSiswaController {
@@ -43,16 +45,19 @@ export class DaftarSiswaController {
     return await this.daftarSiswaService.daftarSiswa(id, body, berkas);
   }
 
-  @Roles(ROLE_USER.USER, ROLE_USER.ADMIN)
+  @Roles(ROLE_USER.USER)
   @Get()
-  async get_all_daftar_siswa(@GetUser() { id }: { id: string }) {
+  async get_all_daftar_siswa(@GetUser() { id }: IPayloadToken) {
     return await this.daftarSiswaService.getAllDaftarSiswa(id);
   }
 
   @Roles(ROLE_USER.USER, ROLE_USER.ADMIN)
   @Get(':id')
-  async get_daftar_siswa(@Param('id') siswa_id: string) {
-    return await this.daftarSiswaService.getDataSiswa(siswa_id);
+  async get_daftar_siswa(
+    @GetUser() { id, role }: IPayloadToken,
+    @Param('id') siswa_id: string,
+  ) {
+    return await this.daftarSiswaService.getDataSiswa(siswa_id, id, role);
   }
 
   @Roles(ROLE_USER.USER, ROLE_USER.ADMIN)
@@ -65,8 +70,8 @@ export class DaftarSiswaController {
     ]),
   )
   async update_daftar_siswa(
-    @GetUser() { id }: { id: string },
-    @Param('id') siswa_id: string,
+    @GetUser() payload: IPayloadToken,
+    @Param('id', ValidationUUID) siswa_id: string,
     @Body() body: UpdatePendaftaranSiswaDto,
     @UploadedFiles(ParseFilesPipe)
     berkas: {
@@ -77,7 +82,7 @@ export class DaftarSiswaController {
   ) {
     return await this.daftarSiswaService.updateDaftarSiswa(
       siswa_id,
-      id,
+      payload,
       body,
       berkas,
     );

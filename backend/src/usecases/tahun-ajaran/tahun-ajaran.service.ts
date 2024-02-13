@@ -10,10 +10,9 @@ import { TahunAjaranService } from 'src/domain/tahun-ajaran/tahun-ajaran.service
 import { IMessage } from '../message.interface';
 import { TahunAjaran } from 'src/domain/tahun-ajaran/tahun-ajaran.entity';
 import { PaginationService } from '../services/pagination.service';
-import { IUsecaseTahunAjaranService } from './tahun-ajaran.interface';
 
 @Injectable()
-export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
+export class UsecaseTahunAjaranService {
   constructor(
     private readonly tahunAjaranService: TahunAjaranService,
     private readonly paginationService: PaginationService,
@@ -33,7 +32,7 @@ export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
     }
   }
 
-  async create(data: ICreateTahunAjaran): Promise<IMessage> {
+  async createTahunAjaran(data: ICreateTahunAjaran): Promise<IMessage> {
     try {
       const checkTahunAjaran = await this.tahunAjaranService.IsTahunAjaranExist(
         data.tahun_ajaran,
@@ -54,7 +53,7 @@ export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
     }
   }
 
-  async getById(id: string): Promise<IMessage & { data: TahunAjaran }> {
+  async getTahunAjaran(id: string): Promise<IMessage & { data: TahunAjaran }> {
     try {
       const data = await this.checkTahunAjaran(id);
 
@@ -68,7 +67,7 @@ export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
     }
   }
 
-  async update(
+  async updateTahunAjaran(
     id: string,
     payload: Omit<ICreateTahunAjaran, 'tahun_ajaran'>,
   ): Promise<IMessage> {
@@ -88,7 +87,7 @@ export class UsecaseTahunAjaranService implements IUsecaseTahunAjaranService {
     }
   }
 
-  async getAll(
+  async getAllTahunAjaran(
     limit = 10,
     page = 1,
     latest = true,

@@ -54,7 +54,7 @@ export class TahunAjaran implements ITahunAjaran {
   @CreateDateColumn({
     type: 'bigint',
     nullable: false,
-    default: Date.now(),
+    default: new Date().getTime(),
     unsigned: true,
   })
   created_at: number;
@@ -62,7 +62,7 @@ export class TahunAjaran implements ITahunAjaran {
   @CreateDateColumn({
     type: 'bigint',
     nullable: false,
-    default: Date.now(),
+    default: new Date().getTime(),
     unsigned: true,
   })
   updated_at: number;

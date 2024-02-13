@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   HttpStatus,
   Injectable,
   NotFoundException,
@@ -23,6 +24,7 @@ import {
   ICreateDataSiswa,
   STATUS_SISWA,
 } from 'src/domain/data-siswa/data_siswa.interface';
+import { IPayloadToken } from 'src/infrastucture/authentication/token-management/token.interface';
 
 @Injectable()
 export class DaftarSiswaService {
@@ -96,7 +98,7 @@ export class DaftarSiswaService {
         foto,
       });
 
-      return await this.fileService.saveBerkas(
+      return await this.fileService.saveFiles(
         create_berkas_siswa,
         entityManager,
       );
@@ -154,6 +156,10 @@ export class DaftarSiswaService {
         throw new NotFoundException('Tahun ajaran tidak ditemukan');
       }
 
+      if (data.status !== STATUS_SISWA.PENDAFTAR) {
+        throw new BadRequestException('status harus pendaftar');
+      }
+
       await this.entityManager.transaction(async (entityManager) => {
         Object.assign(data.siswa, { user });
         const siswa = await this.createSiswa(data, entityManager);
@@ -190,7 +196,7 @@ export class DaftarSiswaService {
       if (berkas_siswa.length) {
         berkas_siswa.forEach(async (value) => {
           if (value) {
-            await this.fileService.deleteBerkas(user_id, value.file_id);
+            await this.fileService.deleteFile(user_id, value.file_id);
           }
         });
       }
@@ -239,7 +245,11 @@ export class DaftarSiswaService {
     }
   }
 
-  async getDataSiswa(siswa_id: string): Promise<IMessage & { data: object }> {
+  async getDataSiswa(
+    siswa_id: string,
+    user_id: string,
+    role: string,
+  ): Promise<IMessage & { data: object }> {
     try {
       const dataSiswa = await this.dataSiswaService.getOneByDataSiswaId(
         siswa_id,
@@ -250,8 +260,13 @@ export class DaftarSiswaService {
         throw new NotFoundException('Data siswa tidak ditemukan');
       }
 
+      if (dataSiswa.siswa.user_id !== user_id && role !== 'admin') {
+        throw new ForbiddenException('Siapa anda');
+      }
+
       const responseData = {
         id: dataSiswa.siswa.siswa_id,
+        status: dataSiswa.status,
         siswa: {
           nama: dataSiswa.siswa.nama,
           tempat_lahir: dataSiswa.siswa.tempat_lahir,
@@ -291,7 +306,7 @@ export class DaftarSiswaService {
 
   async updateDaftarSiswa(
     siswa_id: string,
-    user_id: string,
+    { id, role }: Partial<IPayloadToken>,
     updatedData: Partial<IDataSiswa>,
     berkas: {
       akta?: Express.Multer.File;
@@ -310,6 +325,20 @@ export class DaftarSiswaService {
       }
 
       if (
+        role !== 'admin' &&
+        !data_siswa.nis &&
+        updatedData.status !== STATUS_SISWA.PENDAFTAR
+      ) {
+        throw new BadRequestException('user tidak bisa mengubah status');
+      }
+
+      if (data_siswa.nis && updatedData.status !== STATUS_SISWA.SISWA) {
+        throw new BadRequestException(
+          'status siswa tidak bisa diubah karena sudah memiliki nis',
+        );
+      }
+
+      if (
         Number(updatedData.tahun_ajaran.split('/')[0]) <
         Number(data_siswa.tahun_ajaran.tahun_ajaran.split[0])
       ) {
@@ -318,8 +347,17 @@ export class DaftarSiswaService {
         );
       }
 
-      if (data_siswa.siswa.user_id !== user_id) {
+      if (data_siswa.siswa.user_id !== id && role !== 'admin') {
         throw new UnauthorizedException('Siapa anda');
+      }
+
+      if (
+        updatedData.status !== STATUS_SISWA.PENDAFTAR &&
+        data_siswa.jenjang !== data_siswa.kelas.jenjang
+      ) {
+        throw new BadRequestException(
+          `jenjang tidak bisa diubah dikarenakan jenjang kelas ${data_siswa.kelas.jenjang}`,
+        );
       }
 
       await this.entityManager.transaction(async (entityManager) => {
@@ -361,7 +399,7 @@ export class DaftarSiswaService {
 
       if (berkas.akta) {
         await this.fileService.updateBerkas(
-          user_id,
+          data_siswa.siswa.user_id,
           data_siswa.akta.file_id,
           berkas.akta[0],
         );
@@ -369,7 +407,7 @@ export class DaftarSiswaService {
 
       if (berkas.foto) {
         await this.fileService.updateBerkas(
-          user_id,
+          data_siswa.siswa.user_id,
           data_siswa.foto.file_id,
           berkas.foto[0],
         );
@@ -377,7 +415,7 @@ export class DaftarSiswaService {
 
       if (berkas.kartu_keluarga) {
         await this.fileService.updateBerkas(
-          user_id,
+          data_siswa.siswa.user_id,
           data_siswa.kartu_keluarga.file_id,
           berkas.kartu_keluarga[0],
         );

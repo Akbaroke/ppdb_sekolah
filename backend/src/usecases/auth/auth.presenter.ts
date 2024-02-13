@@ -53,7 +53,7 @@ export class ResponseResetPassword implements IMessage {
   @ApiProperty({ example: HttpStatus.OK, type: Number })
   httpStatus: number;
 
-  @ApiProperty({ example: 'Reset password berhasil', type: String })
+  @ApiProperty({ example: 'Password berhasil diubah', type: String })
   message: string;
 }
 

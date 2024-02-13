@@ -16,12 +16,28 @@ export class FileService {
     return id;
   }
 
-  async createBerkas(user_id: string, files: ICreateBerkas): Promise<File[]> {
+  async createIjazah(
+    user_id: string,
+    file: Express.Multer.File,
+  ): Promise<File> {
+    try {
+      const ijazah = await this.firebaseService.upload(file, user_id);
+
+      return this.entityManager.create(File, {
+        file_id: `ijazah_${ijazah.id}`,
+        url: ijazah.url,
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async createBerkas(folder: string, files: ICreateBerkas): Promise<File[]> {
     try {
       const [akta, kartu_keluarga, foto] = await Promise.all([
-        this.firebaseService.upload(files.akta, user_id),
-        this.firebaseService.upload(files.kartu_keluarga, user_id),
-        this.firebaseService.upload(files.foto, user_id),
+        this.firebaseService.upload(files.akta, folder),
+        this.firebaseService.upload(files.kartu_keluarga, folder),
+        this.firebaseService.upload(files.foto, folder),
       ]);
 
       const berkas = this.entityManager.create(File, [
@@ -39,7 +55,7 @@ export class FileService {
     }
   }
 
-  async deleteBerkas(folder: string, fileId: string): Promise<void> {
+  async deleteFile(folder: string, fileId: string): Promise<void> {
     try {
       const id = this.getFileId(fileId);
       await this.firebaseService.delete(`${folder}/${id}`);
@@ -55,19 +71,30 @@ export class FileService {
   ): Promise<void> {
     try {
       const id = this.getFileId(file_id);
-      await this.deleteBerkas(folder, id);
+      await this.deleteFile(folder, id);
       await this.firebaseService.update(`${folder}/${id}`, file);
     } catch (error) {
       throw error;
     }
   }
 
-  async saveBerkas(
+  async saveFiles(
     files: File[],
     entityManager: EntityManager = this.entityManager,
   ): Promise<File[]> {
     try {
       return await entityManager.save(files);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async saveFile(
+    file: File,
+    entityManager: EntityManager = this.entityManager,
+  ): Promise<File> {
+    try {
+      return await entityManager.save(file);
     } catch (error) {
       throw error;
     }

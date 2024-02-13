@@ -5,13 +5,13 @@ import {
   TPayloadVerifyToken,
 } from 'src/infrastucture/authentication/token-management/token.interface';
 import { JWTService } from 'src/infrastucture/authentication/token-management/token.service';
-import { IGetToken, IPayloadSaveToken, ITokenService } from './token.interface';
+import { IGetToken, IPayloadSaveToken } from './token.interface';
 import { TokenRepository } from './token.repository';
 import { ConfigService } from '@nestjs/config';
 import { Token } from './token.entity';
 
 @Injectable()
-export class TokenService implements ITokenService {
+export class TokenService {
   constructor(
     private readonly jwtService: JWTService,
     private readonly tokenRepository: TokenRepository,

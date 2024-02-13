@@ -3,10 +3,10 @@ import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Kelas } from './kelas.entity';
 import { TahunAjaran } from '../tahun-ajaran/tahun-ajaran.entity';
-import { IKelasRepository, JENJANG } from './kelas.interface';
+import { JENJANG } from './kelas.interface';
 
 @Injectable()
-export class KelasRepository implements IKelasRepository {
+export class KelasRepository {
   constructor(
     @InjectRepository(Kelas)
     private readonly kelasRepository: Repository<Kelas>,

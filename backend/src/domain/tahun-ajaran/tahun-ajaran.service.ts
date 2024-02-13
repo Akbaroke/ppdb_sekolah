@@ -2,13 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { TahunAjaranRepository } from './tahun-ajaran.repository';
 import { EntityManager } from 'typeorm';
 import { TahunAjaran } from './tahun-ajaran.entity';
-import {
-  ICreateTahunAjaran,
-  ITahunAjaranService,
-} from './tahun-ajaran.interface';
+import { ICreateTahunAjaran } from './tahun-ajaran.interface';
 
 @Injectable()
-export class TahunAjaranService implements ITahunAjaranService {
+export class TahunAjaranService {
   constructor(
     private readonly tahunAjaranRepository: TahunAjaranRepository,
     private readonly entityManager: EntityManager,

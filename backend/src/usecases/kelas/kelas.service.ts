@@ -9,12 +9,12 @@ import { KelasService } from 'src/domain/kelas/kelas.service';
 import { TahunAjaranService } from 'src/domain/tahun-ajaran/tahun-ajaran.service';
 import { IMessage } from '../message.interface';
 import { TahunAjaran } from 'src/domain/tahun-ajaran/tahun-ajaran.entity';
-import { IResponseDataKelas, IUsecaseKelasService } from './kelas.interface';
+import { IResponseDataKelas } from './kelas.interface';
 import { Kelas } from 'src/domain/kelas/kelas.entity';
 import { PaginationService } from '../services/pagination.service';
 
 @Injectable()
-export class UsecaseKelasService implements IUsecaseKelasService {
+export class UsecaseKelasService {
   constructor(
     private kelasService: KelasService,
     private tahunAjaranService: TahunAjaranService,

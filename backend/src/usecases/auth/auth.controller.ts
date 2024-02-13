@@ -28,16 +28,18 @@ import {
   ResponseResetPassword,
 } from './auth.presenter';
 import { LoginDto, MeDto } from './dtos/login-user.dto';
-import { IAuthController } from './auth.interface';
 import { VerificationUserDto } from './dtos/verification-user.dto';
 import { TYPE_OTP } from 'src/domain/otp/otp.interface';
 import { IMessage } from '../message.interface';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { GetUser } from 'src/infrastucture/common/decorators/getUser.decorator';
+import { IPayloadToken } from 'src/infrastucture/authentication/token-management/token.interface';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 
 @ApiTags('Auth')
 @Controller()
-export class AuthController implements IAuthController {
+export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiBody({ type: RegisterDto })
@@ -127,6 +129,24 @@ export class AuthController implements IAuthController {
     @Body() { email, new_password, token }: ResetPasswordDto,
   ): Promise<IMessage> {
     return await this.authService.resetPassword(token, email, new_password);
+  }
+
+  @ApiOperation({ description: 'PATCH - api/change_password' })
+  @ApiResponse({
+    description: 'Berhasil ganti password',
+    type: ResponseResetPassword,
+    status: HttpStatus.OK,
+  })
+  @Patch('change_password')
+  async change_password(
+    @GetUser() { email }: IPayloadToken,
+    @Body() { old_password, new_password }: ChangePasswordDto,
+  ): Promise<IMessage> {
+    return await this.authService.changePassword(
+      email,
+      old_password,
+      new_password,
+    );
   }
 
   @ApiOperation({ description: 'POST - api/refresh_token' })

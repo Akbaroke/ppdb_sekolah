@@ -2,14 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Token } from './token.entity';
 import { Repository, UpdateResult } from 'typeorm';
-import {
-  IGetToken,
-  IPayloadSaveToken,
-  ITokenRepository,
-} from './token.interface';
+import { IGetToken, IPayloadSaveToken } from './token.interface';
 
 @Injectable()
-export class TokenRepository implements ITokenRepository {
+export class TokenRepository {
   constructor(
     @InjectRepository(Token)
     private readonly tokenRepository: Repository<Token>,

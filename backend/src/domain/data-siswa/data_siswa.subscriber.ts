@@ -42,7 +42,9 @@ export class DataSiswaSubscriber
         'SELECT no_pendaftaran FROM data_siswa ORDER BY no_pendaftaran DESC LIMIT 1 FOR UPDATE',
       );
 
-      const lastNoPendaftaran = result.length ? result[0].no_pendaftaran : '0';
+      const lastNoPendaftaran = result.length
+        ? result[0].no_pendaftaran
+        : '1000';
 
       const year = now.getFullYear().toString().slice(2);
       const month = ('0' + (now.getMonth() + 1)).slice(-2);

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { OtpRepository } from './otp.repository';
-import { IOtpService, TYPE_OTP } from './otp.interface';
+import { TYPE_OTP } from './otp.interface';
 import { EntityManager, UpdateResult } from 'typeorm';
 import { Otp } from './otp.entity';
 import { OtpGenerator } from 'src/infrastucture/authentication/otp-management/otp.service';
 
 @Injectable()
-export class OtpService implements IOtpService {
+export class OtpService {
   constructor(
     private readonly otpRepository: OtpRepository,
     private readonly entityManager: EntityManager,

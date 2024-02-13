@@ -5,12 +5,12 @@ import {
 } from '@nestjs/common';
 import { KelasRepository } from './kelas.repository';
 import { EntityManager, UpdateResult } from 'typeorm';
-import { ICreateKelas, IKelasService, JENJANG } from './kelas.interface';
+import { ICreateKelas, JENJANG } from './kelas.interface';
 import { Kelas } from './kelas.entity';
 import { TahunAjaran } from '../tahun-ajaran/tahun-ajaran.entity';
 
 @Injectable()
-export class KelasService implements IKelasService {
+export class KelasService {
   constructor(
     private readonly kelasRepository: KelasRepository,
     private readonly entityManager: EntityManager,

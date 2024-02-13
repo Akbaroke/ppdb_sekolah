@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { TahunAjaran } from './tahun-ajaran.entity';
 import { Like, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ITahunAjaranRepository } from './tahun-ajaran.interface';
 
 @Injectable()
-export class TahunAjaranRepository implements ITahunAjaranRepository {
+export class TahunAjaranRepository {
   constructor(
     @InjectRepository(TahunAjaran)
     private readonly tahunAjaranRepository: Repository<TahunAjaran>,
@@ -33,7 +32,7 @@ export class TahunAjaranRepository implements ITahunAjaranRepository {
         skip,
         take: limit,
         order: {
-          created_at: order,
+          updated_at: order,
         },
       });
 

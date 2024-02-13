@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from './user.repository';
 import { User } from './user.entity';
 import { EntityManager, UpdateResult } from 'typeorm';
-import { IUserService, STATUS_USER } from './user.interface';
+import { STATUS_USER } from './user.interface';
 
 @Injectable()
-export class UserService implements IUserService {
+export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly entityManager: EntityManager,

@@ -24,7 +24,7 @@ export class TahunAjaranController {
   @Roles(ROLE_USER.ADMIN)
   @Post()
   async create_tahun_ajaran(@Body() body: CreateTahunAjaranDto) {
-    return await this.tahunAjaranService.create(body);
+    return await this.tahunAjaranService.createTahunAjaran(body);
   }
 
   @Roles(ROLE_USER.ADMIN)
@@ -34,7 +34,7 @@ export class TahunAjaranController {
     id: string,
     @Body() body: UpdateTahunAjaranDto,
   ) {
-    return await this.tahunAjaranService.update(id, body);
+    return await this.tahunAjaranService.updateTahunAjaran(id, body);
   }
 
   @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)
@@ -48,7 +48,12 @@ export class TahunAjaranController {
     latest?: boolean,
     @Query('s', new DefaultValuePipe(null)) search?: string,
   ) {
-    return await this.tahunAjaranService.getAll(limit, page, latest, search);
+    return await this.tahunAjaranService.getAllTahunAjaran(
+      limit,
+      page,
+      latest,
+      search,
+    );
   }
 
   @Roles(ROLE_USER.ADMIN, ROLE_USER.USER)
@@ -57,6 +62,6 @@ export class TahunAjaranController {
     @Param('id', ValidationUUID)
     id: string,
   ) {
-    return await this.tahunAjaranService.getById(id);
+    return await this.tahunAjaranService.getTahunAjaran(id);
   }
 }

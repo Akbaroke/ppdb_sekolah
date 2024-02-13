@@ -55,7 +55,7 @@ export class User implements IUser {
   @CreateDateColumn({
     type: 'bigint',
     nullable: false,
-    default: Date.now(),
+    default: new Date().getTime(),
     unsigned: true,
   })
   created_at: number;
@@ -63,7 +63,7 @@ export class User implements IUser {
   @CreateDateColumn({
     type: 'bigint',
     nullable: false,
-    default: Date.now(),
+    default: new Date().getTime(),
     unsigned: true,
   })
   updated_at: number;

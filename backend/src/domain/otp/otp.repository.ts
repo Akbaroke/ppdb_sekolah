@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 import { Otp } from './otp.entity';
-import { IOtpRepository, TYPE_OTP } from './otp.interface';
+import { TYPE_OTP } from './otp.interface';
 
 @Injectable()
-export class OtpRepository implements IOtpRepository {
+export class OtpRepository {
   constructor(
     @InjectRepository(Otp) private readonly otpRepository: Repository<Otp>,
   ) {}

@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 import { UserService } from 'src/domain/user/user.service';
 import {
-  IAuthService,
   TMessageWithEmail,
   TMessageWithToken,
   TMessageWithIPayloadToken,
@@ -27,7 +26,7 @@ import { IMessage } from '../message.interface';
 import { BlacklistService } from './blacklist.service';
 
 @Injectable()
-export class AuthService implements IAuthService {
+export class AuthService {
   constructor(
     private readonly entityManager: EntityManager,
     private readonly userService: UserService,
@@ -261,6 +260,26 @@ export class AuthService implements IAuthService {
       return {
         httpStatus: HttpStatus.OK,
         message: 'Reset password berhasil',
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async changePassword(
+    email: string,
+    old_password: string,
+    new_password: string,
+  ): Promise<IMessage> {
+    try {
+      const user = await this.findUserByEmail(email);
+      await this.checkPassword(old_password, user.password);
+      const password = await this.hashingPassword(new_password);
+      await this.userService.updateUser(email, { password });
+
+      return {
+        message: 'Password berhasil diubah',
+        httpStatus: HttpStatus.OK,
       };
     } catch (error) {
       throw error;
