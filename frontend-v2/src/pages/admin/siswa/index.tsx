@@ -44,9 +44,9 @@ export default function Siswa() {
     <div className="flex flex-col gap-3">
       <Card
         header={
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center flex-wrap gap-y-3">
             <h1 className="font-bold text-lg">Siswa</h1>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ml-auto">
               <InputSearch searchValue="" setSearchValue={() => null} />
               <ButtonRefresh isLoading={false} onClick={() => null} />
             </div>

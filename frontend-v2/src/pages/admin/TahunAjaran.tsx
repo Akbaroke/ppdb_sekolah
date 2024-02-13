@@ -36,7 +36,9 @@ export default function TahunAjaran() {
 
   const rows = data?.map((element) => (
     <Table.Tr key={element.tahun_ajaran_id}>
-      <Table.Td className="font-semibold">{element.tahun_ajaran}</Table.Td>
+      <Table.Td className="text-blue-400 text-nowrap font-bold">
+        {element.tahun_ajaran}
+      </Table.Td>
       <Table.Td>
         <NumberFormatter
           prefix="Rp "
@@ -108,9 +110,9 @@ export default function TahunAjaran() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="flex justify-between items-center">
+      <Card className="flex justify-between items-center flex-wrap gap-y-3">
         <h1 className="font-bold text-lg">Tahun Ajaran</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
           <InputSearch
             searchValue={searchValue}
             setSearchValue={setSearchValue}

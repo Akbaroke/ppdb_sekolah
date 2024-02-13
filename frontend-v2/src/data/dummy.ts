@@ -141,4 +141,67 @@ const listPendaftarDummy = [
   },
 ];
 
-export { listSiswaTerdaftarDummy, listSiswaDummy, listPendaftarDummy };
+const listPembayaranDummy = [
+  {
+    id: '1',
+    no_transaksi: '001',
+    tanggal: '10/01/24',
+    nis: '01101241',
+    nama: 'Joni Sutejo',
+    kelas: 'TKA-1',
+    spp_bulan: 'Januari 2024',
+    nominal: 300_000,
+    isPaid: true,
+  },
+  {
+    id: '2',
+    no_transaksi: '001',
+    tanggal: '10/01/24',
+    nis: '01101241',
+    nama: 'Joni Sutejo',
+    kelas: 'TKA-1',
+    spp_bulan: 'Januari 2024',
+    nominal: 300_000,
+    isPaid: false,
+  },
+  {
+    id: '3',
+    no_transaksi: '001',
+    tanggal: '10/01/24',
+    nis: '01101241',
+    nama: 'Joni Sutejo',
+    kelas: 'TKA-1',
+    spp_bulan: 'Januari 2024',
+    nominal: 300_000,
+    isPaid: false,
+  },
+  {
+    id: '4',
+    no_transaksi: '001',
+    tanggal: '10/01/24',
+    nis: '01101241',
+    nama: 'Joni Sutejo',
+    kelas: 'TKA-1',
+    spp_bulan: 'Januari 2024',
+    nominal: 300_000,
+    isPaid: true,
+  },
+  {
+    id: '5',
+    no_transaksi: '001',
+    tanggal: '10/01/24',
+    nis: '01101241',
+    nama: 'Joni Sutejo',
+    kelas: 'TKA-1',
+    spp_bulan: 'Januari 2024',
+    nominal: 300_000,
+    isPaid: true,
+  },
+];
+
+export {
+  listSiswaTerdaftarDummy,
+  listSiswaDummy,
+  listPendaftarDummy,
+  listPembayaranDummy,
+};

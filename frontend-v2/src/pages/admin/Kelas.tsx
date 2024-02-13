@@ -136,9 +136,9 @@ export default function Kelas() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="flex justify-between items-center">
+      <Card className="flex justify-between items-center flex-wrap gap-y-3">
         <h1 className="font-bold text-lg">Kelas</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
           <InputSearch
             searchValue={searchValue}
             setSearchValue={setSearchValue}

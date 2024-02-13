@@ -12,7 +12,7 @@ export default function Pendaftar() {
     <div className="flex flex-col gap-5">
       <Card className="flex justify-between items-center">
         <h1 className="font-bold text-lg">Pendaftar</h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
           <InputSearch searchValue="" setSearchValue={() => null} />
           <ButtonRefresh isLoading={false} onClick={() => null} />
         </div>

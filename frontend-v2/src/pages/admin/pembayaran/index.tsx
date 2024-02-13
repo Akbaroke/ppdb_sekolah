@@ -1,35 +1,37 @@
 import { Badge, Grid } from '@mantine/core';
-import Card from '../../components/Card';
-import InputSearch from '../../components/InputSearch';
+import Card from '../../../components/Card';
+import InputSearch from '../../../components/InputSearch';
+import { useNavigate } from 'react-router-dom';
 
 const pembayaran = [
   {
     code: 'SPP',
     type: 'Pembayaran SPP',
-    href: '/pembayaran-spp',
+    href: '/spp',
     updated_at: '01/01/2024',
   },
   {
     code: 'DUSB',
     type: 'Daftar Ulang Siswa Baru',
-    href: '/daftar-ulang-siswa-baru',
+    href: '/dusb',
     updated_at: '01/01/2024',
   },
   {
     code: 'DUKK',
     type: 'Daftar Ulang Kenaikan Kelas',
-    href: '/daftar-ulang-kenaikan-kelas',
+    href: '/dukk',
     updated_at: '01/01/2024',
   },
   {
     code: 'PI',
     type: 'Pembayaran Ijazah',
-    href: '/pembayaran-ijazah',
+    href: '/pi',
     updated_at: '01/01/2024',
   },
 ];
 
 export default function Pembayaran() {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col gap-3">
       <Card className="flex justify-between items-center">
@@ -39,8 +41,11 @@ export default function Pembayaran() {
         </div>
       </Card>
       <Grid gutter="xs">
-        {pembayaran.map((item) => (
-          <Grid.Col span={{ base: 12, md: 6 }}>
+        {pembayaran.map((item, index) => (
+          <Grid.Col
+            span={{ base: 12, md: 6 }}
+            key={index}
+            onClick={() => navigate(`/admin/pembayaran${item.href}`)}>
             <Card className="flex justify-between cursor-pointer shadow-md hover:shadow-none transition-all duration-300">
               <div className="flex flex-col gap-1">
                 <h1 className="font-semibold text-sm">{item.type}</h1>
