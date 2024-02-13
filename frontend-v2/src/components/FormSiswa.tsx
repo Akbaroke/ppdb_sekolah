@@ -367,7 +367,7 @@ export default function FormSiswa({
         <div className="flex flex-col gap-3 p-2">
           <InputFile
             label="Akta"
-            description="Unggah Akta dalam format PDF,JPEG,PNG dengan ukuran maksimal 1MB"
+            description="Berupa foto atau softcopy (PDF,JPEG,PNG) - Max.1MB"
             placeholder="Pilih File"
             value={form.values.akta as File}
             error={form.errors.akta as string}
@@ -378,7 +378,7 @@ export default function FormSiswa({
           />
           <InputFile
             label="Kartu Keluarga"
-            description="Unggah Kartu Keluarga dalam format PDF,JPEG,PNG dengan ukuran maksimal 1MB"
+            description="Berupa foto atau softcopy (PDF,JPEG,PNG) - Max.1MB"
             placeholder="Pilih File"
             value={form.values.kartu_keluarga as File}
             error={form.errors.kartu_keluarga as string}
@@ -389,7 +389,7 @@ export default function FormSiswa({
           />
           <InputFile
             label="Foto"
-            description="Unggah Foto dalam format JPEG,PNG dengan ukuran maksimal 1MB (Berpakaian rapi dan sopan)"
+            description="Foto berpakaian sopan dan rapi (JPEG, JPG ,PNG) - Max.1MB"
             placeholder="Pilih File"
             value={form.values.foto as File}
             error={form.errors.foto as string}
