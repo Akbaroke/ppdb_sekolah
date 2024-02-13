@@ -3,6 +3,12 @@ interface Timestamp {
   updated_at?: string;
 }
 
+export interface Pagination {
+  currentPage: number;
+  totalData: number;
+  totalPage: number;
+}
+
 export interface DataUser {
   isLogin: boolean;
   email: string;

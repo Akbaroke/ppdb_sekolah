@@ -130,7 +130,12 @@ export default function VerifyOtp() {
         onChange={(e) => form.setFieldValue('email', e.currentTarget.value)}
         readOnly={isLoading}
       />
-      <Button fullWidth mt="xl" type="submit" disabled={!form.isValid()}>
+      <Button
+        fullWidth
+        mt="xl"
+        type="submit"
+        disabled={!form.isValid()}
+        loading={isLoading}>
         Lanjutkan
       </Button>
       <div className="mt-6 flex flex-col gap-1">

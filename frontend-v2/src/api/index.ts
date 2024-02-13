@@ -18,7 +18,7 @@ api.interceptors.request.use(
   }
 );
 
-// Tambahkan interceptor untuk menangani respons 403 (token expired)
+// Tambahkan interceptor untuk menangani respons 401 (token expired)
 api.interceptors.response.use(
   (response) => {
     return response;
@@ -26,8 +26,8 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Cek apakah respons adalah 403 (token expired)
-    if (error.response.status === 403 && !originalRequest._retry) {
+    // Cek apakah respons adalah 401 (token expired)
+    if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       // Lakukan refresh token dan coba kirim permintaan lagi

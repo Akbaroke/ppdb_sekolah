@@ -1,13 +1,11 @@
 import { useForm } from '@mantine/form';
-import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   TahunAjaranAsync,
-  fetchTahunAjaran,
+  fetchSearchTahunAjaran,
 } from '../redux/slices/tahunAjaranSlice';
 import {
   Button,
-  FileInput,
   Input,
   NumberInput,
   Select,
@@ -15,34 +13,67 @@ import {
   Textarea,
 } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
-import { IconDeviceFloppy } from '@tabler/icons-react';
+import {
+  IconDeviceFloppy,
+  IconSchool,
+  IconTransferOut,
+} from '@tabler/icons-react';
 import calculateAge from '../utils/calculateAge';
 import { IMaskInput } from 'react-imask';
 import {
-  agamaConfig,
-  jenisKelaminConfig,
-  jenjangConfig,
-  jobsConfig,
+  AGAMA_LIST,
+  GENDER_LIST,
+  JENJANG_LIST,
+  JOBS_LIST,
 } from '../data/config';
 import { FormType } from '../interfaces/components';
+import InputFile from './InputFile';
+import { DataUser } from '../interfaces/store';
+import { useEffect, useState } from 'react';
+import { useDebouncedValue } from '@mantine/hooks';
 
 type Props = {
+  type: 'create' | 'edit';
   handleSubmit: (e: FormType) => void;
-  initialValue: FormType;
+  initialValue?: FormType;
 };
 
-export default function FormSiswa({ handleSubmit, initialValue }: Props) {
+const defaultValue: FormType = {
+  nama_lengkap: '',
+  tanggal_lahir: null,
+  jenis_kelamin: '',
+  tinggi_badan: 0,
+  tempat_lahir: '',
+  umur: '',
+  agama: '',
+  berat_badan: 0,
+  nama_ibu: '',
+  nama_bapak: '',
+  nama_wali: '',
+  pekerjaan: '',
+  no_telepon: '',
+  alamat: '',
+  akta: '',
+  kartu_keluarga: '',
+  foto: '',
+  jenjang: '',
+  tahun_ajaran: '',
+};
+
+export default function FormSiswa({
+  type,
+  handleSubmit,
+  initialValue = defaultValue,
+}: Props) {
   const dispatch = useDispatch();
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [debounced] = useDebouncedValue(searchValue, 500);
   const tahunData = useSelector(
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
   );
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    dispatch(fetchTahunAjaran());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { role } = useSelector((state: { auth: DataUser }) => state.auth);
+  const isAdmin = role === 'admin';
+  const isUserEditble = type === 'edit' && !isAdmin;
 
   const isMinimumLength = (value: string) => value.length >= 3;
   const isAlphabeticWithSpaces = (value: string) =>
@@ -95,19 +126,19 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
           : 'Minimal 3 karakter. Hanya boleh huruf, angka, titik, koma, dan spasi diantara kata',
       akta: (value) =>
         value
-          ? isFileSizeValid(value)
+          ? isFileSizeValid(value as File)
             ? null
             : 'File tidak boleh melebihi 1MB'
           : 'Wajib diisi',
       kartu_keluarga: (value) =>
         value
-          ? isFileSizeValid(value)
+          ? isFileSizeValid(value as File)
             ? null
             : 'File tidak boleh melebihi 1MB'
           : 'Wajib diisi',
       foto: (value) =>
         value
-          ? isFileSizeValid(value)
+          ? isFileSizeValid(value as File)
             ? null
             : 'File tidak boleh melebihi 1MB'
           : 'Wajib diisi',
@@ -115,6 +146,17 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
       tahun_ajaran: (value: string) => (value ? null : 'Wajib diisi'),
     },
   });
+
+  useEffect(() => {
+    if (debounced !== null){
+      dispatch(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        fetchSearchTahunAjaran({ searchQuery: debounced })
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debounced]);
 
   return (
     <form
@@ -133,6 +175,7 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               onChange={(e) =>
                 form.setFieldValue('nama_lengkap', e.currentTarget.value)
               }
+              disabled={isUserEditble}
             />
             <DateInput
               label="Tanggal Lahir"
@@ -144,15 +187,23 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
                 form.setFieldValue('tanggal_lahir', e);
                 form.setFieldValue('umur', calculateAge(e as Date).toString());
               }}
+              disabled={isUserEditble}
             />
             <Select
               required
               label="Jenis Kelamin"
               placeholder="Jenis kelamin"
-              data={jenisKelaminConfig}
+              data={GENDER_LIST}
               value={form.values.jenis_kelamin}
               error={form.errors.jenis_kelamin as string}
               onChange={(e) => form.setFieldValue('jenis_kelamin', e as string)}
+              disabled={isUserEditble}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
             <NumberInput
               required
@@ -181,6 +232,7 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               onChange={(e) =>
                 form.setFieldValue('tempat_lahir', e.currentTarget.value)
               }
+              disabled={isUserEditble}
             />
             <TextInput
               label="Umur"
@@ -196,10 +248,16 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               required
               label="Agama"
               placeholder="Agama"
-              data={agamaConfig}
+              data={AGAMA_LIST}
               value={form.values.agama}
               error={form.errors.agama as string}
               onChange={(e) => form.setFieldValue('agama', e as string)}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
             <NumberInput
               required
@@ -233,6 +291,7 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               onChange={(e) =>
                 form.setFieldValue('nama_bapak', e.currentTarget.value)
               }
+              disabled={isUserEditble}
             />
             <TextInput
               label="Nama Ibu"
@@ -243,15 +302,22 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               onChange={(e) =>
                 form.setFieldValue('nama_ibu', e.currentTarget.value)
               }
+              disabled={isUserEditble}
             />
             <Select
               required
               label="Pekerjaan"
               placeholder="Pekerjaan"
-              data={jobsConfig}
+              data={JOBS_LIST}
               value={form.values.pekerjaan}
               error={form.errors.pekerjaan as string}
               onChange={(e) => form.setFieldValue('pekerjaan', e as string)}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
             <Input.Wrapper required label="No. Telepon">
               <Input
@@ -299,44 +365,38 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
       <div>
         <h1 className="font-semibold">Berkas Dokumen Siswa</h1>
         <div className="flex flex-col gap-3 p-2">
-          <FileInput
+          <InputFile
             label="Akta"
-            description="Unggah Akta dalam format PDF,JPEG,PNG dengan ukuran maksimal 1MB"
+            description="Berupa foto atau softcopy (PDF,JPEG,PNG) - Max.1MB"
             placeholder="Pilih File"
-            required
-            value={form.values.akta}
+            value={form.values.akta as File}
             error={form.errors.akta as string}
             onChange={(e) => {
-              form.setFieldValue('akta', e);
+              form.setFieldValue('akta', e as File);
             }}
-            clearable
-            accept="image/png,image/jpeg,application/pdf"
+            accept={['image/png', 'image/jpeg', 'application/pdf']}
           />
-          <FileInput
+          <InputFile
             label="Kartu Keluarga"
-            description="Unggah Kartu Keluarga dalam format PDF,JPEG,PNG dengan ukuran maksimal 1MB"
+            description="Berupa foto atau softcopy (PDF,JPEG,PNG) - Max.1MB"
             placeholder="Pilih File"
-            required
-            value={form.values.kartu_keluarga}
+            value={form.values.kartu_keluarga as File}
             error={form.errors.kartu_keluarga as string}
             onChange={(e) => {
-              form.setFieldValue('kartu_keluarga', e);
+              form.setFieldValue('kartu_keluarga', e as File);
             }}
-            clearable
-            accept="image/png,image/jpeg,application/pdf"
+            accept={['image/png', 'image/jpeg', 'application/pdf']}
           />
-          <FileInput
+          <InputFile
             label="Foto"
-            description="Unggah Foto dalam format JPEG,PNG dengan ukuran maksimal 1MB (Berpakaian rapi dan sopan)"
+            description="Foto berpakaian sopan dan rapi (JPEG, JPG ,PNG) - Max.1MB"
             placeholder="Pilih File"
-            required
-            value={form.values.foto}
+            value={form.values.foto as File}
             error={form.errors.foto as string}
             onChange={(e) => {
-              form.setFieldValue('foto', e);
+              form.setFieldValue('foto', e as File);
             }}
-            clearable
-            accept="image/png,image/jpeg"
+            accept={['image/png', 'image/jpeg']}
           />
         </div>
       </div>
@@ -348,10 +408,17 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               required
               label="Jenjang"
               placeholder="Jenjang"
-              data={jenjangConfig}
+              data={JENJANG_LIST}
               value={form.values.jenjang}
               error={form.errors.jenjang as string}
               onChange={(e) => form.setFieldValue('jenjang', e as string)}
+              disabled={isUserEditble}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
           </div>
           <div className="w-full flex flex-col">
@@ -360,24 +427,52 @@ export default function FormSiswa({ handleSubmit, initialValue }: Props) {
               label="Tahun Ajaran"
               placeholder="Tahun ajaran"
               data={tahunData.data?.map((item) => item.tahun_ajaran).sort()}
-              value={form.values.tahun_ajaran}
+              // value={form.values.tahun_ajaran}
               error={form.errors.tahun_ajaran as string}
               onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
+              searchable
+              searchValue={searchValue as string}
+              onSearchChange={setSearchValue}
+              disabled={isUserEditble}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
             />
           </div>
         </div>
       </div>
-      <Button
-        rightSection={<IconDeviceFloppy size={16} />}
-        type="submit"
-        disabled={!form.isValid()}
-        styles={{
-          root: {
-            margin: '14px 30px',
-          },
-        }}>
-        Simpan
-      </Button>
+      <div className="flex justify-center w-full gap-5 p-5">
+        {isAdmin && type === 'edit' && (
+          <Button
+            variant="outline"
+            color="red"
+            className="w-full flex-1"
+            rightSection={<IconTransferOut size={16} />}>
+            Keluarkan
+          </Button>
+        )}
+
+        <Button
+          className="w-full flex-1"
+          rightSection={<IconDeviceFloppy size={16} />}
+          type="submit"
+          disabled={!form.isValid()}>
+          Simpan
+        </Button>
+
+        {isAdmin && type === 'edit' && (
+          <Button
+            variant="outline"
+            color="indigo"
+            className="w-full flex-1"
+            rightSection={<IconSchool size={16} />}>
+            Luluskan
+          </Button>
+        )}
+      </div>
     </form>
   );
 }

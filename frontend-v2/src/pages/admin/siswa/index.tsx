@@ -1,43 +1,42 @@
-import { Button } from '@mantine/core';
-import Card from '../components/Card';
 import { useState } from 'react';
-// import { useParams } from 'react-router-dom';
-import TabProfile from './tabs/TabProfile';
-import TabStatus from './tabs/TabStatus';
-import TabRiwayatPembayaran from './tabs/TabRiwayatPembayaran';
+import TabSiswa from './TabSiswa';
+import Card from '../../../components/Card';
+import { Button } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
-import ButtonBack from '../components/ButtonBack';
+import TabLulus from './TabLulus';
+import TabKeluar from './TabKeluar';
+import ButtonRefresh from '../../../components/ButtonRefresh';
+import InputSearch from '../../../components/InputSearch';
 
 const tabs = [
   {
-    key: 'profile',
-    label: 'Profile',
+    key: 'siswa',
+    label: 'Siswa',
   },
   {
-    key: 'status',
-    label: 'Status',
+    key: 'lulus',
+    label: 'Lulus',
   },
   {
-    key: 'riwayat_pembayaran',
-    label: 'Riwayat Pembayaran',
+    key: 'keluar',
+    label: 'Keluar',
   },
 ];
 
-export default function DetailSiswa() {
+export default function Siswa() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState<string | null>(
     searchParams.get('tab') || tabs[0].key
   );
-  // const { id } = useParams();
 
   const TabsRender = () => {
     switch (activeTab) {
-      case 'profile':
-        return <TabProfile />;
-      case 'status':
-        return <TabStatus />;
-      case 'riwayat_pembayaran':
-        return <TabRiwayatPembayaran />;
+      case 'siswa':
+        return <TabSiswa />;
+      case 'lulus':
+        return <TabLulus />;
+      case 'keluar':
+        return <TabKeluar />;
     }
   };
 
@@ -45,9 +44,12 @@ export default function DetailSiswa() {
     <div className="flex flex-col gap-3">
       <Card
         header={
-          <div className="flex gap-2 items-center">
-            <ButtonBack />
-            <h1 className="font-bold">Data Siswa</h1>
+          <div className="flex justify-between items-center flex-wrap gap-y-3">
+            <h1 className="font-bold text-lg">Siswa</h1>
+            <div className="flex items-center gap-2 ml-auto">
+              <InputSearch searchValue="" setSearchValue={() => null} />
+              <ButtonRefresh isLoading={false} onClick={() => null} />
+            </div>
           </div>
         }
         className="pb-0">

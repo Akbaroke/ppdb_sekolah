@@ -18,8 +18,8 @@ export default function SiswaTerdaftar() {
         </div>
       </Card>
       <Grid gutter="xs">
-        {listSiswaTerdaftarDummy.map((item) => (
-          <Grid.Col span={{ base: 12, md: 6 }}>
+        {listSiswaTerdaftarDummy.map((item, index) => (
+          <Grid.Col span={{ base: 12, md: 6 }} key={index}>
             <Card
               className="flex justify-between shadow-md cursor-pointer hover:shadow-none transition-all duration-300"
               key={item.id}

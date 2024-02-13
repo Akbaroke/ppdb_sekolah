@@ -12,10 +12,13 @@ import GantiKataSandi from '../pages/GantiKataSandi';
 import TahunAjaran from '../pages/admin/TahunAjaran';
 import Kelas from '../pages/admin/Kelas';
 import DetailSiswa from '../pages/DetailSiswa';
-import Siswa from '../pages/admin/Siswa';
 import Pendaftar from '../pages/admin/Pendaftar';
 import DetailPendaftar from '../pages/DetailPendaftar';
-import Pembayaran from '../pages/admin/Pembayaran';
+import Siswa from '../pages/admin/siswa';
+import Pembayaran from '../pages/admin/pembayaran';
+import PembayaranSpp from '../pages/admin/pembayaran/PembayaranSpp';
+import NotFound from '../pages/NotFound';
+
 export type DataRouteType = {
   path: string;
   element: React.ReactElement;
@@ -117,7 +120,15 @@ export default function Root() {
           path: '/pendaftar/:id',
           element: <DetailPendaftar />,
         },
+        {
+          path: '/pembayaran/spp',
+          element: <PembayaranSpp />,
+        },
       ],
+    },
+    {
+      path: '*',
+      element: <NotFound />,
     },
   ];
 

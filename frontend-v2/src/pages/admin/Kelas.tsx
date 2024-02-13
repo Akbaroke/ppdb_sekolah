@@ -4,53 +4,78 @@ import {
   Loader,
   LoadingOverlay,
   NumberFormatter,
+  Pagination,
   Table,
 } from '@mantine/core';
 import Card from '../../components/Card';
-import {
-  IconPencil,
-  IconPlus,
-  IconSearch,
-  IconTrash,
-} from '@tabler/icons-react';
+import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { KelasAsync, fetchKelas } from '../../redux/slices/kelasSlice';
+import {
+  KelasAsync,
+  fetchPaginatedKelas,
+  fetchSearchKelas,
+} from '../../redux/slices/kelasSlice';
 import NotDataFound from '../../components/NotDataFound';
-import { useEffect } from 'react';
-import ModalKelas from '../../components/ModalKelas';
 import ModalConfirm from '../../components/ModalConfirm';
 import api from '../../api';
 import { Notify } from '../../components/Notify';
-import { ErrorResponse } from '../../interfaces/pages';
+import ButtonRefresh from '../../components/ButtonRefresh';
+import handleErrorResponse from '../../services/handleErrorResponse';
+import { useEffect, useState } from 'react';
+import ButtonDelete from '../../components/ButtonDelete';
+import InputSearch from '../../components/InputSearch';
+import ModalForm from '../../components/ModalForm';
 
 export default function Kelas() {
   const dispatch = useDispatch();
-  const { data, isLoading } = useSelector(
+  const [searchValue, setSearchValue] = useState('');
+  const [loadingDelete, setLoadingDelete] = useState('');
+  const { data, pagination, isLoading } = useSelector(
     (state: { kelas: KelasAsync }) => state.kelas
   );
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    dispatch(fetchKelas());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleDeleteKelas = async (id: string) => {
-    Notify('loading', 'Menghapus kelas...' , 'delete-kelas');
+    setLoadingDelete(id);
+    Notify('loading', 'Menghapus kelas...', 'delete-kelas');
     try {
       const { data } = await api.delete(`/kelas/${id}`);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      dispatch(fetchKelas());
+      refresh();
       Notify('success', data.message, 'delete-kelas');
     } catch (error) {
-      Notify(
-        'error',
-        (error as ErrorResponse).response.data.message,
-        'delete-kelas'
-      );
+      handleErrorResponse(error, 'delete-kelas');
+    } finally {
+      setLoadingDelete('');
     }
+  };
+
+  useEffect(() => {
+    dispatch(
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      fetchSearchKelas({ searchQuery: searchValue })
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchValue]);
+
+  const refresh = () => {
+    setSearchValue('');
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    dispatch(fetchPaginatedKelas({}));
+  };
+
+  const handleChangePage = (page: number) => {
+    if (searchValue) {
+      dispatch(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        fetchSearchKelas({ page: page, searchQuery: searchValue })
+      );
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    dispatch(fetchPaginatedKelas({ page: page }));
   };
 
   const rows = data?.map((element) => (
@@ -83,15 +108,17 @@ export default function Kelas() {
           }
           btnTitle="Ya, Hapus"
           onAction={() => handleDeleteKelas(element.id)}>
-          <ActionIcon variant="light" color="red" size="lg">
-            <IconTrash size={18} />
-          </ActionIcon>
+          <ButtonDelete isLoading={loadingDelete === element.id} />
         </ModalConfirm>
-        <ModalKelas type="edit" id={element.id}>
+        <ModalForm
+          title="Ubah Kelas"
+          formType="kelas"
+          actionType="edit"
+          id={element.id}>
           <ActionIcon variant="light" size="lg">
             <IconPencil size={18} />
           </ActionIcon>
-        </ModalKelas>
+        </ModalForm>
       </Table.Td>
     </Table.Tr>
   ));
@@ -109,17 +136,19 @@ export default function Kelas() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="flex justify-between items-center">
+      <Card className="flex justify-between items-center flex-wrap gap-y-3">
         <h1 className="font-bold text-lg">Kelas</h1>
-        <div className="flex items-center gap-2">
-          <ActionIcon variant="light" size="lg">
-            <IconSearch size={18} />
-          </ActionIcon>
-          <ModalKelas type="create">
+        <div className="flex items-center gap-2 ml-auto">
+          <InputSearch
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+          />
+          <ButtonRefresh isLoading={isLoading} onClick={refresh} />
+          <ModalForm title="Tambah Kelas" formType="kelas" actionType="create">
             <ActionIcon variant="light" size="lg">
               <IconPlus size={18} />
             </ActionIcon>
-          </ModalKelas>
+          </ModalForm>
         </div>
       </Card>
       <Card>
@@ -154,6 +183,12 @@ export default function Kelas() {
         ) : (
           <NotDataFound />
         )}
+        <Pagination
+          value={pagination.currentPage}
+          total={pagination.totalPage}
+          onChange={handleChangePage}
+          className="mt-5 ml-auto w-max"
+        />
       </Card>
     </div>
   );

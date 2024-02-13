@@ -13,8 +13,10 @@ const dummyData = [
 export default function TabRiwayatPembayaran() {
   return (
     <div>
-      {dummyData.map((item) => (
-        <Card className="flex justify-between shadow-md cursor-pointer hover:shadow-none transition-all duration-300">
+      {dummyData.map((item, index) => (
+        <Card
+          className="flex justify-between shadow-md cursor-pointer hover:shadow-none transition-all duration-300"
+          key={index}>
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-1">
               <h1 className="font-semibold">{item.type}</h1>

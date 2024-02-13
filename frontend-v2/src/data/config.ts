@@ -1,4 +1,4 @@
-const jobsConfig = [
+const JOBS_LIST = [
   'Belum/ Tidak Bekerja',
   'Mengurus Rumah Tangga',
   'Pelajar/ Mahasiswa',
@@ -46,7 +46,7 @@ const jobsConfig = [
   'Ustadz/ Mubaligh',
 ];
 
-const jenjangConfig = [
+const JENJANG_LIST = [
   {
     value: 'pg',
     label: 'PG',
@@ -61,7 +61,7 @@ const jenjangConfig = [
   },
 ];
 
-const jenisKelaminConfig = [
+const GENDER_LIST = [
   {
     value: 'laki-laki',
     label: 'Laki-laki',
@@ -72,7 +72,7 @@ const jenisKelaminConfig = [
   },
 ];
 
-const agamaConfig = [
+const AGAMA_LIST = [
   {
     value: 'islam',
     label: 'Islam',
@@ -99,4 +99,4 @@ const agamaConfig = [
   },
 ];
 
-export { jobsConfig, jenjangConfig, jenisKelaminConfig, agamaConfig };
+export { JOBS_LIST, JENJANG_LIST, GENDER_LIST, AGAMA_LIST };

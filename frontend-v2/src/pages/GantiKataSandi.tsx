@@ -1,6 +1,7 @@
 import { Button, PasswordInput } from '@mantine/core';
 import Card from '../components/Card';
 import { matchesField, useForm } from '@mantine/form';
+import { Notify } from '../components/Notify';
 
 type FormType = {
   password_old: string;
@@ -38,6 +39,7 @@ export default function GantiKataSandi() {
   });
 
   const handleSubmit = async () => {
+    Notify('error', 'Ganti kata sandi gagal');
     try {
       console.log(form.values);
     } catch (error) {
