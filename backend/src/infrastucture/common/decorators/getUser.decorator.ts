@@ -1,6 +1,6 @@
 import {
   ExecutionContext,
-  UnauthorizedException,
+  ForbiddenException,
   createParamDecorator,
 } from '@nestjs/common';
 
@@ -9,11 +9,11 @@ export const GetUser = createParamDecorator(
     const { user } = context.switchToHttp().getRequest();
     try {
       if (!user) {
-        throw new UnauthorizedException('siapa anda?');
+        throw new ForbiddenException('siapa anda?');
       }
       return user;
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      throw new ForbiddenException(error.message);
     }
   },
 );
