@@ -112,7 +112,14 @@ export class AuthService {
         throw new NotFoundException('Akun tidak ditemukan');
       }
 
-      await this.checkPassword(password, user.password);
+      const IsPAsswordCorrect = await this.checkPassword(
+        password,
+        user.password,
+      );
+
+      if (!IsPAsswordCorrect) {
+        throw new UnauthorizedException('Password salah');
+      }
 
       if (user.status !== 'active') {
         throw new ForbiddenException('Tolong verifikasi akun terlebih dahulu');
@@ -273,7 +280,15 @@ export class AuthService {
   ): Promise<IMessage> {
     try {
       const user = await this.findUserByEmail(email);
-      await this.checkPassword(old_password, user.password);
+      const IsPasswordCorrect = await this.checkPassword(
+        old_password,
+        user.password,
+      );
+
+      if (!IsPasswordCorrect) {
+        throw new BadRequestException('Password tidak sesuai');
+      }
+
       const password = await this.hashingPassword(new_password);
       await this.userService.updateUser(email, { password });
 
@@ -367,15 +382,8 @@ export class AuthService {
   private async checkPassword(
     password: string,
     hashPassord: string,
-  ): Promise<void> {
-    const IsPAsswordCorrect = await this.hashingService.decrypt(
-      password,
-      hashPassord,
-    );
-
-    if (!IsPAsswordCorrect) {
-      throw new UnauthorizedException('Password salah');
-    }
+  ): Promise<boolean> {
+    return await this.hashingService.decrypt(password, hashPassord);
   }
 
   private async findUserByEmail(email: string) {

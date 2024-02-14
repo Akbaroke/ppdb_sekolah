@@ -5,7 +5,6 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { SiswaService } from 'src/domain/siswa/siswa.service';
 import { WaliSiswaService } from 'src/domain/wali-siswa/wali-siswa.service';
@@ -348,7 +347,7 @@ export class DaftarSiswaService {
       }
 
       if (data_siswa.siswa.user_id !== id && role !== 'admin') {
-        throw new UnauthorizedException('Siapa anda');
+        throw new ForbiddenException('Siapa anda');
       }
 
       if (
