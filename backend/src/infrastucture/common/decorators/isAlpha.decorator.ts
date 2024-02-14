@@ -5,10 +5,10 @@ import {
   ValidationArguments,
 } from 'class-validator';
 
-export function IsAlphaAndSpace(validationOptions?: ValidationOptions) {
+export function IsAlpha(validationOptions?: ValidationOptions) {
   return function (object: object, propertyName: string) {
     registerDecorator({
-      name: 'IsAlphaAndSpace',
+      name: 'IsAlpha',
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,

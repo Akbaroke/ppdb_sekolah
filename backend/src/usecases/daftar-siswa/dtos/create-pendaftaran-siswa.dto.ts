@@ -16,14 +16,15 @@ import { STATUS_SISWA } from 'src/domain/data-siswa/data_siswa.interface';
 import { JENJANG } from 'src/domain/kelas/kelas.interface';
 import { AGAMA, JENIS_KELAMIN } from 'src/domain/siswa/siswa.interface';
 import { ICreateWaliSiswa } from 'src/domain/wali-siswa/wali-siswa.interface';
-import { IsAlphaAndSpace } from 'src/infrastucture/common/decorators/isAlphaAndSpace.decorator';
+import { IsAlpha } from 'src/infrastucture/common/decorators/isAlpha.decorator';
+import { IsAlphaAndSlash } from 'src/infrastucture/common/decorators/isAlphaAndSlash.decorator';
 import { validationTahunAjaran } from 'src/infrastucture/common/decorators/validationTahunAjaran.decorator';
 
 class SiswaDto {
   @IsString({ message: 'type nama harus string' })
   @IsNotEmpty({ message: 'nama harus diisi' })
   @MinLength(3)
-  @IsAlphaAndSpace()
+  @IsAlpha()
   nama: string;
 
   @IsEnum(AGAMA, {
@@ -66,12 +67,12 @@ class SiswaDto {
 class WaliSiswaDto implements ICreateWaliSiswa {
   @IsString({ message: 'type nama_ibu harus string' })
   @IsNotEmpty({ message: 'nama_ibu harus diisi' })
-  @IsAlphaAndSpace()
+  @IsAlpha()
   nama_ibu: string;
 
   @IsString({ message: 'type nama_bapak harus string' })
   @IsNotEmpty({ message: 'nama_bapak harus diisi' })
-  @IsAlphaAndSpace()
+  @IsAlpha()
   nama_bapak: string;
 
   @IsOptional()
@@ -83,7 +84,7 @@ class WaliSiswaDto implements ICreateWaliSiswa {
 
   @IsString({ message: 'type pekerjaan harus string' })
   @IsNotEmpty({ message: 'pekerjaan harus diisi' })
-  @IsAlphaAndSpace()
+  @IsAlphaAndSlash()
   pekerjaan: string;
 
   @IsString({ message: 'type alamat harus string' })
