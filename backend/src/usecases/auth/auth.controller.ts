@@ -36,6 +36,8 @@ import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { GetUser } from 'src/infrastucture/common/decorators/getUser.decorator';
 import { IPayloadToken } from 'src/infrastucture/authentication/token-management/token.interface';
 import { ChangePasswordDto } from './dtos/change-password.dto';
+import { Roles } from 'src/infrastucture/common/decorators/roles.decorator';
+import { ROLE_USER } from 'src/domain/user/user.interface';
 
 @ApiTags('Auth')
 @Controller()
@@ -137,6 +139,7 @@ export class AuthController {
     type: ResponseResetPassword,
     status: HttpStatus.OK,
   })
+  @Roles(ROLE_USER.USER, ROLE_USER.ADMIN)
   @Patch('change_password')
   async change_password(
     @GetUser() { email }: IPayloadToken,
