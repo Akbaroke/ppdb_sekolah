@@ -1,9 +1,15 @@
 import FormSiswa from '../../components/FormSiswa';
 import { FormType } from '../../interfaces/components';
 import Card from '../../components/Card';
+import NotDataFound from '../../components/NotDataFound';
+import { Loader } from '@mantine/core';
 
+type Props = {
+  isLoading: boolean;
+  dataSiswa?: FormType;
+};
 
-export default function TabProfile() {
+export default function TabProfile({ isLoading, dataSiswa }: Props) {
   const handleSubmit = async (e: FormType) => {
     try {
       console.log(e);
@@ -14,31 +20,13 @@ export default function TabProfile() {
 
   return (
     <Card>
-      <FormSiswa
-        type="edit"
-        handleSubmit={handleSubmit}
-        initialValue={{
-          nama_lengkap: 'Muhammad Akbar',
-          tanggal_lahir: new Date(),
-          jenis_kelamin: 'Laki-laki',
-          tinggi_badan: 170,
-          tempat_lahir: 'Bandung',
-          umur: '',
-          agama: 'Islam',
-          berat_badan: 65,
-          nama_ibu: '',
-          nama_bapak: '',
-          nama_wali: '',
-          pekerjaan: '',
-          no_telepon: '',
-          alamat: '',
-          akta: '',
-          kartu_keluarga: '',
-          foto: '',
-          jenjang: '',
-          tahun_ajaran: '',
-        }}
-      />
+      {isLoading ? (
+        <Loader color="blue" size="sm" type="dots" className="mx-auto my-10" />
+      ) : dataSiswa ? (
+        <FormSiswa type="edit" handleSubmit={handleSubmit} values={dataSiswa} />
+      ) : (
+        <NotDataFound />
+      )}
     </Card>
   );
 }

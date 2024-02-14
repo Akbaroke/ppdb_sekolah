@@ -1,9 +1,8 @@
 import { Button } from '@mantine/core';
 import Card from '../components/Card';
 import { useState } from 'react';
-// import { useParams } from 'react-router-dom';
-import TabProfile from './tabs/TabProfile';
-import TabStatus from './tabs/TabStatus';
+// import TabProfile from './tabs/TabProfile';
+// import TabStatus from './tabs/TabStatus';
 import TabRiwayatPembayaran from './tabs/TabRiwayatPembayaran';
 import { useSearchParams } from 'react-router-dom';
 import ButtonBack from '../components/ButtonBack';
@@ -34,9 +33,9 @@ export default function DetailSiswa() {
   const TabsRender = () => {
     switch (activeTab) {
       case 'profile':
-        return <TabProfile />;
+        return <TabRiwayatPembayaran />;
       case 'status':
-        return <TabStatus />;
+        return <TabRiwayatPembayaran />;
       case 'riwayat_pembayaran':
         return <TabRiwayatPembayaran />;
     }

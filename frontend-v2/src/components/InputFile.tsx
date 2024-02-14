@@ -12,6 +12,9 @@ type Props = {
   error: string;
   onChange: (e: File | string) => void;
   accept: Accept[];
+  disabled?: boolean;
+  readOnly?: boolean;
+  setError: (e: string) => void;
 };
 
 type Accept = 'application/pdf' | 'image/png' | 'image/jpeg';
@@ -24,17 +27,28 @@ export default function InputFile({
   error,
   onChange,
   accept,
+  disabled,
+  readOnly,
+  setError,
 }: Props) {
-  const [inputValue, setinputValue] = useState<File | null>(null);
+  const [inputValue, setInputValue] = useState<File | null>();
   const [imgUrl, setImgUrl] = useState<string>('');
   const [showType, setShowType] = useState<'image' | 'pdf' | null>(null);
+
+  const isFileSizeValid = (file: File) => file?.size < 1000000;
 
   const valueValidate = async (value: string | File): Promise<File> => {
     if (typeof value === 'string') {
       setImgUrl(value);
       const file = await convertUrlToFile(value);
-      checkFileType(file);
-      return file;
+      const fileFormat = file.type.split('/')[1];
+      const finalFile = new File(
+        [file],
+        `${label.toLowerCase().replace(' ', '-')}.${fileFormat}`,
+        { type: file.type }
+      );
+      checkFileType(finalFile);
+      return finalFile;
     } else {
       checkFileType(value);
       setImgUrl(URL.createObjectURL(value));
@@ -53,13 +67,22 @@ export default function InputFile({
   useEffect(() => {
     if (!value) return;
     valueValidate(value).then((file) => {
-      setinputValue(file);
+      setInputValue(file);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
+  useEffect(() => {
+    inputValue
+      ? isFileSizeValid(inputValue as File)
+        ? setError('')
+        : setError('File tidak boleh melebihi 1MB')
+      : setError('Wajib diisi');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputValue]);
+
   const handleOnChange = (e: File) => {
-    setinputValue(e);
+    setInputValue(e);
     onChange(e);
   };
 
@@ -78,6 +101,8 @@ export default function InputFile({
         clearable
         accept={accept.join(',')}
         className="w-full flex-1"
+        disabled={disabled}
+        readOnly={readOnly}
       />
       {isShowButtonView && (
         <ButtonViewUrl
@@ -85,10 +110,7 @@ export default function InputFile({
           url={imgUrl}
           title={label}
           type={showType}>
-          <ActionIcon
-            variant="light"
-            aria-label="Settings"
-            size="lg">
+          <ActionIcon variant="light" aria-label="Settings" size="lg">
             <IconEye style={{ width: '70%', height: '70%' }} stroke={1.5} />
           </ActionIcon>
         </ButtonViewUrl>

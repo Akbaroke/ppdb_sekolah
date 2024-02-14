@@ -35,10 +35,11 @@ import { useDebouncedValue } from '@mantine/hooks';
 type Props = {
   type: 'create' | 'edit';
   handleSubmit: (e: FormType) => void;
-  initialValue?: FormType;
+  values?: FormType;
+  isLoading?: boolean;
 };
 
-const defaultValue: FormType = {
+const initialValue: FormType = {
   nama_lengkap: '',
   tanggal_lahir: null,
   jenis_kelamin: '',
@@ -58,12 +59,14 @@ const defaultValue: FormType = {
   foto: '',
   jenjang: '',
   tahun_ajaran: '',
+  status: '',
 };
 
 export default function FormSiswa({
   type,
   handleSubmit,
-  initialValue = defaultValue,
+  values = initialValue,
+  isLoading,
 }: Props) {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState<string | null>(null);
@@ -72,14 +75,18 @@ export default function FormSiswa({
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
   );
   const { role } = useSelector((state: { auth: DataUser }) => state.auth);
+  const [errorAkta, setErrorAkta] = useState('')
+  const [errorKK, setErrorKK] = useState('')
+  const [errorFoto, setErrorFoto] = useState('')
+
   const isAdmin = role === 'admin';
   const isUserEditble = type === 'edit' && !isAdmin;
+  const isPendaftar = values?.status === 'pendaftar' ? false : isUserEditble
 
-  const isMinimumLength = (value: string) => value.length >= 3;
+  const isMinimumLength = (value: string) => value?.length >= 3;
   const isAlphabeticWithSpaces = (value: string) =>
     /^[a-zA-Z]+(?:\s{0,2}[a-zA-Z]+)*$/.test(value);
   const isNumeric = (value: number) => value > 0;
-  const isFileSizeValid = (file: File) => file.size < 1000000;
 
   const form = useForm<FormType>({
     validateInputOnChange: true,
@@ -116,7 +123,7 @@ export default function FormSiswa({
           : 'Hanya boleh huruf dan spasi diantara kata',
       pekerjaan: (value: string) => (value ? null : 'Wajib diisi'),
       no_telepon: (value: string) =>
-        value.replace(/[-\s+]/g, '').length > 10
+        value?.replace(/[-\s+]/g, '')?.length > 10
           ? null
           : 'Nomor tidak valid dan Wajib diisi',
       alamat: (value: string) =>
@@ -124,31 +131,22 @@ export default function FormSiswa({
         /^[a-zA-Z0-9.,]+(?:\s{0,2}[a-zA-Z0-9.,]+)*$/.test(value)
           ? null
           : 'Minimal 3 karakter. Hanya boleh huruf, angka, titik, koma, dan spasi diantara kata',
-      akta: (value) =>
-        value
-          ? isFileSizeValid(value as File)
-            ? null
-            : 'File tidak boleh melebihi 1MB'
-          : 'Wajib diisi',
-      kartu_keluarga: (value) =>
-        value
-          ? isFileSizeValid(value as File)
-            ? null
-            : 'File tidak boleh melebihi 1MB'
-          : 'Wajib diisi',
-      foto: (value) =>
-        value
-          ? isFileSizeValid(value as File)
-            ? null
-            : 'File tidak boleh melebihi 1MB'
-          : 'Wajib diisi',
       jenjang: (value: string) => (value ? null : 'Wajib diisi'),
       tahun_ajaran: (value: string) => (value ? null : 'Wajib diisi'),
     },
   });
 
   useEffect(() => {
-    if (debounced !== null){
+    if (type === 'edit' && values) {
+      setSearchValue(values.tahun_ajaran);
+      form.setValues(values);
+      // console.log(form.values.akta);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type, values]);
+
+  useEffect(() => {
+    if (debounced !== null) {
       dispatch(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -158,10 +156,14 @@ export default function FormSiswa({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced]);
 
+  const isValidForm = !form.isValid() || !!errorAkta || !!errorKK || !!errorFoto;
+
   return (
     <form
       className="flex flex-col gap-5 px-1"
-      onSubmit={form.onSubmit((e) => handleSubmit(e))}>
+      onSubmit={form.onSubmit((e) => {
+        handleSubmit(e);
+      })}>
       <div>
         <h1 className="font-semibold">Biodata Siswa</h1>
         <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-5 p-2">
@@ -175,7 +177,8 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('nama_lengkap', e.currentTarget.value)
               }
-              disabled={isUserEditble}
+              disabled={isPendaftar}
+              readOnly={isLoading}
             />
             <DateInput
               label="Tanggal Lahir"
@@ -187,7 +190,8 @@ export default function FormSiswa({
                 form.setFieldValue('tanggal_lahir', e);
                 form.setFieldValue('umur', calculateAge(e as Date).toString());
               }}
-              disabled={isUserEditble}
+              disabled={isPendaftar}
+              readOnly={isLoading}
             />
             <Select
               required
@@ -197,13 +201,14 @@ export default function FormSiswa({
               value={form.values.jenis_kelamin}
               error={form.errors.jenis_kelamin as string}
               onChange={(e) => form.setFieldValue('jenis_kelamin', e as string)}
-              disabled={isUserEditble}
+              disabled={isPendaftar}
               comboboxProps={{
                 transitionProps: {
                   transition: 'pop',
                   duration: 200,
                 },
               }}
+              readOnly={isLoading}
             />
             <NumberInput
               required
@@ -220,6 +225,7 @@ export default function FormSiswa({
               onChange={(e) => form.setFieldValue('tinggi_badan', e as number)}
               min={1}
               max={200}
+              readOnly={isLoading}
             />
           </div>
           <div className="w-full flex flex-col gap-3">
@@ -232,7 +238,8 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('tempat_lahir', e.currentTarget.value)
               }
-              disabled={isUserEditble}
+              disabled={isPendaftar}
+              readOnly={isLoading}
             />
             <TextInput
               label="Umur"
@@ -243,6 +250,7 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('umur', e.currentTarget.value)
               }
+              readOnly={isLoading}
             />
             <Select
               required
@@ -258,6 +266,7 @@ export default function FormSiswa({
                   duration: 200,
                 },
               }}
+              readOnly={isLoading}
             />
             <NumberInput
               required
@@ -274,6 +283,7 @@ export default function FormSiswa({
               onChange={(e) => form.setFieldValue('berat_badan', e as number)}
               min={1}
               max={100}
+              readOnly={isLoading}
             />
           </div>
         </div>
@@ -291,7 +301,8 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('nama_bapak', e.currentTarget.value)
               }
-              disabled={isUserEditble}
+              disabled={isPendaftar}
+              readOnly={isLoading}
             />
             <TextInput
               label="Nama Ibu"
@@ -302,7 +313,8 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('nama_ibu', e.currentTarget.value)
               }
-              disabled={isUserEditble}
+              disabled={isPendaftar}
+              readOnly={isLoading}
             />
             <Select
               required
@@ -318,6 +330,7 @@ export default function FormSiswa({
                   duration: 200,
                 },
               }}
+              readOnly={isLoading}
             />
             <Input.Wrapper required label="No. Telepon">
               <Input
@@ -331,6 +344,7 @@ export default function FormSiswa({
                 onChange={(e: { currentTarget: { value: string } }) =>
                   form.setFieldValue('no_telepon', e.currentTarget.value)
                 }
+                readOnly={isLoading}
               />
               <Input.Error>{form.errors.no_telepon}</Input.Error>
             </Input.Wrapper>
@@ -344,6 +358,7 @@ export default function FormSiswa({
               onChange={(e) =>
                 form.setFieldValue('nama_wali', e.currentTarget.value)
               }
+              readOnly={isLoading}
             />
             <Textarea
               label="Alamat"
@@ -358,6 +373,7 @@ export default function FormSiswa({
               autosize
               minRows={4}
               maxRows={4}
+              readOnly={isLoading}
             />
           </div>
         </div>
@@ -370,33 +386,39 @@ export default function FormSiswa({
             description="Berupa foto atau softcopy (PDF,JPEG,PNG) - Max.1MB"
             placeholder="Pilih File"
             value={form.values.akta as File}
-            error={form.errors.akta as string}
+            error={errorAkta}
+            setError={setErrorAkta}
             onChange={(e) => {
               form.setFieldValue('akta', e as File);
             }}
             accept={['image/png', 'image/jpeg', 'application/pdf']}
+            readOnly={isLoading}
           />
           <InputFile
             label="Kartu Keluarga"
             description="Berupa foto atau softcopy (PDF,JPEG,PNG) - Max.1MB"
             placeholder="Pilih File"
             value={form.values.kartu_keluarga as File}
-            error={form.errors.kartu_keluarga as string}
+            error={errorKK}
+            setError={setErrorKK}
             onChange={(e) => {
               form.setFieldValue('kartu_keluarga', e as File);
             }}
             accept={['image/png', 'image/jpeg', 'application/pdf']}
+            readOnly={isLoading}
           />
           <InputFile
             label="Foto"
             description="Foto berpakaian sopan dan rapi (JPEG, JPG ,PNG) - Max.1MB"
             placeholder="Pilih File"
             value={form.values.foto as File}
-            error={form.errors.foto as string}
+            error={errorFoto}
+            setError={setErrorFoto}
             onChange={(e) => {
               form.setFieldValue('foto', e as File);
             }}
             accept={['image/png', 'image/jpeg']}
+            readOnly={isLoading}
           />
         </div>
       </div>
@@ -419,6 +441,7 @@ export default function FormSiswa({
                   duration: 200,
                 },
               }}
+              readOnly={isLoading}
             />
           </div>
           <div className="w-full flex flex-col">
@@ -440,6 +463,7 @@ export default function FormSiswa({
                   duration: 200,
                 },
               }}
+              readOnly={isLoading}
             />
           </div>
         </div>
@@ -459,7 +483,8 @@ export default function FormSiswa({
           className="w-full flex-1"
           rightSection={<IconDeviceFloppy size={16} />}
           type="submit"
-          disabled={!form.isValid()}>
+          loading={isLoading}
+          disabled={isValidForm}>
           Simpan
         </Button>
 

@@ -16,6 +16,7 @@ import { Notify } from '../../components/Notify';
 import { useState } from 'react';
 import Layout from '../../layouts';
 import handleErrorResponse from '../../services/handleErrorResponse';
+import { ErrorResponse } from '../../interfaces/pages';
 
 type FormType = {
   email: string;
@@ -57,6 +58,9 @@ export function Login() {
       navigate('/user');
     } catch (error) {
       handleErrorResponse(error);
+      if ((error as ErrorResponse).response.status === 403) {
+        navigate(`/otp?email=${email}`);
+      }
     } finally {
       setIsLoading(false);
     }
