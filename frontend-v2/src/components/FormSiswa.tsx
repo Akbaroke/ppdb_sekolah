@@ -75,13 +75,14 @@ export default function FormSiswa({
     (state: { tahunAjaran: TahunAjaranAsync }) => state.tahunAjaran
   );
   const { role } = useSelector((state: { auth: DataUser }) => state.auth);
-  const [errorAkta, setErrorAkta] = useState('')
-  const [errorKK, setErrorKK] = useState('')
-  const [errorFoto, setErrorFoto] = useState('')
+  const [errorAkta, setErrorAkta] = useState('');
+  const [errorKK, setErrorKK] = useState('');
+  const [errorFoto, setErrorFoto] = useState('');
+  
 
   const isAdmin = role === 'admin';
   const isUserEditble = type === 'edit' && !isAdmin;
-  const isPendaftar = values?.status === 'pendaftar' ? false : isUserEditble
+  const isPendaftar = values?.status === 'pendaftar' ? false : isUserEditble;
 
   const isMinimumLength = (value: string) => value?.length >= 3;
   const isAlphabeticWithSpaces = (value: string) =>
@@ -156,7 +157,8 @@ export default function FormSiswa({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced]);
 
-  const isValidForm = !form.isValid() || !!errorAkta || !!errorKK || !!errorFoto;
+  const isValidForm =
+    !form.isValid() || !!errorAkta || !!errorKK || !!errorFoto;
 
   return (
     <form
@@ -484,7 +486,9 @@ export default function FormSiswa({
           rightSection={<IconDeviceFloppy size={16} />}
           type="submit"
           loading={isLoading}
-          disabled={isValidForm}>
+          disabled={
+            isValidForm
+          }>
           Simpan
         </Button>
 

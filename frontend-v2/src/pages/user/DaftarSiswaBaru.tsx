@@ -9,7 +9,6 @@ import { Notify } from '../../components/Notify';
 
 export default function DaftarSiswaBaru() {
   const navigate = useNavigate();
-  const [uploadPercentage, setUploadPercentage] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: FormType) => {
@@ -45,18 +44,9 @@ export default function DaftarSiswaBaru() {
       formData.append('tahun_ajaran', e.tahun_ajaran);
       formData.append('status', 'pendaftar');
 
-      formData.forEach((value, key) => console.log(key, value));
-      console.log({ no: e.no_telepon.replace(/[-\s+]/g, '') });
       const { data } = await api.post('/daftar_siswa', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: (progressEvent) => {
-          const percentCompleted = Math.round(
-            ((progressEvent.loaded ?? 0) * 100) /
-              (progressEvent.total ?? progressEvent.loaded)
-          );
-          setUploadPercentage(percentCompleted);
         },
       });
       navigate(`/user/siswa-terdaftar/${data.id}?tab=status`, {
@@ -72,7 +62,6 @@ export default function DaftarSiswaBaru() {
 
   return (
     <Card header={<h1 className="font-bold">Formulir Pendaftaran</h1>}>
-      {uploadPercentage !== 0 && <p>{uploadPercentage}%</p>}
       <FormSiswa
         handleSubmit={handleSubmit}
         type="create"

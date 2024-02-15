@@ -92,7 +92,13 @@ export default function DetailSiswa() {
   const TabsRender = () => {
     switch (activeTab) {
       case 'profile':
-        return <TabProfile dataSiswa={dataSiswa} isLoading={isLoading} />;
+        return (
+          <TabProfile
+            dataSiswa={dataSiswa}
+            isLoading={isLoading}
+            id={id as string}
+          />
+        );
       case 'status':
         return <TabStatus dataStatus={dataStatus as DataStatus} />;
       case 'riwayat_pembayaran':
