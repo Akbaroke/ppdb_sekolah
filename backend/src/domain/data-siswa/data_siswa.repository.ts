@@ -80,26 +80,31 @@ export class DataSiswaRepository {
         where: [
           {
             siswa: {
-              nama: Like(search),
+              nama: Like(`%${search}%`),
             },
             status: In(status),
           },
           {
             tahun_ajaran: {
-              tahun_ajaran: search,
+              tahun_ajaran: Like(`%${search}%`),
             },
             status: In(status),
           },
           {
-            jenjang: search,
+            jenjang: Like(`%${search}%`),
             status: In(status),
           },
           {
-            no_pendaftaran: search,
+            kelas: {
+              kode_kelas: Like(`%${search}%`),
+            },
+          },
+          {
+            no_pendaftaran: Like(`%${search}%`),
             status: In(status),
           },
           {
-            nis: search,
+            nis: Like(`%${search}%`),
             status: In(status),
           },
         ],

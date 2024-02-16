@@ -69,10 +69,10 @@ export class KelasRepository {
       const [data, count] = await this.kelasRepository.findAndCount({
         where: [
           {
-            kelas: search,
+            kelas: Like(`%${search}%`),
           },
           {
-            kode_kelas: search,
+            kode_kelas: Like(`%${search}%`),
           },
           {
             jenjang: search as JENJANG,
