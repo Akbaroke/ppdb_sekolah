@@ -9,7 +9,7 @@ type Props = {
   description: string;
   placeholder: string;
   value: File | string;
-  error: string;
+  error: string | null;
   onChange: (e: File | string) => void;
   accept: Accept[];
   disabled?: boolean;
@@ -32,14 +32,13 @@ export default function InputFile({
   setError,
 }: Props) {
   const [inputValue, setInputValue] = useState<File | null>();
-  const [imgUrl, setImgUrl] = useState<string>('');
-  const [showType, setShowType] = useState<'image' | 'pdf' | null>(null);
+  const [fileUrl, setFileUrl] = useState<string>('');
 
   const isFileSizeValid = (file: File) => file?.size < 1000000;
 
   const valueValidate = async (value: string | File): Promise<File> => {
     if (typeof value === 'string') {
-      setImgUrl(value);
+      setFileUrl(value);
       const file = await convertUrlToFile(value);
       const fileFormat = file.type.split('/')[1];
       const finalFile = new File(
@@ -47,20 +46,10 @@ export default function InputFile({
         `${label.toLowerCase().replace(' ', '-')}.${fileFormat}`,
         { type: file.type }
       );
-      checkFileType(finalFile);
       return finalFile;
     } else {
-      checkFileType(value);
-      setImgUrl(URL.createObjectURL(value));
+      setFileUrl(URL.createObjectURL(value));
       return value;
-    }
-  };
-
-  const checkFileType = (value: File) => {
-    if (value.type === 'application/pdf') {
-      setShowType('pdf');
-    } else {
-      setShowType('image');
     }
   };
 
@@ -105,11 +94,7 @@ export default function InputFile({
         readOnly={readOnly}
       />
       {isShowButtonView && (
-        <ButtonViewUrl
-          className="mb-[2px]"
-          url={imgUrl}
-          title={label}
-          type={showType}>
+        <ButtonViewUrl className="mb-[2px]" url={fileUrl} title={label}>
           <ActionIcon variant="light" aria-label="Settings" size="lg">
             <IconEye style={{ width: '70%', height: '70%' }} stroke={1.5} />
           </ActionIcon>
