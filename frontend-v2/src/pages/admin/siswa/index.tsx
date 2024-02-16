@@ -23,20 +23,9 @@ const tabs = [
 
 export default function Siswa() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<string | null>(
+  const [activeTab, setActiveTab] = useState<string>(
     searchParams.get('tab') || tabs[0].key
   );
-
-  const TabsRender = () => {
-    switch (activeTab) {
-      case 'siswa':
-        return <TabSiswa status="siswa" />;
-      case 'lulus':
-        return <TabSiswa status="siswa" />;
-      case 'keluar':
-        return <TabSiswa status="siswa" />;
-    }
-  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -76,7 +65,7 @@ export default function Siswa() {
         </div>
       </Card>
 
-      {TabsRender()}
+      <TabSiswa status={activeTab} />
     </div>
   );
 }

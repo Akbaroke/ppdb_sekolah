@@ -43,6 +43,7 @@ export default function DetailSiswa() {
         const { data } = await api.get<{ data: SiswaDetailResponse }>(
           `/daftar_siswa/${id}`
         );
+        console.log(data);
         setDataSiswa({
           nama_lengkap: data.data?.siswa?.nama,
           tanggal_lahir: new Date(data.data?.siswa?.tanggal_lahir),
@@ -77,6 +78,7 @@ export default function DetailSiswa() {
           biaya_pendaftaran: '-',
           status_bayar: false,
           // nis: '-',
+          ijazah: data.data?.berkas.ijazah,
         });
       } catch (error) {
         handleErrorResponse(error);

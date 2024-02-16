@@ -1,6 +1,7 @@
 import { Badge, NumberFormatter } from '@mantine/core';
 import Card from '../../components/Card';
 import { DataStatus } from '../../interfaces/pages';
+import ButtonViewUrl from '../../components/ButtonViewUrl';
 
 type Props = {
   dataStatus: DataStatus;
@@ -20,6 +21,7 @@ export default function TabStatus({ dataStatus }: Props) {
             <p>Biaya Pendaftaran</p>
             <p>Status Pembayaran</p>
             <p>NIS</p>
+            <p>Ijazah</p>
           </div>
           <div className="flex flex-col gap-3 text-sm">
             <p>: {dataStatus?.tahun_ajaran}</p>
@@ -56,6 +58,17 @@ export default function TabStatus({ dataStatus }: Props) {
               </Badge>
             </p>
             <p>: {dataStatus?.nis ? dataStatus?.nis : '-'}</p>
+            <ButtonViewUrl
+              className="mb-[2px]"
+              url={dataStatus?.ijazah as string}
+              title="Ijazah Siswa">
+              <p>
+                :{' '}
+                <b className="text-sm underline text-blue-500 cursor-pointer font-medium">
+                  Lihat Ijazah
+                </b>
+              </p>
+            </ButtonViewUrl>
           </div>
         </div>
         <div className="flex flex-col gap-4 items-center justify-center mr-3">

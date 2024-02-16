@@ -7,11 +7,7 @@ import handleErrorResponse from '../../../services/handleErrorResponse';
 import { SiswaResponse } from '../../../interfaces/pages';
 import NotDataFound from '../../../components/NotDataFound';
 
-export default function TabSiswa({
-  status,
-}: {
-  status: 'siswa' | 'lulus' | 'keluar';
-}) {
+export default function TabSiswa({ status }: { status: string }) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [listDataSiswa, setListDataSiswa] = useState<SiswaResponse[]>([]);
@@ -21,6 +17,7 @@ export default function TabSiswa({
       setIsLoading(true);
       try {
         const { data } = await api.get(`/siswa?status=${status}`);
+        console.log(data);
         setListDataSiswa(data.data);
       } catch (error) {
         handleErrorResponse(error);
@@ -29,6 +26,7 @@ export default function TabSiswa({
       }
     };
 
+    setListDataSiswa([]);
     fetch();
   }, [status]);
 
