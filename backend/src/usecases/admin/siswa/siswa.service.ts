@@ -27,10 +27,7 @@ export class SiswaService {
 
   private async getDataSiswaBySiswaId(siswa_id: string, raw = true) {
     try {
-      const data = await this.dataSiswaService.getOneByDataSiswaId(
-        siswa_id,
-        raw,
-      );
+      const data = await this.dataSiswaService.getOneBySiswaId(siswa_id, raw);
       if (!data) {
         throw new NotFoundException('Siswa tidak ditemukan');
       }
@@ -211,10 +208,10 @@ export class SiswaService {
         message: 'Berhasil',
       };
     } catch (error) {
-      if (ijazah && ijazah.file_id !== undefined) {
+      if (ijazah && ijazah.file_firebase_id !== undefined) {
         await this.fileService.deleteFile(
           data_siswa.siswa.user_id,
-          ijazah.file_id,
+          ijazah.file_firebase_id,
         );
       }
       throw error;

@@ -74,10 +74,7 @@ export class DataSiswaService {
     }
   }
 
-  async getOneByDataSiswaId(
-    siswa_id: string,
-    raw: boolean,
-  ): Promise<DataSiswa> {
+  async getOneBySiswaId(siswa_id: string, raw: boolean): Promise<DataSiswa> {
     try {
       return await this.dataSiswaRepository.findOneBySiswaId(siswa_id, raw);
     } catch (error) {

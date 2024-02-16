@@ -24,6 +24,8 @@ import {
   STATUS_SISWA,
 } from 'src/domain/data-siswa/data_siswa.interface';
 import { IPayloadToken } from 'src/infrastucture/authentication/token-management/token.interface';
+import { User } from 'src/domain/user/user.entity';
+import { TahunAjaran } from 'src/domain/tahun-ajaran/tahun-ajaran.entity';
 
 @Injectable()
 export class DaftarSiswaService {
@@ -123,6 +125,65 @@ export class DaftarSiswaService {
     }
   }
 
+  private async findDataSiswaBySiswaId(
+    siswa_id: string,
+    raw = true,
+  ): Promise<DataSiswa> {
+    try {
+      const data = await this.dataSiswaService.getOneBySiswaId(siswa_id, raw);
+
+      if (!data) {
+        throw new NotFoundException('Data siswa tidak ditemukan');
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async findUserByUserId(user_id: string): Promise<User> {
+    try {
+      const data = await this.userService.findOne(user_id);
+
+      if (!data) {
+        throw new NotFoundException('User tidak ditemukan');
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async findTahunAjaranBytahun_ajaran(
+    tahun_ajaran: string,
+  ): Promise<TahunAjaran> {
+    try {
+      const data = await this.tahunAjaranService.findTahunAjaran(tahun_ajaran);
+
+      if (!data) {
+        throw new NotFoundException('Tahun ajaran tidak ditemukan');
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private checkPermissionForDataAccess(
+    data_siswa: DataSiswa,
+    user_id: string,
+    role: string,
+  ): void {
+    if (data_siswa.siswa.user_id !== user_id && role !== 'admin') {
+      throw new ForbiddenException(
+        'Anda tidak memiliki izin untuk mengakses data siswa',
+      );
+    }
+  }
+
   async daftarSiswa(
     user_id: string,
     data: IDataSiswa,
@@ -135,11 +196,7 @@ export class DaftarSiswaService {
     let berkas_siswa: File[] = [];
     let siswa_id: string;
     try {
-      const user = await this.userService.findOne(user_id);
-
-      if (!user) {
-        throw new NotFoundException('User tidak ditemukan');
-      }
+      const user = await this.findUserByUserId(user_id);
 
       if (Number(data.tahun_ajaran.split('/')[0]) < new Date().getFullYear()) {
         throw new BadRequestException(
@@ -147,13 +204,9 @@ export class DaftarSiswaService {
         );
       }
 
-      const tahun_ajaran = await this.tahunAjaranService.findTahunAjaran(
+      const tahun_ajaran = await this.findTahunAjaranBytahun_ajaran(
         data.tahun_ajaran,
       );
-
-      if (!tahun_ajaran) {
-        throw new NotFoundException('Tahun ajaran tidak ditemukan');
-      }
 
       if (data.status !== STATUS_SISWA.PENDAFTAR) {
         throw new BadRequestException('status harus pendaftar');
@@ -195,7 +248,7 @@ export class DaftarSiswaService {
       if (berkas_siswa.length) {
         berkas_siswa.forEach(async (value) => {
           if (value) {
-            await this.fileService.deleteFile(user_id, value.file_id);
+            await this.fileService.deleteFile(user_id, value.file_firebase_id);
           }
         });
       }
@@ -250,60 +303,48 @@ export class DaftarSiswaService {
     role: string,
   ): Promise<IMessage & { data: object }> {
     try {
-      const dataSiswa = await this.dataSiswaService.getOneByDataSiswaId(
-        siswa_id,
-        false,
-      );
-
-      if (!dataSiswa) {
-        throw new NotFoundException('Data siswa tidak ditemukan');
-      }
-
-      if (dataSiswa.siswa.user_id !== user_id && role !== 'admin') {
-        throw new ForbiddenException(
-          'Anda tidak memiliki izin untuk mengakses data siswa',
-        );
-      }
+      const data_siswa = await this.findDataSiswaBySiswaId(siswa_id, false);
+      this.checkPermissionForDataAccess(data_siswa, user_id, role);
 
       const responseData = {
-        id: dataSiswa.siswa.siswa_id,
-        status: dataSiswa.status,
+        id: data_siswa.siswa.siswa_id,
+        status: data_siswa.status,
         siswa: {
-          nama: dataSiswa.siswa.nama,
-          tempat_lahir: dataSiswa.siswa.tempat_lahir,
-          tanggal_lahir: dataSiswa.siswa.tanggal_lahir,
-          umur: dataSiswa.siswa.umur,
-          jenis_kelamin: dataSiswa.siswa.jenis_kelamin,
-          agama: dataSiswa.siswa.agama,
-          tinggi_badan: dataSiswa.siswa.tinggi_badan,
-          berat_badan: dataSiswa.siswa.berat_badan,
+          nama: data_siswa.siswa.nama,
+          tempat_lahir: data_siswa.siswa.tempat_lahir,
+          tanggal_lahir: data_siswa.siswa.tanggal_lahir,
+          umur: data_siswa.siswa.umur,
+          jenis_kelamin: data_siswa.siswa.jenis_kelamin,
+          agama: data_siswa.siswa.agama,
+          tinggi_badan: data_siswa.siswa.tinggi_badan,
+          berat_badan: data_siswa.siswa.berat_badan,
         },
         wali: {
-          nama_ibu: dataSiswa.wali_siswa.nama_ibu,
-          nama_bapak: dataSiswa.wali_siswa.nama_bapak,
-          nama_wali: dataSiswa.wali_siswa.nama_wali,
-          pekerjaan: dataSiswa.wali_siswa.pekerjaan,
-          no_telepon: dataSiswa.wali_siswa.no_telepon,
-          alamat: dataSiswa.wali_siswa.alamat,
+          nama_ibu: data_siswa.wali_siswa.nama_ibu,
+          nama_bapak: data_siswa.wali_siswa.nama_bapak,
+          nama_wali: data_siswa.wali_siswa.nama_wali,
+          pekerjaan: data_siswa.wali_siswa.pekerjaan,
+          no_telepon: data_siswa.wali_siswa.no_telepon,
+          alamat: data_siswa.wali_siswa.alamat,
         },
         berkas: {
-          akta: dataSiswa.akta.url,
-          kartu_keluarga: dataSiswa.kartu_keluarga.url,
-          foto: dataSiswa.foto.url,
+          akta: data_siswa.akta.url,
+          kartu_keluarga: data_siswa.kartu_keluarga.url,
+          foto: data_siswa.foto.url,
         },
-        jenjang: dataSiswa.jenjang,
-        tahun_ajaran: dataSiswa.tahun_ajaran.tahun_ajaran,
+        jenjang: data_siswa.jenjang,
+        tahun_ajaran: data_siswa.tahun_ajaran.tahun_ajaran,
       };
 
-      if (dataSiswa.status === STATUS_SISWA.LULUS) {
-        responseData['tanggal_lulus'] = dataSiswa.tanggal_berakhir;
-        responseData['berkas']['ijazah'] = dataSiswa.ijazah?.url;
-        responseData['keterangan'] = dataSiswa.keterangan;
+      if (data_siswa.status === STATUS_SISWA.LULUS) {
+        responseData['tanggal_lulus'] = data_siswa.tanggal_berakhir;
+        responseData['berkas']['ijazah'] = data_siswa.ijazah?.url;
+        responseData['keterangan'] = data_siswa.keterangan;
       }
 
-      if (dataSiswa.status === STATUS_SISWA.KELUAR) {
-        responseData['tanggal_keluar'] = dataSiswa.tanggal_berakhir;
-        responseData['keterangan'] = dataSiswa.keterangan;
+      if (data_siswa.status === STATUS_SISWA.KELUAR) {
+        responseData['tanggal_keluar'] = data_siswa.tanggal_berakhir;
+        responseData['keterangan'] = data_siswa.keterangan;
       }
 
       return {
@@ -318,7 +359,7 @@ export class DaftarSiswaService {
 
   async updateDaftarSiswa(
     siswa_id: string,
-    { id, role }: Partial<IPayloadToken>,
+    payload: Partial<IPayloadToken>,
     updatedData: Partial<IDataSiswa>,
     berkas: {
       akta?: Express.Multer.File;
@@ -327,48 +368,73 @@ export class DaftarSiswaService {
     },
   ): Promise<IMessage> {
     try {
-      const data_siswa = await this.dataSiswaService.getOneByDataSiswaId(
-        siswa_id,
-        false,
-      );
-
-      if (!data_siswa) {
-        throw new NotFoundException('Data siswa Tidak ada');
-      }
+      const data_siswa = await this.findDataSiswaBySiswaId(siswa_id, false);
+      this.checkPermissionForDataAccess(data_siswa, payload.id, payload.role);
 
       if (
-        role !== 'admin' &&
-        !data_siswa.nis &&
-        updatedData.status !== STATUS_SISWA.PENDAFTAR
+        (payload.role !== 'admin' &&
+          !data_siswa.nis &&
+          updatedData.status !== STATUS_SISWA.PENDAFTAR) ||
+        (data_siswa.nis && updatedData.status !== STATUS_SISWA.SISWA)
       ) {
         throw new BadRequestException('user tidak bisa mengubah status');
       }
 
-      if (data_siswa.nis && updatedData.status !== STATUS_SISWA.SISWA) {
-        throw new BadRequestException(
-          'status siswa tidak bisa diubah karena sudah memiliki nis',
-        );
-      }
+      const update_tahun_ajaran = Number(
+        updatedData.tahun_ajaran.split('/')[0],
+      );
+      const tahun_ajaran = Number(
+        data_siswa.tahun_ajaran.tahun_ajaran.split('/')[0],
+      );
 
       if (
-        Number(updatedData.tahun_ajaran.split('/')[0]) <
-        Number(data_siswa.tahun_ajaran.tahun_ajaran.split[0])
+        data_siswa.status !== STATUS_SISWA.PENDAFTAR &&
+        update_tahun_ajaran !== tahun_ajaran
       ) {
         throw new BadRequestException(
           'Tahun ajaran tidak sesuai dengan tahun ajaran siswa',
         );
       }
 
-      if (data_siswa.siswa.user_id !== id && role !== 'admin') {
-        throw new ForbiddenException('Siapa anda');
+      if (
+        payload.role !== 'admin' &&
+        data_siswa.status === STATUS_SISWA.PENDAFTAR &&
+        update_tahun_ajaran < tahun_ajaran
+      ) {
+        throw new BadRequestException('Anda tidak memiliki akses');
       }
 
       if (
         updatedData.status !== STATUS_SISWA.PENDAFTAR &&
-        data_siswa.jenjang !== data_siswa.kelas.jenjang
+        payload.role !== 'admin' &&
+        updatedData.jenjang !== data_siswa.kelas.jenjang
       ) {
         throw new BadRequestException(
           `jenjang tidak bisa diubah dikarenakan jenjang kelas ${data_siswa.kelas.jenjang}`,
+        );
+      }
+
+      if (berkas.akta) {
+        await this.fileService.updateBerkas(
+          data_siswa.siswa.user_id,
+          data_siswa.akta.file_firebase_id,
+          berkas.akta[0],
+        );
+      }
+
+      if (berkas.foto) {
+        await this.fileService.updateBerkas(
+          data_siswa.siswa.user_id,
+          data_siswa.foto.file_firebase_id,
+          berkas.foto[0],
+        );
+      }
+
+      if (berkas.kartu_keluarga) {
+        await this.fileService.updateBerkas(
+          data_siswa.siswa.user_id,
+          data_siswa.kartu_keluarga.file_firebase_id,
+          berkas.kartu_keluarga[0],
         );
       }
 
@@ -408,30 +474,6 @@ export class DaftarSiswaService {
           entityManager,
         );
       });
-
-      if (berkas.akta) {
-        await this.fileService.updateBerkas(
-          data_siswa.siswa.user_id,
-          data_siswa.akta.file_id,
-          berkas.akta[0],
-        );
-      }
-
-      if (berkas.foto) {
-        await this.fileService.updateBerkas(
-          data_siswa.siswa.user_id,
-          data_siswa.foto.file_id,
-          berkas.foto[0],
-        );
-      }
-
-      if (berkas.kartu_keluarga) {
-        await this.fileService.updateBerkas(
-          data_siswa.siswa.user_id,
-          data_siswa.kartu_keluarga.file_id,
-          berkas.kartu_keluarga[0],
-        );
-      }
 
       return {
         httpStatus: HttpStatus.OK,
