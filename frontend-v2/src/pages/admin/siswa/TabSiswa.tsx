@@ -1,4 +1,4 @@
-import { Badge, Grid, Loader } from '@mantine/core';
+import { ActionIcon, Badge, Grid, Loader } from '@mantine/core';
 import Card from '../../../components/Card';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -6,19 +6,36 @@ import api from '../../../api';
 import handleErrorResponse from '../../../services/handleErrorResponse';
 import { SiswaResponse } from '../../../interfaces/pages';
 import NotDataFound from '../../../components/NotDataFound';
+import { Pagination } from '../../../interfaces/store';
+import { IconChevronDown } from '@tabler/icons-react';
 
-export default function TabSiswa({ status }: { status: string }) {
+export default function TabSiswa({
+  status,
+  searchValue,
+  trigerFetch,
+}: {
+  status: string;
+  searchValue: string;
+  trigerFetch: boolean;
+}) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [listDataSiswa, setListDataSiswa] = useState<SiswaResponse[]>([]);
+  const [pagination, setPagination] = useState<Pagination>({
+    currentPage: 1,
+    totalData: 0,
+    totalPage: 0,
+  });
 
   useEffect(() => {
     const fetch = async () => {
       setIsLoading(true);
       try {
-        const { data } = await api.get(`/siswa?status=${status}`);
-        console.log(data);
+        const { data } = await api.get(
+          `/siswa?status=${status}&page=1&s=${searchValue}`
+        );
         setListDataSiswa(data.data);
+        setPagination(data.pagination);
       } catch (error) {
         handleErrorResponse(error);
       } finally {
@@ -28,7 +45,23 @@ export default function TabSiswa({ status }: { status: string }) {
 
     setListDataSiswa([]);
     fetch();
-  }, [status]);
+  }, [status, searchValue, trigerFetch]);
+
+  const handleNextPage = async () => {
+    setIsLoading(true);
+    try {
+      const nextPage = pagination.currentPage + 1;
+      const { data } = await api.get(
+        `/siswa?status=${status}&page=${nextPage}&s=${searchValue}`
+      );
+      setListDataSiswa([...listDataSiswa, ...data.data]);
+      setPagination(data.pagination);
+    } catch (error) {
+      handleErrorResponse(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div>
@@ -72,6 +105,24 @@ export default function TabSiswa({ status }: { status: string }) {
               </Card>
             </Grid.Col>
           ))}
+          {pagination.totalPage > pagination.currentPage ? (
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              size="lg"
+              radius="xl"
+              mx="auto"
+              mt={20}
+              loading={isLoading}
+              aria-label="loadmore"
+              onClick={handleNextPage}>
+              <IconChevronDown
+                style={{ width: '70%', height: '70%' }}
+                color="gray"
+                stroke={1.5}
+              />
+            </ActionIcon>
+          ) : null}
         </Grid>
       ) : (
         <NotDataFound />

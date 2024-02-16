@@ -1,17 +1,19 @@
-import { ActionIcon, Badge, Grid, Loader } from '@mantine/core';
+import { Badge, Grid, Loader } from '@mantine/core';
 import Card from '../../components/Card';
-import { IconSearch } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import handleErrorResponse from '../../services/handleErrorResponse';
 import api from '../../api';
 import { SiswaResponse } from '../../interfaces/pages';
 import NotDataFound from '../../components/NotDataFound';
+import { useToggle } from '@mantine/hooks';
+import ButtonRefresh from '../../components/ButtonRefresh';
 
 export default function SiswaTerdaftar() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [listDataSiswa, setListDataSiswa] = useState<SiswaResponse[]>([]);
+   const [value, toggle] = useToggle();
 
   useEffect(() => {
     const fetch = async () => {
@@ -27,16 +29,17 @@ export default function SiswaTerdaftar() {
     };
 
     fetch();
-  }, []);
+  }, [value]);
 
   return (
     <div className="flex flex-col gap-5">
       <Card className="flex justify-between items-center">
         <h1 className="font-bold text-lg">Siswa Terdaftar</h1>
-        <div className="flex items-center gap-2">
-          <ActionIcon variant="light" size="lg">
-            <IconSearch size={18} />
-          </ActionIcon>
+        <div className="flex items-center gap-2 ml-auto">
+          <ButtonRefresh
+            isLoading={false}
+            onClick={toggle}
+          />
         </div>
       </Card>
       <div>
