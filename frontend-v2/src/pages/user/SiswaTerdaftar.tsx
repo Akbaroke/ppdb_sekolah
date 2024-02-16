@@ -39,7 +39,7 @@ export default function SiswaTerdaftar() {
           </ActionIcon>
         </div>
       </Card>
-      <div className="">
+      <div>
         {isLoading ? (
           <Loader
             color="blue"
@@ -47,7 +47,7 @@ export default function SiswaTerdaftar() {
             type="dots"
             className="mx-auto my-10"
           />
-        ) : listDataSiswa ? (
+        ) : listDataSiswa.length > 0 ? (
           <Grid gutter="xs">
             {listDataSiswa?.map((item, index) => (
               <Grid.Col span={{ base: 12, md: 6 }} key={index}>

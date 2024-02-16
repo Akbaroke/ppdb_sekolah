@@ -43,7 +43,6 @@ export default function DetailSiswa() {
         const { data } = await api.get<{ data: SiswaDetailResponse }>(
           `/daftar_siswa/${id}`
         );
-        console.log(data);
         setDataSiswa({
           nama_lengkap: data.data?.siswa?.nama,
           tanggal_lahir: new Date(data.data?.siswa?.tanggal_lahir),
@@ -112,7 +111,9 @@ export default function DetailSiswa() {
         header={
           <div className="flex gap-2 items-center">
             <ButtonBack />
-            <h1 className="font-bold">Data Siswa</h1>
+            <h1 className="font-bold">
+              Data {dataSiswa?.status === 'pendaftar' ? 'Pendaftar' : 'Siswa'}
+            </h1>
           </div>
         }
         className="pb-0">

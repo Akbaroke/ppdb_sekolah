@@ -7,7 +7,7 @@ import api from '../../api';
 import { Notify } from '../../components/Notify';
 import { useState } from 'react';
 import handleErrorResponse from '../../services/handleErrorResponse';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 type Props = {
   id: string;
@@ -18,6 +18,13 @@ type Props = {
 export default function TabProfile({ isLoading, dataSiswa, id }: Props) {
   const navigate = useNavigate();
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+  const location = useLocation().pathname;
+  const spiter = location.split('/').filter((item) => item !== '');
+
+  const handleBack = () => {
+    spiter.pop();
+    navigate('/' + spiter.join('/'));
+  };
 
   const handleSubmit = async (e: FormType) => {
     if (!dataSiswa) return;
@@ -73,9 +80,7 @@ export default function TabProfile({ isLoading, dataSiswa, id }: Props) {
         },
       });
       Notify('success', data.message);
-      navigate('/user/siswa-terdaftar', {
-        replace: true,
-      });
+      handleBack();
     } catch (error) {
       handleErrorResponse(error);
     } finally {

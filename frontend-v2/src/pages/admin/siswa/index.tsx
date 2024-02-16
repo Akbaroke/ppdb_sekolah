@@ -3,8 +3,6 @@ import TabSiswa from './TabSiswa';
 import Card from '../../../components/Card';
 import { Button } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
-import TabLulus from './TabLulus';
-import TabKeluar from './TabKeluar';
 import ButtonRefresh from '../../../components/ButtonRefresh';
 import InputSearch from '../../../components/InputSearch';
 
@@ -32,11 +30,11 @@ export default function Siswa() {
   const TabsRender = () => {
     switch (activeTab) {
       case 'siswa':
-        return <TabSiswa />;
+        return <TabSiswa status="siswa" />;
       case 'lulus':
-        return <TabLulus />;
+        return <TabSiswa status="siswa" />;
       case 'keluar':
-        return <TabKeluar />;
+        return <TabSiswa status="siswa" />;
     }
   };
 
