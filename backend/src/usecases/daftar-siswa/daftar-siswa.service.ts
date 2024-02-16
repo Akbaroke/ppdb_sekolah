@@ -283,7 +283,7 @@ export class DaftarSiswaService {
         return {
           ...commonData,
           nis: item.nis,
-          kelas: item.kelas?.kelas ?? null,
+          kelas: item.kelas?.kode_kelas ?? null,
           no_pendaftaran: item.no_pendaftaran,
         };
       });

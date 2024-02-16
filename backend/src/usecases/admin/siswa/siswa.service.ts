@@ -258,7 +258,7 @@ export class SiswaService {
           jenjang: value.jenjang,
           ...(value.status !== STATUS_SISWA.PENDAFTAR && {
             nis: value.nis,
-            kelas: value.kelas.kelas,
+            kelas: value.kelas.kode_kelas,
           }),
         };
       });
