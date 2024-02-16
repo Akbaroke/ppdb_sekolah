@@ -99,6 +99,7 @@ export class DataSiswaRepository {
           status: true,
           no_pendaftaran: true,
           jenjang: true,
+          nis: true,
           updated_at: true,
         },
       } as FindManyOptions<DataSiswa>;
