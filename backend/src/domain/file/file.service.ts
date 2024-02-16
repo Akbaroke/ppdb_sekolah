@@ -11,8 +11,8 @@ export class FileService {
     private readonly firebaseService: FirebaseService,
   ) {}
 
-  private getFileId(fileId: string): string {
-    const id = fileId.split('_').slice(1).join('_');
+  private getFileId(file_firebase_id: string): string {
+    const id = file_firebase_id.split('_').slice(1).join('_');
     return id;
   }
 
@@ -24,7 +24,7 @@ export class FileService {
       const ijazah = await this.firebaseService.upload(file, user_id);
 
       return this.entityManager.create(File, {
-        file_id: `ijazah_${ijazah.id}`,
+        file_firebase_id: `ijazah_${ijazah.id}`,
         url: ijazah.url,
       });
     } catch (error) {
@@ -41,12 +41,12 @@ export class FileService {
       ]);
 
       const berkas = this.entityManager.create(File, [
-        { file_id: `akta_${akta.id}`, url: akta.url },
+        { file_firebase_id: `akta_${akta.id}`, url: akta.url },
         {
-          file_id: `kk_${kartu_keluarga.id}`,
+          file_firebase_id: `kk_${kartu_keluarga.id}`,
           url: kartu_keluarga.url,
         },
-        { file_id: `foto_${foto.id}`, url: foto.url },
+        { file_firebase_id: `foto_${foto.id}`, url: foto.url },
       ]);
 
       return berkas;
@@ -55,9 +55,9 @@ export class FileService {
     }
   }
 
-  async deleteFile(folder: string, fileId: string): Promise<void> {
+  async deleteFile(folder: string, file_firebase_id: string): Promise<void> {
     try {
-      const id = this.getFileId(fileId);
+      const id = this.getFileId(file_firebase_id);
       await this.firebaseService.delete(`${folder}/${id}`);
     } catch (error) {
       throw error;
@@ -66,13 +66,19 @@ export class FileService {
 
   async updateBerkas(
     folder: string,
-    file_id: string,
+    file_firebase_id: string,
     file: Express.Multer.File,
   ): Promise<void> {
     try {
-      const id = this.getFileId(file_id);
-      await this.deleteFile(folder, id);
-      await this.firebaseService.update(`${folder}/${id}`, file);
+      const upload = await this.firebaseService.upload(file, folder);
+
+      await this.entityManager.update(
+        File,
+        { file_firebase_id },
+        { file_firebase_id: upload.id, url: upload.url },
+      );
+
+      await this.deleteFile(folder, file_firebase_id);
     } catch (error) {
       throw error;
     }
