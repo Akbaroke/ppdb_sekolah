@@ -13,7 +13,6 @@ import TahunAjaran from '../pages/admin/TahunAjaran';
 import Kelas from '../pages/admin/Kelas';
 import DetailSiswa from '../pages/DetailSiswa';
 import Pendaftar from '../pages/admin/Pendaftar';
-import DetailPendaftar from '../pages/DetailPendaftar';
 import Siswa from '../pages/admin/siswa';
 import Pembayaran from '../pages/admin/pembayaran';
 import PembayaranSpp from '../pages/admin/pembayaran/PembayaranSpp';
@@ -118,7 +117,7 @@ export default function Root() {
         },
         {
           path: '/pendaftar/:id',
-          element: <DetailPendaftar />,
+          element: <DetailSiswa />,
         },
         {
           path: '/pembayaran/spp',

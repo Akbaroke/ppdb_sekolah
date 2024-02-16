@@ -2,6 +2,9 @@ import { Button, PasswordInput } from '@mantine/core';
 import Card from '../components/Card';
 import { matchesField, useForm } from '@mantine/form';
 import { Notify } from '../components/Notify';
+import api from '../api';
+import { useState } from 'react';
+import handleErrorResponse from '../services/handleErrorResponse';
 
 type FormType = {
   password_old: string;
@@ -10,6 +13,7 @@ type FormType = {
 };
 
 export default function GantiKataSandi() {
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<FormType>({
     validateInputOnChange: true,
     validateInputOnBlur: true,
@@ -32,18 +36,26 @@ export default function GantiKataSandi() {
           ? null
           : 'Kata sandi harus mengandung angka dan huruf.',
       confirmPassword_new: matchesField(
-        'password',
+        'password_new',
         'Harus sama dengan kata sandi.'
       ),
     },
   });
 
   const handleSubmit = async () => {
-    Notify('error', 'Ganti kata sandi gagal');
+    setIsLoading(true);
     try {
-      console.log(form.values);
+      const { data } = await api.patch('/change_password', {
+        old_password: form.values.password_old,
+        new_password: form.values.password_new,
+      });
+      Notify('success', data.message);
+      console.log(data);
+      form.reset();
     } catch (error) {
-      console.log(error);
+      handleErrorResponse(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -62,6 +74,7 @@ export default function GantiKataSandi() {
           onChange={(e) =>
             form.setFieldValue('password_old', e.currentTarget.value)
           }
+          readOnly={isLoading}
         />
         <PasswordInput
           label="Kata Sandi Baru"
@@ -73,6 +86,7 @@ export default function GantiKataSandi() {
           onChange={(e) =>
             form.setFieldValue('password_new', e.currentTarget.value)
           }
+          readOnly={isLoading}
         />
         <PasswordInput
           label="Ulangi Kata Sandi Baru"
@@ -84,8 +98,14 @@ export default function GantiKataSandi() {
           onChange={(e) =>
             form.setFieldValue('confirmPassword_new', e.currentTarget.value)
           }
+          readOnly={isLoading}
         />
-        <Button fullWidth mt="xl" type="submit" disabled={!form.isValid()}>
+        <Button
+          fullWidth
+          mt="xl"
+          type="submit"
+          disabled={!form.isValid()}
+          loading={isLoading}>
           Simpan
         </Button>
       </form>

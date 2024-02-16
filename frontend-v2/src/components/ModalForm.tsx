@@ -2,21 +2,26 @@ import { Modal as MantineModal } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import FormTahunAjaran from './FormTahunAjaran';
 import FormKelas from './FormKelas';
+import FormTerima from './FormTerima';
+import FormLuluskan from './FormLuluskan';
+import FormKeluarkan from './FormKeluarkan';
 
 type Props = {
   children: React.ReactNode;
   title: string;
-  actionType: 'create' | 'edit';
-  formType: 'tahun_ajaran' | 'kelas';
+  actionType?: 'create' | 'edit';
+  formType: 'tahun_ajaran' | 'kelas' | 'terima' | 'luluskan' | 'keluarkan';
   id?: string;
+  className?: string;
 };
 
 export default function ModalForm({
   children,
   title,
-  actionType,
+  actionType = 'create',
   formType,
   id,
+  className,
 }: Props) {
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -26,6 +31,12 @@ export default function ModalForm({
         return <FormTahunAjaran id={id} type={actionType} close={close} />;
       case 'kelas':
         return <FormKelas id={id} type={actionType} close={close} />;
+      case 'terima':
+        return <FormTerima id={id} close={close} />;
+      case 'luluskan':
+        return <FormLuluskan id={id} close={close} />;
+      case 'keluarkan':
+        return <FormKeluarkan id={id} close={close} />;
     }
   };
 
@@ -54,7 +65,9 @@ export default function ModalForm({
         {formRender()}
       </MantineModal>
 
-      <div onClick={open}>{children}</div>
+      <div onClick={open} className={className}>
+        {children}
+      </div>
     </>
   );
 }

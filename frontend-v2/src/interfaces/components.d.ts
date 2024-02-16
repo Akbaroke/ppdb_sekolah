@@ -18,6 +18,7 @@ interface FormType {
   foto: File | string;
   jenjang: string;
   tahun_ajaran: string;
+  status: string;
 }
 
 export { FormType };

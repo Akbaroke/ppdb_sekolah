@@ -3,10 +3,8 @@ import TabSiswa from './TabSiswa';
 import Card from '../../../components/Card';
 import { Button } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
-import TabLulus from './TabLulus';
-import TabKeluar from './TabKeluar';
-import ButtonRefresh from '../../../components/ButtonRefresh';
-import InputSearch from '../../../components/InputSearch';
+// import ButtonRefresh from '../../../components/ButtonRefresh';
+// import InputSearch from '../../../components/InputSearch';
 
 const tabs = [
   {
@@ -25,20 +23,9 @@ const tabs = [
 
 export default function Siswa() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState<string | null>(
+  const [activeTab, setActiveTab] = useState<string>(
     searchParams.get('tab') || tabs[0].key
   );
-
-  const TabsRender = () => {
-    switch (activeTab) {
-      case 'siswa':
-        return <TabSiswa />;
-      case 'lulus':
-        return <TabLulus />;
-      case 'keluar':
-        return <TabKeluar />;
-    }
-  };
 
   return (
     <div className="flex flex-col gap-3">
@@ -46,10 +33,10 @@ export default function Siswa() {
         header={
           <div className="flex justify-between items-center flex-wrap gap-y-3">
             <h1 className="font-bold text-lg">Siswa</h1>
-            <div className="flex items-center gap-2 ml-auto">
+            {/* <div className="flex items-center gap-2 ml-auto">
               <InputSearch searchValue="" setSearchValue={() => null} />
               <ButtonRefresh isLoading={false} onClick={() => null} />
-            </div>
+            </div> */}
           </div>
         }
         className="pb-0">
@@ -78,7 +65,7 @@ export default function Siswa() {
         </div>
       </Card>
 
-      {TabsRender()}
+      <TabSiswa status={activeTab} />
     </div>
   );
 }

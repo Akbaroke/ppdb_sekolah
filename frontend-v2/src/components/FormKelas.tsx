@@ -56,6 +56,7 @@ export default function FormKelas({ id, type, close }: Props) {
       const { data } = await api.get(`/kelas/${id}`);
       form.setFieldValue('jenjang', data.data.jenjang);
       form.setFieldValue('tahun_ajaran', data.data.tahun_ajaran);
+      setSearchValue(data.data.tahun_ajaran);
     };
 
     type === 'edit' && fetch();
@@ -136,7 +137,7 @@ export default function FormKelas({ id, type, close }: Props) {
         label="Tahun Ajaran"
         placeholder="Tahun Ajaran"
         data={dataTahunAjaran.map((item) => item.tahun_ajaran).sort() || []}
-        // value={form.values.tahun_ajaran}
+        value={searchValue}
         error={form.errors.tahun_ajaran as string}
         onChange={(e) => form.setFieldValue('tahun_ajaran', e as string)}
         searchable

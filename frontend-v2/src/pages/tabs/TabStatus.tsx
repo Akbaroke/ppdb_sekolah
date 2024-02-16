@@ -1,7 +1,13 @@
-import { Badge } from '@mantine/core';
+import { Badge, NumberFormatter } from '@mantine/core';
 import Card from '../../components/Card';
+import { DataStatus } from '../../interfaces/pages';
+import ButtonViewUrl from '../../components/ButtonViewUrl';
 
-export default function TabStatus() {
+type Props = {
+  dataStatus: DataStatus;
+};
+
+export default function TabStatus({ dataStatus }: Props) {
   return (
     <Card>
       <div className="flex justify-between sm:flex-row flex-col-reverse gap-10 p-2">
@@ -11,32 +17,89 @@ export default function TabStatus() {
             <p>No. Pendaftaran</p>
             <p>Tanggal Daftar</p>
             <p>Jenjang</p>
-            <p>Kelas</p>
+            {dataStatus?.status !== 'pendaftar' && <p>Kelas</p>}
             <p>Biaya Pendaftaran</p>
             <p>Status Pembayaran</p>
-            <p>NIS</p>
+            {dataStatus?.status !== 'pendaftar' && <p>NIS</p>}
+            {dataStatus?.status === 'keluar' && <p>Alasan Keluar</p>}
+            {dataStatus?.status === 'lulus' && <p>Ijazah</p>}
           </div>
           <div className="flex flex-col gap-3 text-sm">
-            <p>: 2023/2024</p>
-            <p>: 0601241</p>
-            <p>: 6 Januari 2024</p>
-            <p>: TKA</p>
-            <p>: -</p>
+            <p>: {dataStatus?.tahun_ajaran}</p>
+            <p>: {dataStatus?.no_pendaftaran}</p>
+            <p>: {dataStatus?.tgl_daftar}</p>
             <p>
-              : <b>Rp 50.000</b>
+              : <Badge color="blue">{dataStatus?.jenjang}</Badge>
             </p>
-            <p className="text-red-500">: Belum Lunas</p>
-            <p>: -</p>
+            {dataStatus?.status !== 'pendaftar' && (
+              <p>
+                :{' '}
+                {dataStatus?.kelas ? (
+                  <Badge color="blue">{dataStatus?.kelas}</Badge>
+                ) : (
+                  '-'
+                )}
+              </p>
+            )}
+
+            <p>
+              :{' '}
+              <b>
+                <NumberFormatter
+                  prefix="Rp "
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  value={dataStatus?.biaya_pendaftaran}
+                />
+              </b>
+            </p>
+            <p className="text-red-500">
+              :{' '}
+              <Badge
+                variant="light"
+                color={dataStatus?.status_bayar ? 'teal' : 'red'}>
+                {dataStatus?.status_bayar ? 'Lunas' : 'Belum Lunas'}
+              </Badge>
+            </p>
+            {dataStatus?.status !== 'pendaftar' && (
+              <p>: {dataStatus?.nis ? dataStatus?.nis : '-'}</p>
+            )}
+            {dataStatus?.status === 'keluar' && (
+              <p>: {dataStatus?.keterangan ? dataStatus?.keterangan : '-'}</p>
+            )}
+            {dataStatus?.status === 'lulus' && (
+              <ButtonViewUrl
+                className="mb-[2px]"
+                url={dataStatus?.ijazah as string}
+                title="Ijazah Siswa">
+                <p>
+                  :{' '}
+                  <b className="text-sm underline text-blue-500 cursor-pointer font-medium">
+                    Lihat Ijazah
+                  </b>
+                </p>
+              </ButtonViewUrl>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-4 items-center justify-center mr-3">
           <img
-            src="https://cdn.discordapp.com/attachments/1015028360759492710/1199297491431067648/images_1.png?ex=65c207d3&is=65af92d3&hm=57e728daa7e3c6202a1f6a9cae814309e9bc2657e046a48f9389cff2f3340379&"
+            src={dataStatus?.foto}
             alt=""
             className="h-[130px] rounded-[5px]"
           />
-          <Badge variant="light" color="yellow">
-            pendaftar
+          <Badge
+            variant="light"
+            color={
+              dataStatus?.status === 'pendaftar'
+                ? 'yellow'
+                : dataStatus?.status === 'siswa'
+                ? 'teal'
+                : dataStatus?.status === 'keluar'
+                ? 'red'
+                : 'blue'
+            }>
+            {dataStatus?.status}
           </Badge>
         </div>
       </div>

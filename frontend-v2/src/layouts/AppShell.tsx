@@ -26,8 +26,6 @@ import { logout } from '../redux/slices/authSlice';
 import { IconListCheck } from '@tabler/icons-react';
 import ModalConfirm from '../components/ModalConfirm';
 import { Notify } from '../components/Notify';
-import { fetchPaginatedKelas } from '../redux/slices/kelasSlice';
-import { fetchPaginatedTahunAjaran } from '../redux/slices/tahunAjaranSlice';
 
 const dataUser = [
   { link: '/user/siswa-terdaftar', label: 'Siswa Terdaftar', icon: IconUsers },
@@ -53,14 +51,7 @@ const dataAdmin = [
 ];
 
 const warnFeatureOnDevelop = [
-  '/admin/siswa',
-  '/admin/siswa',
-  '/admin/pendaftar',
   '/admin/pembayaran',
-  '/admin/ganti-katasandi',
-  '/user/ganti-katasandi',
-  '/user/daftar-siswa-baru',
-  '/user/siswa-terdaftar',
 ];
 
 export function AppShell() {
@@ -84,16 +75,6 @@ export function AppShell() {
         : `/${spiter[0]}/${isAdmin ? 'tahun-ajaran' : 'siswa-terdaftar'}`;
     setActive(pathLocation);
   }, [isAdmin, location]);
-
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    dispatch(fetchPaginatedTahunAjaran({}));
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    dispatch(fetchPaginatedKelas({}));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const path = useLocation().pathname;
   useEffect(() => {
