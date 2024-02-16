@@ -94,6 +94,7 @@ export class KelasRepository {
         },
         skip,
         take: limit,
+        cache: true,
       });
 
       return { data, count };

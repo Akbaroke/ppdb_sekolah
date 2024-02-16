@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FindManyOptions, In, Repository } from 'typeorm';
+import { FindManyOptions, In, Like, Repository } from 'typeorm';
 import { DataSiswa } from './data_siswa.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { STATUS_SISWA } from './data_siswa.interface';
@@ -32,7 +32,7 @@ export class DataSiswaRepository {
 
   async findAllByUserId(user_id: string) {
     try {
-      return await this.dataSiswaRepository.find({
+      const options = {
         where: {
           siswa: {
             user: {
@@ -60,13 +60,88 @@ export class DataSiswaRepository {
           jenjang: true,
           created_at: true,
         },
-      });
+      } as FindManyOptions<DataSiswa>;
+
+      return await this.dataSiswaRepository.find(options);
     } catch (error) {
       throw error;
     }
   }
 
-  async findAllAndCount(
+  async findAllAndSearch(
+    status: STATUS_SISWA[],
+    start: number,
+    limit: number,
+    order: string,
+    search: string,
+  ) {
+    try {
+      const options = {
+        where: [
+          {
+            siswa: {
+              nama: Like(search),
+            },
+            status: In(status),
+          },
+          {
+            tahun_ajaran: {
+              tahun_ajaran: search,
+            },
+            status: In(status),
+          },
+          {
+            jenjang: search,
+            status: In(status),
+          },
+          {
+            no_pendaftaran: search,
+            status: In(status),
+          },
+          {
+            nis: search,
+            status: In(status),
+          },
+        ],
+        relations: ['siswa', 'foto'],
+        skip: start,
+        take: limit,
+        order: {
+          updated_at: order,
+        },
+        select: {
+          data_siswa_id: true,
+          siswa: {
+            siswa_id: true,
+            nama: true,
+            jenis_kelamin: true,
+          },
+          foto: {
+            url: true,
+          },
+          tahun_ajaran: {
+            tahun_ajaran: true,
+          },
+          status: true,
+          no_pendaftaran: true,
+          jenjang: true,
+          nis: true,
+          updated_at: true,
+        },
+        cache: true,
+      } as FindManyOptions<DataSiswa>;
+
+      const [data, count] = await this.dataSiswaRepository.findAndCount(
+        options,
+      );
+
+      return { data, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findAll(
     status: STATUS_SISWA[],
     start: number,
     limit: number,
@@ -74,9 +149,11 @@ export class DataSiswaRepository {
   ) {
     try {
       const options = {
-        where: {
-          status: In(status),
-        },
+        where: [
+          {
+            status: In(status),
+          },
+        ],
         relations: ['siswa', 'foto'],
         skip: start,
         take: limit,

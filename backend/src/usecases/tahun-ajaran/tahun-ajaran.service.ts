@@ -91,7 +91,7 @@ export class UsecaseTahunAjaranService {
     limit = 10,
     page = 1,
     latest = true,
-    search: string = null,
+    search: string = undefined,
   ): Promise<IMessage & { data?: TahunAjaran[]; pagination?: object }> {
     try {
       if (page < 1 || limit < 1) {

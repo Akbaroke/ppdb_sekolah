@@ -223,6 +223,7 @@ export class SiswaService {
     limit = 10,
     page = 1,
     latest = true,
+    search = undefined,
   ): Promise<IMessage & { data: object; pagination: object }> {
     try {
       if (page < 1 || limit < 1) {
@@ -235,6 +236,7 @@ export class SiswaService {
           limit,
           page,
           latest,
+          search,
         );
 
       const pagination = this.paginationService.createPagination(

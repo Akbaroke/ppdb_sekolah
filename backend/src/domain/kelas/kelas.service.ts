@@ -179,7 +179,7 @@ export class KelasService {
     limit: number,
     page: number,
     latest: boolean,
-    search: string = null,
+    search: string = undefined,
   ): Promise<{
     limit_item: number;
     start: number;

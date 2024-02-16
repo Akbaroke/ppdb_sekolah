@@ -57,7 +57,14 @@ export class SiswaController {
     page?: number,
     @Query('latest', new DefaultValuePipe(true), ParseBoolPipe)
     latest?: boolean,
+    @Query('s', new DefaultValuePipe(undefined)) search?: string,
   ) {
-    return await this.siswaService.getAllDataSiswa(status, limit, page, latest);
+    return await this.siswaService.getAllDataSiswa(
+      status,
+      limit,
+      page,
+      latest,
+      search,
+    );
   }
 }

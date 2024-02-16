@@ -11,6 +11,48 @@ export class DataSiswaService {
     private readonly dataSiswaRepository: DataSiswaRepository,
   ) {}
 
+  private async findAllDataSiswaWithoutSearch(
+    status: STATUS_SISWA[],
+    start: number,
+    limit_item: number,
+    order: string,
+  ) {
+    try {
+      const { data, count } = await this.dataSiswaRepository.findAll(
+        status,
+        start,
+        limit_item,
+        order,
+      );
+
+      return { limit_item, start, data, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  private async findAllDataSiswaWithSearch(
+    status: STATUS_SISWA[],
+    start: number,
+    limit_item: number,
+    order: string,
+    search: string,
+  ) {
+    try {
+      const { data, count } = await this.dataSiswaRepository.findAllAndSearch(
+        status,
+        start,
+        limit_item,
+        order,
+        search,
+      );
+
+      return { limit_item, start, data, count };
+    } catch (error) {
+      throw error;
+    }
+  }
+
   createTransactionDataSiswa(data: ICreateDataSiswa): DataSiswa {
     try {
       return this.entityManager.create(DataSiswa, {
@@ -37,6 +79,7 @@ export class DataSiswaService {
     limit: number,
     page: number,
     latest: boolean,
+    search: string,
   ) {
     try {
       const limit_item = limit > 20 ? 20 : limit;
@@ -53,14 +96,22 @@ export class DataSiswaService {
             ]
           : [status_siswa];
 
-      const { data, count } = await this.dataSiswaRepository.findAllAndCount(
-        status,
-        start,
-        limit_item,
-        order,
-      );
-
-      return { data, count, limit_item, start };
+      if (search) {
+        return await this.findAllDataSiswaWithSearch(
+          status,
+          start,
+          limit_item,
+          order,
+          search,
+        );
+      } else {
+        return this.findAllDataSiswaWithoutSearch(
+          status,
+          start,
+          limit_item,
+          order,
+        );
+      }
     } catch (error) {
       throw error;
     }

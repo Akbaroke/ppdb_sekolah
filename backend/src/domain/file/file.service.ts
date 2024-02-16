@@ -11,9 +11,12 @@ export class FileService {
     private readonly firebaseService: FirebaseService,
   ) {}
 
-  private getFileId(file_firebase_id: string): string {
-    const id = file_firebase_id.split('_').slice(1).join('_');
-    return id;
+  private getIdForFirebase(file_firebase_id: string): {
+    nama: string;
+    id: string;
+  } {
+    const file = file_firebase_id.split('_');
+    return { nama: file[0], id: file.slice(1).join('_') };
   }
 
   async createIjazah(
@@ -57,7 +60,7 @@ export class FileService {
 
   async deleteFile(folder: string, file_firebase_id: string): Promise<void> {
     try {
-      const id = this.getFileId(file_firebase_id);
+      const { id } = this.getIdForFirebase(file_firebase_id);
       await this.firebaseService.delete(`${folder}/${id}`);
     } catch (error) {
       throw error;
@@ -70,15 +73,14 @@ export class FileService {
     file: Express.Multer.File,
   ): Promise<void> {
     try {
+      const { nama, id } = this.getIdForFirebase(file_firebase_id);
       const upload = await this.firebaseService.upload(file, folder);
-
       await this.entityManager.update(
         File,
         { file_firebase_id },
-        { file_firebase_id: upload.id, url: upload.url },
+        { file_firebase_id: `${nama}_${upload.id}`, url: upload.url },
       );
-
-      await this.deleteFile(folder, file_firebase_id);
+      await this.firebaseService.delete(`${folder}/${id}`);
     } catch (error) {
       throw error;
     }

@@ -68,6 +68,7 @@ export class TahunAjaranRepository {
         order: {
           updated_at: order,
         },
+        cache: true,
       });
 
       return { data, count };

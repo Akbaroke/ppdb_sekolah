@@ -76,7 +76,7 @@ export class UsecaseKelasService {
     limit = 10,
     page = 1,
     latest = true,
-    search = null,
+    search = undefined,
   ): Promise<IMessage & { data?: IResponseDataKelas[]; pagination?: object }> {
     try {
       if (page < 1 || limit < 1) {
