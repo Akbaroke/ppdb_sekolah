@@ -79,6 +79,7 @@ export default function DetailSiswa() {
           status_bayar: false,
           // nis: '-',
           ijazah: data.data?.berkas.ijazah,
+          keterangan: data.data?.keterangan,
         });
       } catch (error) {
         handleErrorResponse(error);

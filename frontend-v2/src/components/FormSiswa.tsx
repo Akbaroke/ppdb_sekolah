@@ -448,7 +448,11 @@ export default function FormSiswa({
                 value={form.values.jenjang}
                 error={form.errors.jenjang as string}
                 onChange={(e) => form.setFieldValue('jenjang', e as string)}
-                disabled={isUserEditble || values?.status !== 'pendaftar'}
+                disabled={
+                  isUserEditble || type === 'edit'
+                    ? values?.status !== 'pendaftar'
+                    : false
+                }
                 comboboxProps={{
                   transitionProps: {
                     transition: 'pop',
@@ -472,7 +476,11 @@ export default function FormSiswa({
                 searchable
                 searchValue={searchValue as string}
                 onSearchChange={setSearchValue}
-                disabled={isUserEditble || values?.status !== 'pendaftar'}
+                disabled={
+                  isUserEditble || type === 'edit'
+                    ? values?.status !== 'pendaftar'
+                    : false
+                }
                 comboboxProps={{
                   transitionProps: {
                     transition: 'pop',
@@ -513,13 +521,19 @@ export default function FormSiswa({
       </form>
       <Group justify="center" className="w-full px-7 mt-5">
         {isAdmin && type === 'edit' && values?.status === 'siswa' && (
-          <Button
-            variant="outline"
-            color="red"
-            className="w-full flex-1 min-w-[100px]"
-            rightSection={<IconTransferOut size={16} />}>
-            Keluarkan
-          </Button>
+          <ModalForm
+            title="Konfirmasi Keluarnya Siswa"
+            id={id}
+            formType="keluarkan"
+            className="flex-1 w-full">
+            <Button
+              variant="outline"
+              color="red"
+              fullWidth
+              rightSection={<IconTransferOut size={16} />}>
+              Keluarkan
+            </Button>
+          </ModalForm>
         )}
 
         {isAdmin && type === 'edit' && values?.status === 'siswa' && (

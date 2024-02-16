@@ -99,4 +99,25 @@ const AGAMA_LIST = [
   },
 ];
 
-export { JOBS_LIST, JENJANG_LIST, GENDER_LIST, AGAMA_LIST };
+const KETERANGAN_KELUAR = [
+  'Pindah Sekolah',
+  'Anak Tidak Betah',
+  'Masalah Keuangan',
+  'Alasan Kesehatan',
+  'Kesulitan Belajar',
+  'Tuntutan Keluarga',
+  'Alasan Pribadi',
+  'Pengaruh Lingkungan',
+  'Konflik dengan Teman',
+  'Ketidakcocokan dengan Guru',
+  'Minat pada Bidang Lain',
+  'Kesulitan Transportasi',
+  'Kurangnya Fasilitas Sekolah',
+  'Perilaku Siswa yang Tidak Sesuai',
+  'Alasan Akademis',
+  'Keterlibatan dalam Kegiatan Ekstrakurikuler',
+  'Masalah Perundungan (Bullying)',
+  'Kurangnya Dukungan dari Orang Tua',
+];
+
+export { JOBS_LIST, JENJANG_LIST, GENDER_LIST, AGAMA_LIST, KETERANGAN_KELUAR };

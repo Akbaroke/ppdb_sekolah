@@ -4,12 +4,13 @@ import FormTahunAjaran from './FormTahunAjaran';
 import FormKelas from './FormKelas';
 import FormTerima from './FormTerima';
 import FormLuluskan from './FormLuluskan';
+import FormKeluarkan from './FormKeluarkan';
 
 type Props = {
   children: React.ReactNode;
   title: string;
   actionType?: 'create' | 'edit';
-  formType: 'tahun_ajaran' | 'kelas' | 'terima' | 'luluskan';
+  formType: 'tahun_ajaran' | 'kelas' | 'terima' | 'luluskan' | 'keluarkan';
   id?: string;
   className?: string;
 };
@@ -34,6 +35,8 @@ export default function ModalForm({
         return <FormTerima id={id} close={close} />;
       case 'luluskan':
         return <FormLuluskan id={id} close={close} />;
+      case 'keluarkan':
+        return <FormKeluarkan id={id} close={close} />;
     }
   };
 

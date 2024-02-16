@@ -47,8 +47,9 @@ interface SiswaDetailResponse {
     foto: string;
     ijazah?: string;
   };
-  jenjang: 'tka';
-  tahun_ajaran: '2024/2025';
+  jenjang: string;
+  tahun_ajaran: string;
+  keterangan?: string;
 }
 
 interface DataStatus {
@@ -63,6 +64,7 @@ interface DataStatus {
   status_bayar: boolean;
   nis?: string;
   ijazah?: string;
+  keterangan?: string;
 }
 
 export { ErrorResponse, SiswaResponse, SiswaDetailResponse, DataStatus };

@@ -17,11 +17,12 @@ export default function TabStatus({ dataStatus }: Props) {
             <p>No. Pendaftaran</p>
             <p>Tanggal Daftar</p>
             <p>Jenjang</p>
-            <p>Kelas</p>
+            {dataStatus?.status !== 'pendaftar' && <p>Kelas</p>}
             <p>Biaya Pendaftaran</p>
             <p>Status Pembayaran</p>
-            <p>NIS</p>
-            <p>Ijazah</p>
+            {dataStatus?.status !== 'pendaftar' && <p>NIS</p>}
+            {dataStatus?.status === 'keluar' && <p>Alasan Keluar</p>}
+            {dataStatus?.status === 'lulus' && <p>Ijazah</p>}
           </div>
           <div className="flex flex-col gap-3 text-sm">
             <p>: {dataStatus?.tahun_ajaran}</p>
@@ -30,14 +31,17 @@ export default function TabStatus({ dataStatus }: Props) {
             <p>
               : <Badge color="blue">{dataStatus?.jenjang}</Badge>
             </p>
-            <p>
-              :{' '}
-              {dataStatus?.kelas ? (
-                <Badge color="blue">{dataStatus?.kelas}</Badge>
-              ) : (
-                '-'
-              )}
-            </p>
+            {dataStatus?.status !== 'pendaftar' && (
+              <p>
+                :{' '}
+                {dataStatus?.kelas ? (
+                  <Badge color="blue">{dataStatus?.kelas}</Badge>
+                ) : (
+                  '-'
+                )}
+              </p>
+            )}
+
             <p>
               :{' '}
               <b>
@@ -57,18 +61,25 @@ export default function TabStatus({ dataStatus }: Props) {
                 {dataStatus?.status_bayar ? 'Lunas' : 'Belum Lunas'}
               </Badge>
             </p>
-            <p>: {dataStatus?.nis ? dataStatus?.nis : '-'}</p>
-            <ButtonViewUrl
-              className="mb-[2px]"
-              url={dataStatus?.ijazah as string}
-              title="Ijazah Siswa">
-              <p>
-                :{' '}
-                <b className="text-sm underline text-blue-500 cursor-pointer font-medium">
-                  Lihat Ijazah
-                </b>
-              </p>
-            </ButtonViewUrl>
+            {dataStatus?.status !== 'pendaftar' && (
+              <p>: {dataStatus?.nis ? dataStatus?.nis : '-'}</p>
+            )}
+            {dataStatus?.status === 'keluar' && (
+              <p>: {dataStatus?.keterangan ? dataStatus?.keterangan : '-'}</p>
+            )}
+            {dataStatus?.status === 'lulus' && (
+              <ButtonViewUrl
+                className="mb-[2px]"
+                url={dataStatus?.ijazah as string}
+                title="Ijazah Siswa">
+                <p>
+                  :{' '}
+                  <b className="text-sm underline text-blue-500 cursor-pointer font-medium">
+                    Lihat Ijazah
+                  </b>
+                </p>
+              </ButtonViewUrl>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-4 items-center justify-center mr-3">

@@ -73,7 +73,7 @@ export default function FormTerima({ id, close }: Props) {
         });
         Notify('success', 'Pendaftar berhasil diterima menjadi siswa.');
         close();
-        navigate('/siswa');
+        navigate('/admin/siswa');
       } catch (error) {
         handleErrorResponse(error);
       } finally {
