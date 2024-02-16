@@ -44,7 +44,7 @@ export class TahunAjaranController {
     limit?: number,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe)
     page?: number,
-    @Query('latest', new DefaultValuePipe(false), ParseBoolPipe)
+    @Query('latest', new DefaultValuePipe(true), ParseBoolPipe)
     latest?: boolean,
     @Query('s', new DefaultValuePipe(null)) search?: string,
   ) {

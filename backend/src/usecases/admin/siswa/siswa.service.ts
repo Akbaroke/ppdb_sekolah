@@ -156,6 +156,7 @@ export class SiswaService {
   }
 
   async keluar(siswa_id: string, keterangan: string): Promise<IMessage> {
+    const now = new Date().getTime();
     try {
       const data_siswa = await this.getDataSiswaBySiswaId(siswa_id, true);
       this.validateSiswaStatus(data_siswa.status, STATUS_SISWA.KELUAR);
@@ -165,6 +166,7 @@ export class SiswaService {
         {
           status: STATUS_SISWA.KELUAR,
           keterangan,
+          tanggal_berakhir: now,
         },
       );
 
@@ -178,6 +180,7 @@ export class SiswaService {
   }
 
   async lulus(siswa_id: string, file: Express.Multer.File): Promise<IMessage> {
+    const now = new Date().getTime();
     let data_siswa: DataSiswa;
     let ijazah: File;
     try {
@@ -193,7 +196,12 @@ export class SiswaService {
 
         await this.dataSiswaService.updateTransactionDataSiswa(
           data_siswa.data_siswa_id,
-          { status: STATUS_SISWA.LULUS, ijazah: data, keterangan: 'lulus' },
+          {
+            status: STATUS_SISWA.LULUS,
+            ijazah: data,
+            keterangan: 'lulus',
+            tanggal_berakhir: now,
+          },
           entityManager,
         );
       });
@@ -239,16 +247,22 @@ export class SiswaService {
         start,
       );
 
-      const data_siswa = data.map((value) => ({
-        id: value.siswa.siswa_id,
-        status: value.status,
-        imgUrl: value.foto.url,
-        nama: value.siswa.nama,
-        jenis_kelamin: value.siswa.jenis_kelamin,
-        tahun_ajaran: value.tahun_ajaran.tahun_ajaran,
-        no_pendaftaran: value.no_pendaftaran,
-        jenjang: value.jenjang,
-      }));
+      const data_siswa = data.map((value) => {
+        return {
+          id: value.siswa.siswa_id,
+          status: value.status,
+          imgUrl: value.foto.url,
+          nama: value.siswa.nama,
+          jenis_kelamin: value.siswa.jenis_kelamin,
+          tahun_ajaran: value.tahun_ajaran.tahun_ajaran,
+          no_pendaftaran: value.no_pendaftaran,
+          jenjang: value.jenjang,
+          ...(value.status !== STATUS_SISWA.PENDAFTAR && {
+            nis: value.nis,
+            kelas: value.kelas.kelas,
+          }),
+        };
+      });
 
       return {
         httpStatus: HttpStatus.OK,

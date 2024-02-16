@@ -260,7 +260,9 @@ export class DaftarSiswaService {
       }
 
       if (dataSiswa.siswa.user_id !== user_id && role !== 'admin') {
-        throw new ForbiddenException('Siapa anda');
+        throw new ForbiddenException(
+          'Anda tidak memiliki izin untuk mengakses data siswa',
+        );
       }
 
       const responseData = {
@@ -292,6 +294,17 @@ export class DaftarSiswaService {
         jenjang: dataSiswa.jenjang,
         tahun_ajaran: dataSiswa.tahun_ajaran.tahun_ajaran,
       };
+
+      if (dataSiswa.status === STATUS_SISWA.LULUS) {
+        responseData['tanggal_lulus'] = dataSiswa.tanggal_berakhir;
+        responseData['berkas']['ijazah'] = dataSiswa.ijazah?.url;
+        responseData['keterangan'] = dataSiswa.keterangan;
+      }
+
+      if (dataSiswa.status === STATUS_SISWA.KELUAR) {
+        responseData['tanggal_keluar'] = dataSiswa.tanggal_berakhir;
+        responseData['keterangan'] = dataSiswa.keterangan;
+      }
 
       return {
         message: 'Data berhasil diambil',

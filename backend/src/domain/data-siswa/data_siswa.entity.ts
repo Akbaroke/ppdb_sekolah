@@ -76,6 +76,14 @@ export class DataSiswa {
   @Column({ name: 'keterangan', type: 'text', nullable: true })
   keterangan?: string;
 
+  @Column({
+    name: 'tanggal_berakhir',
+    type: 'bigint',
+    nullable: true,
+    unsigned: true,
+  })
+  tanggal_berakhir?: number;
+
   @CreateDateColumn({
     type: 'bigint',
     nullable: false,
