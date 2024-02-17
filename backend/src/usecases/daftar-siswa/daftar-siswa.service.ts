@@ -208,10 +208,6 @@ export class DaftarSiswaService {
         data.tahun_ajaran,
       );
 
-      if (data.status !== STATUS_SISWA.PENDAFTAR) {
-        throw new BadRequestException('status harus pendaftar');
-      }
-
       await this.entityManager.transaction(async (entityManager) => {
         Object.assign(data.siswa, { user });
         const siswa = await this.createSiswa(data, entityManager);
@@ -232,7 +228,6 @@ export class DaftarSiswaService {
           foto: berkas_siswa[2],
           jenjang: data.jenjang,
           tahun_ajaran,
-          status: data.status,
         };
 
         await this.createDataSiswa(payload, entityManager);
@@ -371,18 +366,6 @@ export class DaftarSiswaService {
       const data_siswa = await this.findDataSiswaBySiswaId(siswa_id, false);
       this.checkPermissionForDataAccess(data_siswa, payload.id, payload.role);
 
-      if (
-        (payload.role !== 'admin' &&
-          !data_siswa.nis &&
-          updatedData.status !== STATUS_SISWA.PENDAFTAR) ||
-        (payload.role === 'admin' &&
-          !data_siswa.nis &&
-          updatedData.status !== STATUS_SISWA.PENDAFTAR) ||
-        (data_siswa.nis && updatedData.status !== STATUS_SISWA.SISWA)
-      ) {
-        throw new BadRequestException('user tidak bisa mengubah status');
-      }
-
       const update_tahun_ajaran = Number(
         updatedData.tahun_ajaran.split('/')[0],
       );
@@ -408,7 +391,6 @@ export class DaftarSiswaService {
       }
 
       if (
-        updatedData.status !== STATUS_SISWA.PENDAFTAR &&
         payload.role !== 'admin' &&
         updatedData.jenjang !== data_siswa.kelas.jenjang
       ) {
@@ -469,7 +451,6 @@ export class DaftarSiswaService {
           }
         }
 
-        data_siswa.status = updatedData.status;
         data_siswa.jenjang = updatedData.jenjang;
         await this.dataSiswaService.updateTransactionDataSiswa(
           data_siswa.data_siswa_id,

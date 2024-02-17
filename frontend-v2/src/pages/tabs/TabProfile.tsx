@@ -71,7 +71,6 @@ export default function TabProfile({ isLoading, dataSiswa, id }: Props) {
     }
     formData.append('jenjang', e.jenjang);
     formData.append('tahun_ajaran', e.tahun_ajaran);
-    formData.append('status', 'pendaftar');
 
     try {
       const { data } = await api.patch(`/daftar_siswa/${id}`, formData, {

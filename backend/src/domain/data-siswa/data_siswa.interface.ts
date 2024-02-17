@@ -12,7 +12,6 @@ export interface ICreateDataSiswa {
   wali_siswa: WaliSiswa;
   jenjang: JENJANG;
   tahun_ajaran: TahunAjaran;
-  status: STATUS_SISWA;
 }
 
 export enum STATUS_SISWA {

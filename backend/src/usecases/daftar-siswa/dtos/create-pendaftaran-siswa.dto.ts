@@ -12,7 +12,6 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { STATUS_SISWA } from 'src/domain/data-siswa/data_siswa.interface';
 import { JENJANG } from 'src/domain/kelas/kelas.interface';
 import { AGAMA, JENIS_KELAMIN } from 'src/domain/siswa/siswa.interface';
 import { ICreateWaliSiswa } from 'src/domain/wali-siswa/wali-siswa.interface';
@@ -111,10 +110,4 @@ export class CreatePendaftaranSiswaDto {
   @IsEnum(JENJANG, { message: 'jenjang hanya memiliki pg, tka, dan tkb' })
   @IsNotEmpty({ message: 'jenjang harus diisi' })
   jenjang: JENJANG;
-
-  @IsEnum(STATUS_SISWA, {
-    message: 'status_siswa hanya memiliki pendaftar, lulus, keluar, dan siswa',
-  })
-  @IsNotEmpty({ message: 'status_siswa harus diisi' })
-  status: STATUS_SISWA;
 }
