@@ -375,9 +375,6 @@ export class DaftarSiswaService {
         (payload.role !== 'admin' &&
           !data_siswa.nis &&
           updatedData.status !== STATUS_SISWA.PENDAFTAR) ||
-        (payload.role === 'admin' &&
-          !data_siswa.nis &&
-          updatedData.status !== STATUS_SISWA.PENDAFTAR) ||
         (data_siswa.nis && updatedData.status !== STATUS_SISWA.SISWA)
       ) {
         throw new BadRequestException('user tidak bisa mengubah status');
