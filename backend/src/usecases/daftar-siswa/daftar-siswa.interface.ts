@@ -8,7 +8,6 @@ export interface IDataSiswa {
   wali_siswa: ICreateWaliSiswa;
   tahun_ajaran: string;
   jenjang: JENJANG;
-  status: STATUS_SISWA;
 }
 
 export interface ITransformedDataSiswa {
