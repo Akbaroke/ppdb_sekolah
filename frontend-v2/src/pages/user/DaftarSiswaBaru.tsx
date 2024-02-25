@@ -42,6 +42,9 @@ export default function DaftarSiswaBaru() {
       formData.append('foto', e.foto);
       formData.append('jenjang', e.jenjang);
       formData.append('tahun_ajaran', e.tahun_ajaran);
+      // formData.forEach((value, key) => {
+      //   console.log(key, '->', value);
+      // });
 
       const { data } = await api.post('/daftar_siswa', formData, {
         headers: {

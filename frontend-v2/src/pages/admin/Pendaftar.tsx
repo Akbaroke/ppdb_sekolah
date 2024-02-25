@@ -1,5 +1,12 @@
 import Card from '../../components/Card';
-import { ActionIcon, Badge, Grid, Loader } from '@mantine/core';
+import {
+  Badge,
+  Checkbox,
+  Loader,
+  LoadingOverlay,
+  Pagination,
+  Table,
+} from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import ButtonRefresh from '../../components/ButtonRefresh';
 import InputSearch from '../../components/InputSearch';
@@ -8,9 +15,8 @@ import handleErrorResponse from '../../services/handleErrorResponse';
 import api from '../../api';
 import { SiswaResponse } from '../../interfaces/pages';
 import NotDataFound from '../../components/NotDataFound';
-import { Pagination } from '../../interfaces/store';
 import { useToggle } from '@mantine/hooks';
-import { IconChevronDown } from '@tabler/icons-react';
+import { Pagination as TypePagination } from '../../interfaces/store';
 
 export default function Pendaftar() {
   const navigate = useNavigate();
@@ -18,11 +24,12 @@ export default function Pendaftar() {
   const [searchValue, setSearchValue] = useState<string>('');
   const [listDataSiswa, setListDataSiswa] = useState<SiswaResponse[]>([]);
   const [value, toggle] = useToggle();
-  const [pagination, setPagination] = useState<Pagination>({
+  const [pagination, setPagination] = useState<TypePagination>({
     currentPage: 1,
     totalData: 0,
     totalPage: 0,
   });
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -43,14 +50,13 @@ export default function Pendaftar() {
     fetch();
   }, [searchValue, value]);
 
-  const handleNextPage = async () => {
+  const handleChangePage = async (page: number) => {
     setIsLoading(true);
     try {
-      const nextPage = pagination.currentPage + 1;
       const { data } = await api.get(
-        `/siswa?status=pendaftar&page=${nextPage}&s=${searchValue}`
+        `/siswa?status=pendaftar&page=${page}&s=${searchValue}`
       );
-      setListDataSiswa([...listDataSiswa, ...data.data]);
+      setListDataSiswa(data.data);
       setPagination(data.pagination);
     } catch (error) {
       handleErrorResponse(error);
@@ -58,6 +64,69 @@ export default function Pendaftar() {
       setIsLoading(false);
     }
   };
+
+  const rows = listDataSiswa?.map((element) => (
+    <Table.Tr key={element.id}>
+      <Table.Td>
+        <Checkbox
+          className="flex items-center justify-center"
+          aria-label="Select row"
+          checked={selectedRows.includes(element.id)}
+          onChange={(event) =>
+            setSelectedRows(
+              event.currentTarget.checked
+                ? [...selectedRows, element.id]
+                : selectedRows.filter((position) => position !== element.id)
+            )
+          }
+        />
+      </Table.Td>
+      <Table.Td>
+        <img
+          src={element.imgUrl}
+          alt=""
+          className="w-[71px] h-[87px] rounded-[5px] m-auto"
+        />
+      </Table.Td>
+      <Table.Td
+        className="text-blue-400 text-nowrap font-bold cursor-pointer hover:underline"
+        onClick={() => navigate(`/admin/pendaftar/${element.id}`)}>
+        {element.nama}
+      </Table.Td>
+      <Table.Td>{element.jenis_kelamin}</Table.Td>
+      <Table.Td>{element.tahun_ajaran}</Table.Td>
+      <Table.Td>
+        <Badge color="blue">{element.jenjang}</Badge>
+      </Table.Td>
+    </Table.Tr>
+  ));
+
+  const ths = (
+    <Table.Tr>
+      <Table.Th className="w-[70px]">
+        <Checkbox
+          className="flex items-center justify-center"
+          checked={selectedRows.length !== 0}
+          indeterminate={
+            selectedRows.length !== 0 &&
+            selectedRows.length !== listDataSiswa.length
+          }
+          onChange={() =>
+            setSelectedRows(
+              selectedRows.length === listDataSiswa.length
+                ? []
+                : listDataSiswa.map((position) => position.id)
+            )
+          }
+        />
+      </Table.Th>
+      <Table.Th>Foto</Table.Th>
+      <Table.Th>Nama</Table.Th>
+      <Table.Th>Jenis Kel</Table.Th>
+      <Table.Th>Tahun Ajaran</Table.Th>
+      <Table.Th>Jenjang</Table.Th>
+    </Table.Tr>
+  );
 
   return (
     <div className="flex flex-col gap-5">
@@ -77,70 +146,45 @@ export default function Pendaftar() {
           />
         </div>
       </Card>
-      <div>
-        {isLoading ? (
-          <Loader
-            color="blue"
-            size="sm"
-            type="dots"
-            className="mx-auto my-10"
-          />
-        ) : listDataSiswa.length > 0 ? (
-          <Grid gutter="xs">
-            {listDataSiswa?.map((item) => (
-              <Grid.Col span={{ base: 12, md: 6 }} key={item.id}>
-                <Card
-                  className="flex justify-between shadow-md cursor-pointer hover:shadow-none transition-all duration-300"
-                  onClick={() => navigate(`/admin/pendaftar/${item.id}`)}>
-                  <div className="flex items-center gap-3 sm:gap-5">
-                    <img
-                      src={item.imgUrl}
-                      alt=""
-                      className="w-[71px] h-[87px] rounded-[5px]"
-                    />
-                    <div className="flex flex-col justify-between gap-3">
-                      <div className="flex flex-col gap-[2px]">
-                        <h1 className="text-[14px] font-semibold">
-                          {item.nama} (
-                          {item.nis ? item.nis : item.no_pendaftaran})
-                        </h1>
-                        <p className="text-[12px]">{item.jenis_kelamin}</p>
-                        <p className="text-[12px]">{item.tahun_ajaran}</p>
-                      </div>
-                      <Badge variant="light" color="yellow">
-                        pendaftar
-                      </Badge>
-                    </div>
-                  </div>
-                  <Badge color="blue">
-                    {item.kelas ? item.kelas : item.jenjang}
-                  </Badge>
-                </Card>
-              </Grid.Col>
-            ))}
-            {pagination.totalPage > pagination.currentPage ? (
-              <ActionIcon
-                variant="subtle"
-                color="gray"
-                size="lg"
-                radius="xl"
-                mx="auto"
-                mt={20}
-                loading={isLoading}
-                aria-label="loadmore"
-                onClick={handleNextPage}>
-                <IconChevronDown
-                  style={{ width: '70%', height: '70%' }}
-                  color="gray"
-                  stroke={1.5}
-                />
-              </ActionIcon>
-            ) : null}
-          </Grid>
+      <Card>
+        <LoadingOverlay
+          visible={isLoading}
+          zIndex={1000}
+          overlayProps={{ radius: 'sm', blur: 2 }}
+          loaderProps={{
+            children: <Loader color="blue" size="sm" type="dots" />,
+          }}
+        />
+        {listDataSiswa?.length > 0 ? (
+          <Table.ScrollContainer minWidth={500}>
+            <Table
+              withTableBorder
+              withColumnBorders
+              styles={{
+                thead: {
+                  background: '#f0f0f0',
+                },
+                th: {
+                  textAlign: 'center',
+                },
+                td: {
+                  textAlign: 'center',
+                },
+              }}>
+              <Table.Thead>{ths}</Table.Thead>
+              <Table.Tbody>{rows}</Table.Tbody>
+            </Table>
+          </Table.ScrollContainer>
         ) : (
           <NotDataFound />
         )}
-      </div>
+        <Pagination
+          value={pagination.currentPage}
+          total={pagination.totalPage}
+          onChange={handleChangePage}
+          className="mt-5 ml-auto w-max"
+        />
+      </Card>
     </div>
   );
 }
