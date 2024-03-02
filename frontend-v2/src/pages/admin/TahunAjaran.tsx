@@ -74,7 +74,7 @@ export default function TahunAjaran() {
       <Table.Th>Tahun Ajaran</Table.Th>
       <Table.Th>Biaya Daftar</Table.Th>
       <Table.Th>Biaya SPP</Table.Th>
-      <Table.Th>Action</Table.Th>
+      <Table.Th>Aksi</Table.Th>
     </Table.Tr>
   );
 

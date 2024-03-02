@@ -130,7 +130,7 @@ export default function Kelas() {
       <Table.Th>Kode</Table.Th>
       <Table.Th>Tahun Ajaran</Table.Th>
       <Table.Th>Jumlah Siswa</Table.Th>
-      <Table.Th>Action</Table.Th>
+      <Table.Th>Aksi</Table.Th>
     </Table.Tr>
   );
 
