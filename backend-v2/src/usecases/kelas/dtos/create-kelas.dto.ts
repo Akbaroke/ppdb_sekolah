@@ -7,12 +7,9 @@ export class CreateKelasDto {
   @IsNotEmpty({ message: 'jenjang harus diisi' })
   jenjang: JENJANG;
 
-  @IsNumber(
-    { allowNaN: false },
-    { message: 'type maksimal_jumlah_siswa harus number' },
-  )
-  @IsNotEmpty({ message: 'maksimal_jumlah_siswa harus diisi' })
-  maksimal_jumlah_siswa: number;
+  @IsNumber({ allowNaN: false }, { message: 'type kapasitas harus number' })
+  @IsNotEmpty({ message: 'kapasitas harus diisi' })
+  kapasitas: number;
 
   @IsString({ message: 'type tahun_ajaran harus string' })
   @IsNotEmpty({ message: 'tahun_ajaran harus diisi' })

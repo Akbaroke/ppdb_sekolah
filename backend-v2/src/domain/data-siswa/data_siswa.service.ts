@@ -128,7 +128,8 @@ export class DataSiswaService {
 
   async getAllDataSiswaByUserId(user_id: string): Promise<DataSiswa[]> {
     try {
-      return await this.dataSiswaRepository.findAllByUserId(user_id);
+      const data = await this.dataSiswaRepository.findAllByUserId(user_id);
+      return data;
     } catch (error) {
       throw error;
     }

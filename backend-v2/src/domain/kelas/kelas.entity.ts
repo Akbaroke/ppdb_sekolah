@@ -16,7 +16,7 @@ interface IKelas {
   jenjang: JENJANG;
   kode_kelas: string;
   jumlah_siswa?: number;
-  maksimal_jumlah_siswa: number;
+  kapasitas: number;
   tahun_ajaran: TahunAjaran;
   created_at: number;
   updated_at: number;
@@ -57,13 +57,13 @@ export class Kelas implements IKelas {
   jumlah_siswa?: number;
 
   @Column({
-    name: 'maksimal_jumlah_siswa',
+    name: 'kapasitas',
     type: 'smallint',
     default: 25,
     unsigned: true,
     nullable: false,
   })
-  maksimal_jumlah_siswa: number;
+  kapasitas: number;
 
   @ManyToOne(() => TahunAjaran, (tahun_ajaran) => tahun_ajaran.kelas, {
     cascade: true,

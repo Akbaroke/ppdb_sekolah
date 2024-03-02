@@ -41,7 +41,7 @@ export class UsecaseKelasService {
         id: value.kelas_id,
         jenjang: value.jenjang,
         jumlah_siswa: value.jumlah_siswa,
-        maksimal_jumlah_siswa: value.maksimal_jumlah_siswa,
+        kapasitas: value.kapasitas,
         kelas: value.kelas,
         tahun_ajaran: value.tahun_ajaran?.tahun_ajaran,
         kode_kelas: value.kode_kelas,
@@ -58,11 +58,11 @@ export class UsecaseKelasService {
   async createKelas({
     tahun_ajaran,
     jenjang,
-    maksimal_jumlah_siswa,
+    kapasitas,
   }: {
     jenjang: JENJANG;
     tahun_ajaran: string;
-    maksimal_jumlah_siswa: number;
+    kapasitas: number;
   }): Promise<IMessage> {
     try {
       const findTahunAjaran = await this.getTahunAjaran(tahun_ajaran);
@@ -70,7 +70,7 @@ export class UsecaseKelasService {
       await this.kelasService.createKelas({
         jenjang,
         tahun_ajaran: findTahunAjaran,
-        maksimal_jumlah_siswa,
+        kapasitas,
       });
 
       return {
@@ -141,7 +141,7 @@ export class UsecaseKelasService {
     kelas_id: string,
     jenjang: JENJANG,
     tahun_ajaran: string,
-    maksimal_jumlah_siswa: number,
+    kapasitas: number,
   ): Promise<IMessage> {
     try {
       const findTahunAjaran = await this.getTahunAjaran(tahun_ajaran);
@@ -149,7 +149,7 @@ export class UsecaseKelasService {
         kelas_id,
         jenjang,
         findTahunAjaran,
-        maksimal_jumlah_siswa,
+        kapasitas,
       );
       return {
         httpStatus: HttpStatus.OK,

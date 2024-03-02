@@ -7,7 +7,7 @@ export enum JENJANG {
 }
 
 export interface ICreateKelas {
-  maksimal_jumlah_siswa: number;
+  kapasitas: number;
   jenjang: JENJANG;
   kelas: string;
   kode_kelas: string;
