@@ -56,7 +56,9 @@ export class DataSiswaRepository {
       const options = {
         where: {
           siswa: {
-            user: user_id,
+            user: {
+              user_id,
+            },
           },
         },
         relations: {

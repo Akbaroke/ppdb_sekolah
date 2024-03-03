@@ -127,10 +127,7 @@ export class SiswaService {
               return null;
             }
 
-            if (
-              kelas.jumlah_siswa + (index + 1) >
-              kelas.maksimal_jumlah_siswa
-            ) {
+            if (kelas.jumlah_siswa + (index + 1) > kelas.kapasitas) {
               kelas = await this.getKelasWithLocking(
                 data.jenjang,
                 data.tahun_ajaran.tahun_ajaran_id,
@@ -142,10 +139,7 @@ export class SiswaService {
               }
             }
 
-            await this.kelasService.updateJumlahSiswaKelas(
-              kelas,
-              entityManager,
-            );
+            await this.kelasService.addJumlahSiswa(kelas, entityManager);
 
             const nis = this.createNis(
               data.no_pendaftaran,
@@ -242,7 +236,7 @@ export class SiswaService {
       );
 
       return {
-        httpStatus: HttpStatus.ACCEPTED,
+        httpStatus: HttpStatus.OK,
         message: 'Berhasil',
       };
     } catch (error) {
