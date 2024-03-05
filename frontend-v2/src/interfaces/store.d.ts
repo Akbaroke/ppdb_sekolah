@@ -31,4 +31,5 @@ export interface Kelas extends Timestamp {
   kode_kelas: string;
   tahun_ajaran: string;
   jumlah_siswa: number;
+  kapasitas: number;
 }

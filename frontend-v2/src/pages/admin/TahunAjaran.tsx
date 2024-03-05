@@ -19,6 +19,7 @@ import ButtonRefresh from '../../components/ButtonRefresh';
 import InputSearch from '../../components/InputSearch';
 import { useEffect, useState } from 'react';
 import ModalForm from '../../components/ModalForm';
+import calculateShowingEntriesText from '../../utils/calculateShowEntries';
 
 type TahunAjaran = {
   id: string;
@@ -36,7 +37,7 @@ export default function TahunAjaran() {
 
   const rows = data?.map((element) => (
     <Table.Tr key={element.tahun_ajaran_id}>
-      <Table.Td className="text-blue-400 text-nowrap font-bold">
+      <Table.Td className="font-bold text-blue-400 text-nowrap">
         {element.tahun_ajaran}
       </Table.Td>
       <Table.Td>
@@ -110,8 +111,8 @@ export default function TahunAjaran() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="flex justify-between items-center flex-wrap gap-y-3">
-        <h1 className="font-bold text-lg">Tahun Ajaran</h1>
+      <Card className="flex flex-wrap items-center justify-between gap-y-3">
+        <h1 className="text-lg font-bold">Tahun Ajaran</h1>
         <div className="flex items-center gap-2 ml-auto">
           <InputSearch
             searchValue={searchValue}
@@ -160,12 +161,18 @@ export default function TahunAjaran() {
         ) : (
           <NotDataFound />
         )}
-        <Pagination
-          value={pagination.currentPage}
-          total={pagination.totalPage}
-          onChange={handleChangePage}
-          className="mt-5 ml-auto w-max"
-        />
+        <div className="flex items-center justify-between mt-5">
+          {data?.length > 0 && (
+            <p className="font-semibold text-blue-400">
+              {calculateShowingEntriesText(pagination)}
+            </p>
+          )}
+          <Pagination
+            value={pagination.currentPage}
+            total={pagination.totalPage}
+            onChange={handleChangePage}
+          />
+        </div>
       </Card>
     </div>
   );

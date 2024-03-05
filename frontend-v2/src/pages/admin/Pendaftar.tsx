@@ -2,6 +2,7 @@ import Card from '../../components/Card';
 import {
   ActionIcon,
   Badge,
+  Button,
   Checkbox,
   Loader,
   LoadingOverlay,
@@ -19,8 +20,10 @@ import { SiswaResponse } from '../../interfaces/pages';
 import NotDataFound from '../../components/NotDataFound';
 import { useToggle } from '@mantine/hooks';
 import { Pagination as TypePagination } from '../../interfaces/store';
-import { IconEye } from '@tabler/icons-react';
+import { IconDotsVertical } from '@tabler/icons-react';
 import calculateShowingEntriesText from '../../utils/calculateShowEntries';
+import ModalForm from '../../components/ModalForm';
+import { IconUserCheck } from '@tabler/icons-react';
 
 export default function Pendaftar() {
   const navigate = useNavigate();
@@ -34,7 +37,7 @@ export default function Pendaftar() {
     totalPage: 0,
   });
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(20);
 
   useEffect(() => {
     const fetch = async () => {
@@ -94,7 +97,7 @@ export default function Pendaftar() {
           className="w-[71px] h-[87px] rounded-[5px] m-auto"
         />
       </Table.Td>
-      <Table.Td className="text-blue-400 text-nowrap font-bold">
+      <Table.Td className="font-bold text-blue-400 text-nowrap">
         {element.nama}
       </Table.Td>
       <Table.Td>{element.no_pendaftaran}</Table.Td>
@@ -108,7 +111,7 @@ export default function Pendaftar() {
           variant="light"
           size="lg"
           onClick={() => navigate(`/admin/pendaftar/${element.id}`)}>
-          <IconEye size={18} />
+          <IconDotsVertical size={18} />
         </ActionIcon>
       </Table.Td>
     </Table.Tr>
@@ -145,8 +148,8 @@ export default function Pendaftar() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="flex justify-between items-center">
-        <h1 className="font-bold text-lg">Pendaftar</h1>
+      <Card className="flex items-center justify-between">
+        <h1 className="text-lg font-bold">Pendaftar</h1>
         <div className="flex items-center gap-2 ml-auto">
           <InputSearch
             searchValue={searchValue}
@@ -170,42 +173,59 @@ export default function Pendaftar() {
             children: <Loader color="blue" size="sm" type="dots" />,
           }}
         />
-        {listDataSiswa?.length > 0 && (
-          <Select
-            data={[
-              {
-                value: '10',
-                label: 'Menampilkan 10 Data',
-              },
-              {
-                value: '20',
-                label: 'Menampilkan 20 Data',
-              },
-              {
-                value: '30',
-                label: 'Menampilkan 30 Data',
-              },
-              {
-                value: '40',
-                label: 'Menampilkan 40 Data',
-              },
-              {
-                value: '50',
-                label: 'Menampilkan 50 Data',
-              },
-            ]}
-            value={limit.toString()}
-            onChange={(e) => setLimit(Number(e))}
-            comboboxProps={{
-              transitionProps: {
-                transition: 'pop',
-                duration: 200,
-              },
-            }}
-            readOnly={isLoading}
-            className="w-[200px] ml-auto mb-4 font-bold"
-          />
-        )}
+
+        <div className="flex items-center justify-between mb-4">
+          {selectedRows.length > 0 && (
+            <ModalForm
+              title="Konfirmasi Penerimaan Siswa"
+              listId={selectedRows}
+              formType="terima">
+              <Button
+                variant="filled"
+                color="teal"
+                fullWidth
+                rightSection={<IconUserCheck size={16} />}>
+                Terima {selectedRows.length} Siswa
+              </Button>
+            </ModalForm>
+          )}
+          {listDataSiswa?.length > 0 && (
+            <Select
+              data={[
+                {
+                  value: '20',
+                  label: 'Menampilkan 20 Data',
+                },
+                {
+                  value: '40',
+                  label: 'Menampilkan 40 Data',
+                },
+                {
+                  value: '60',
+                  label: 'Menampilkan 60 Data',
+                },
+                {
+                  value: '80',
+                  label: 'Menampilkan 80 Data',
+                },
+                {
+                  value: '100',
+                  label: 'Menampilkan 100 Data',
+                },
+              ]}
+              value={limit.toString()}
+              onChange={(e) => setLimit(Number(e))}
+              comboboxProps={{
+                transitionProps: {
+                  transition: 'pop',
+                  duration: 200,
+                },
+              }}
+              readOnly={isLoading}
+              className="w-[200px] font-bold ml-auto"
+            />
+          )}
+        </div>
 
         {listDataSiswa?.length > 0 ? (
           <Table.ScrollContainer minWidth={500}>
@@ -231,7 +251,7 @@ export default function Pendaftar() {
         ) : (
           <NotDataFound />
         )}
-        <div className="mt-5 flex justify-between items-center">
+        <div className="flex items-center justify-between mt-5">
           {listDataSiswa?.length > 0 && (
             <p className="font-semibold text-blue-400">
               {calculateShowingEntriesText(pagination)}

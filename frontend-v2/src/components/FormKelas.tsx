@@ -1,4 +1,4 @@
-import { Button, Select } from '@mantine/core';
+import { Button, NumberInput, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconDeviceFloppy } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
@@ -25,6 +25,7 @@ type FormType = {
   id: string;
   jenjang: string;
   tahun_ajaran: string;
+  kapasitas: number;
 };
 
 export default function FormKelas({ id, type, close }: Props) {
@@ -44,6 +45,7 @@ export default function FormKelas({ id, type, close }: Props) {
       id: id || '',
       jenjang: '',
       tahun_ajaran: '',
+      kapasitas: 0,
     },
     validate: {
       jenjang: (value: string) => (value ? null : 'Wajib diisi'),
@@ -56,6 +58,7 @@ export default function FormKelas({ id, type, close }: Props) {
       const { data } = await api.get(`/kelas/${id}`);
       form.setFieldValue('jenjang', data.data.jenjang);
       form.setFieldValue('tahun_ajaran', data.data.tahun_ajaran);
+      form.setFieldValue('kapasitas', data.data.kapasitas);
       setSearchValue(data.data.tahun_ajaran);
     };
 
@@ -73,17 +76,19 @@ export default function FormKelas({ id, type, close }: Props) {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const { id, jenjang, tahun_ajaran } = form.values;
+      const { id, jenjang, tahun_ajaran, kapasitas } = form.values;
       if (type === 'edit') {
         const { data } = await api.patch(`/kelas/${id}`, {
           jenjang: jenjang.toLowerCase(),
           tahun_ajaran,
+          kapasitas,
         });
         Notify('success', data.message);
       } else {
         const { data } = await api.post('/kelas', {
           jenjang: jenjang.toLowerCase(),
           tahun_ajaran,
+          kapasitas,
         });
         Notify('success', data.message);
       }
@@ -150,6 +155,20 @@ export default function FormKelas({ id, type, close }: Props) {
             duration: 200,
           },
         }}
+      />
+      <NumberInput
+        required
+        label="Kapasitas"
+        placeholder="0 orang"
+        suffix=" orang"
+        thousandSeparator="."
+        decimalSeparator=","
+        hideControls
+        value={form.values.kapasitas === 0 ? '' : form.values.kapasitas}
+        error={form.errors.kapasitas as string}
+        onChange={(e) => form.setFieldValue('kapasitas', e as number)}
+        min={1}
+        readOnly={isLoading}
       />
       <Button
         rightSection={<IconDeviceFloppy size={16} />}
