@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react';
 import ButtonDelete from '../../components/ButtonDelete';
 import InputSearch from '../../components/InputSearch';
 import ModalForm from '../../components/ModalForm';
+import calculateShowingEntriesText from '../../utils/calculateShowEntries';
 
 export default function Kelas() {
   const dispatch = useDispatch();
@@ -95,7 +96,14 @@ export default function Kelas() {
           value={element.jumlah_siswa}
         />
       </Table.Td>
-      <Table.Td className="flex items-center justify-evenly gap-3">
+      <Table.Td>
+        <NumberFormatter
+          thousandSeparator="."
+          decimalSeparator=","
+          value={element.kapasitas}
+        />
+      </Table.Td>
+      <Table.Td className="flex items-center gap-3 justify-evenly">
         <ModalConfirm
           title="Hapus Kelas"
           icon={<IconTrash />}
@@ -130,14 +138,15 @@ export default function Kelas() {
       <Table.Th>Kode</Table.Th>
       <Table.Th>Tahun Ajaran</Table.Th>
       <Table.Th>Jumlah Siswa</Table.Th>
-      <Table.Th>Action</Table.Th>
+      <Table.Th>Kapasitas</Table.Th>
+      <Table.Th>Aksi</Table.Th>
     </Table.Tr>
   );
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="flex justify-between items-center flex-wrap gap-y-3">
-        <h1 className="font-bold text-lg">Kelas</h1>
+      <Card className="flex flex-wrap items-center justify-between gap-y-3">
+        <h1 className="text-lg font-bold">Kelas</h1>
         <div className="flex items-center gap-2 ml-auto">
           <InputSearch
             searchValue={searchValue}
@@ -183,12 +192,18 @@ export default function Kelas() {
         ) : (
           <NotDataFound />
         )}
-        <Pagination
-          value={pagination.currentPage}
-          total={pagination.totalPage}
-          onChange={handleChangePage}
-          className="mt-5 ml-auto w-max"
-        />
+        <div className="flex items-center justify-between mt-5">
+          {data?.length > 0 && (
+            <p className="font-semibold text-blue-400">
+              {calculateShowingEntriesText(pagination)}
+            </p>
+          )}
+          <Pagination
+            value={pagination.currentPage}
+            total={pagination.totalPage}
+            onChange={handleChangePage}
+          />
+        </div>
       </Card>
     </div>
   );

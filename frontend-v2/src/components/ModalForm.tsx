@@ -12,6 +12,7 @@ type Props = {
   actionType?: 'create' | 'edit';
   formType: 'tahun_ajaran' | 'kelas' | 'terima' | 'luluskan' | 'keluarkan';
   id?: string;
+  listId?: string[];
   className?: string;
 };
 
@@ -21,6 +22,7 @@ export default function ModalForm({
   actionType = 'create',
   formType,
   id,
+  listId,
   className,
 }: Props) {
   const [opened, { open, close }] = useDisclosure(false);
@@ -32,7 +34,7 @@ export default function ModalForm({
       case 'kelas':
         return <FormKelas id={id} type={actionType} close={close} />;
       case 'terima':
-        return <FormTerima id={id} close={close} />;
+        return <FormTerima listId={listId} close={close} />;
       case 'luluskan':
         return <FormLuluskan id={id} close={close} />;
       case 'keluarkan':
