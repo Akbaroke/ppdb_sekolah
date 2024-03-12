@@ -40,8 +40,8 @@ class SiswaDto {
 
   @IsNumber({ allowNaN: false }, { message: 'type umur harus number' })
   @IsNotEmpty({ message: 'umur harus diisi' })
-  @Min(1)
-  @Max(100)
+  @Min(1, { message: 'umur minimal 1 tahun' })
+  @Max(100, { message: 'umur maksimal 100  tahun' })
   umur: number;
 
   @IsString({ message: 'type tempat_lahir harus string' })
@@ -54,12 +54,12 @@ class SiswaDto {
 
   @IsNumber({ allowNaN: false }, { message: 'type berat_badan harus number' })
   @IsNotEmpty({ message: 'berat_badan harus diisi' })
-  @Min(1)
+  @Min(1, { message: 'berat_badan minimal 1 kg' })
   berat_badan: number;
 
   @IsNumber({ allowNaN: false }, { message: 'type tinggi_badan harus number' })
   @IsNotEmpty({ message: 'tinggi_badan harus diisi' })
-  @Min(1)
+  @Min(1, { message: 'tinggi_badan minimal 1 cm' })
   tinggi_badan: number;
 }
 

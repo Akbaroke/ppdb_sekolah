@@ -56,13 +56,13 @@ export class KelasController {
   async update_kelas(
     @Param('id', ValidationUUID)
     id: string,
-    @Body() { jenjang, tahun_ajaran, maksimal_jumlah_siswa }: UpdateKelasDto,
+    @Body() { jenjang, tahun_ajaran, kapasitas }: UpdateKelasDto,
   ) {
     return await this.kelasService.updateKelas(
       id,
       jenjang,
       tahun_ajaran,
-      maksimal_jumlah_siswa,
+      kapasitas,
     );
   }
 

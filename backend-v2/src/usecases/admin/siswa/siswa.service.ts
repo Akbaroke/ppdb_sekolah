@@ -43,7 +43,7 @@ export class SiswaService {
     jenjang: JENJANG,
     tahun_ajaran_id: string,
     entityManager: EntityManager,
-  ): Promise<Kelas> {
+  ): Promise<Kelas[]> {
     try {
       const kelas = await this.kelasService.getKelasAndLock(
         jenjang,
@@ -113,54 +113,80 @@ export class SiswaService {
     dataArray: DataSiswa[],
     entityManager: EntityManager = this.entityManager,
   ) {
+    let i = 0;
+    let index = 0;
+    let kelas: Kelas[] = [];
     try {
       return await entityManager.transaction(async (entityManager) => {
-        return await Promise.all(
-          dataArray.map(async (data, index) => {
-            let kelas = await this.getKelasWithLocking(
-              data.jenjang,
-              data.tahun_ajaran.tahun_ajaran_id,
-              entityManager,
-            );
-
-            if (!kelas) {
-              return null;
-            }
-
-            if (
-              kelas.jumlah_siswa + (index + 1) >
-              kelas.maksimal_jumlah_siswa
-            ) {
+        const updatedDataArray = await Promise.all(
+          dataArray.map(async (data) => {
+            if (kelas.length === 0) {
               kelas = await this.getKelasWithLocking(
                 data.jenjang,
                 data.tahun_ajaran.tahun_ajaran_id,
                 entityManager,
               );
-
-              if (!kelas) {
-                return null;
-              }
             }
 
-            await this.kelasService.updateJumlahSiswaKelas(
-              kelas,
-              entityManager,
-            );
+            if (!kelas) {
+              return null;
+            }
 
-            const nis = this.createNis(
-              data.no_pendaftaran,
-              data.tahun_ajaran.tahun_ajaran,
-              data.jenjang,
-            );
+            if (i < kelas.length) {
+              if (kelas[i].jumlah_siswa + (index + 1) > kelas[i].kapasitas) {
+                i += 1;
+                index = 0;
 
-            return {
-              ...data,
-              kelas,
-              nis,
-              status: STATUS_SISWA.SISWA,
-            };
+                if (!kelas[i]) {
+                  return null;
+                }
+              } else {
+                index++;
+              }
+
+              const nis = this.createNis(
+                data.no_pendaftaran,
+                data.tahun_ajaran.tahun_ajaran,
+                data.jenjang,
+              );
+
+              return {
+                ...data,
+                kelas: kelas[i],
+                nis,
+                status: STATUS_SISWA.SISWA,
+              };
+            } else {
+              return null;
+            }
           }),
         );
+
+        const classIds = updatedDataArray
+          .filter((data) => data && data.kelas)
+          .map((data) => data.kelas.kelas_id);
+
+        await Promise.all(
+          classIds.map(async (classId) => {
+            const kelas = await this.kelasService.getKelasById(classId);
+
+            if (kelas) {
+              const jumlahSiswa = updatedDataArray
+                .filter((data) => data !== null)
+                .filter(
+                  (data) => data.kelas && data.kelas.kelas_id === classId,
+                ).length;
+
+              await this.kelasService.addJumlahSiswa(
+                kelas,
+                jumlahSiswa,
+                entityManager,
+              );
+            }
+          }),
+        );
+
+        return updatedDataArray;
       });
     } catch (error) {
       throw error;
@@ -242,7 +268,7 @@ export class SiswaService {
       );
 
       return {
-        httpStatus: HttpStatus.ACCEPTED,
+        httpStatus: HttpStatus.OK,
         message: 'Berhasil',
       };
     } catch (error) {

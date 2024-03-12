@@ -42,7 +42,12 @@ export class KelasService {
     payload: Partial<
       Pick<
         Kelas,
-        'jenjang' | 'tahun_ajaran' | 'kelas' | 'kode_kelas' | 'jumlah_siswa'
+        | 'jenjang'
+        | 'tahun_ajaran'
+        | 'kelas'
+        | 'kode_kelas'
+        | 'jumlah_siswa'
+        | 'kapasitas'
       >
     >,
     entityManager: EntityManager = this.entityManager,
@@ -146,10 +151,10 @@ export class KelasService {
   async createKelas({
     jenjang,
     tahun_ajaran,
-    maksimal_jumlah_siswa,
+    kapasitas,
   }: Pick<
     ICreateKelas,
-    'jenjang' | 'tahun_ajaran' | 'maksimal_jumlah_siswa'
+    'jenjang' | 'tahun_ajaran' | 'kapasitas'
   >): Promise<void> {
     let no = 0;
     try {
@@ -187,7 +192,7 @@ export class KelasService {
           kelas,
           kode_kelas,
           tahun_ajaran,
-          maksimal_jumlah_siswa,
+          kapasitas,
         });
 
         await this.saveTransactionKelas(createKelas, entityManager);
@@ -235,7 +240,7 @@ export class KelasService {
     kelas_id: string,
     jenjang: JENJANG,
     tahun_ajaran: TahunAjaran,
-    maksimal_jumlah_siswa: number,
+    kapasitas: number,
   ): Promise<UpdateResult> {
     let no = 0;
     let kode_kelas = undefined;
@@ -282,7 +287,7 @@ export class KelasService {
             tahun_ajaran,
             kode_kelas,
             kelas,
-            maksimal_jumlah_siswa,
+            kapasitas,
           };
 
           return await this.updateTransactionKelas(
@@ -299,29 +304,11 @@ export class KelasService {
     }
   }
 
-  // async getKelasAndLock(
-  //   kelas_id: string,
-  //   entityManager: EntityManager = this.entityManager,
-  // ): Promise<Kelas> {
-  //   const kelas = await entityManager.findOne(Kelas, {
-  //     where: {
-  //       kelas_id,
-  //     },
-  //     relations: {
-  //       tahun_ajaran: true,
-  //     },
-  //     order: { kode_kelas: 'DESC' },
-  //     lock: { mode: 'pessimistic_write' },
-  //   });
-
-  //   return kelas;
-  // }
-
   async getKelasAndLock(
     jenjang: JENJANG,
     tahun_ajaran_id: string,
     entityManager: EntityManager = this.entityManager,
-  ): Promise<Kelas> {
+  ): Promise<Kelas[]> {
     const kelas = await entityManager
       .createQueryBuilder(Kelas, 'kelas')
       .leftJoinAndSelect('kelas.tahun_ajaran', 'tahun_ajaran')
@@ -329,22 +316,26 @@ export class KelasService {
       .andWhere('tahun_ajaran.tahun_ajaran_id = :tahun_ajaran_id', {
         tahun_ajaran_id,
       })
-      .andWhere('kelas.jumlah_siswa < kelas.maksimal_jumlah_siswa')
+      .andWhere('kelas.jumlah_siswa < kelas.kapasitas')
       .orderBy('kelas.created_at', 'ASC')
       .setLock('pessimistic_write')
-      .getOne();
+      .getMany();
 
     return kelas;
   }
 
-  async updateJumlahSiswaKelas(
+  async addJumlahSiswa(
     kelas: Kelas,
+    jumlah_siswa: number,
     entityManager: EntityManager = this.entityManager,
   ) {
     try {
-      return await this.updateTransactionKelas(
+      await this.updateTransactionKelas(
         kelas,
-        { jumlah_siswa: kelas.jumlah_siswa + 1 },
+        {
+          kapasitas: kelas.kapasitas,
+          jumlah_siswa: kelas.jumlah_siswa + jumlah_siswa,
+        },
         entityManager,
       );
     } catch (error) {
