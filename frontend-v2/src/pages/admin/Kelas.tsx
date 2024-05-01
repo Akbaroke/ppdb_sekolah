@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react';
 import ButtonDelete from '../../components/ButtonDelete';
 import InputSearch from '../../components/InputSearch';
 import ModalForm from '../../components/ModalForm';
-import calculateShowingEntriesText from '../../utils/calculateShowEntries';
+// import calculateShowingEntriesText from '../../utils/calculateShowEntries';
 
 export default function Kelas() {
   const dispatch = useDispatch();
@@ -193,11 +193,11 @@ export default function Kelas() {
           <NotDataFound />
         )}
         <div className="flex items-center justify-between mt-5">
-          {data?.length > 0 && (
+          {/* {data?.length > 0 && (
             <p className="font-semibold text-blue-400">
               {calculateShowingEntriesText(pagination)}
             </p>
-          )}
+          )} */}
           <Pagination
             value={pagination.currentPage}
             total={pagination.totalPage}
