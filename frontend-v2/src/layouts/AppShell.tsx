@@ -50,9 +50,7 @@ const dataAdmin = [
   { link: '/admin/ganti-katasandi', label: 'Ganti Kata Sandi', icon: IconKey },
 ];
 
-const warnFeatureOnDevelop = [
-  '/admin/pembayaran',
-];
+const warnFeatureOnDevelop = ['/admin/pembayaran'];
 
 export function AppShell() {
   const dispatch = useDispatch();
@@ -128,7 +126,7 @@ export function AppShell() {
           <div className="flex items-center gap-2">
             <img src={LOGO} alt="Logo" width={35} className="drop-shadow-lg" />
             <h1 className="text-lg font-bold tracking-tight drop-shadow-lg">
-              Sekolah Indonesia
+              TK ISLAM Pelita Insan
             </h1>
           </div>
         </Group>
