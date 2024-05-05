@@ -81,7 +81,7 @@ export default function Kelas() {
 
   const rows = data?.map((element) => (
     <Table.Tr key={element.id}>
-      <Table.Td className="font-semibold text-blue-400 uppercase">
+      <Table.Td className="font-semibold text-[#c59004] uppercase">
         {element.jenjang}
       </Table.Td>
       <Table.Td className="capitalize text-nowrap">{element.kelas}</Table.Td>

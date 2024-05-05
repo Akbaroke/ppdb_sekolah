@@ -135,7 +135,7 @@ export default function DetailSiswa() {
                   color: activeTab === item.key ? '' : 'gray',
                   fontWeight: activeTab === item.key ? '' : '400',
                   borderBottom:
-                    activeTab === item.key ? '2px solid #228be6' : '',
+                    activeTab === item.key ? '2px solid #c59004' : '',
                 },
               }}>
               {item.label}

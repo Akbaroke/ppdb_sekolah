@@ -97,7 +97,7 @@ export default function Pendaftar() {
           className="w-[71px] h-[87px] rounded-[5px] m-auto"
         />
       </Table.Td>
-      <Table.Td className="font-bold text-blue-400 text-nowrap">
+      <Table.Td className="font-bold text-[#c59004] text-nowrap">
         {element.nama}
       </Table.Td>
       <Table.Td>{element.no_pendaftaran}</Table.Td>
@@ -253,7 +253,7 @@ export default function Pendaftar() {
         )}
         <div className="flex items-center justify-between mt-5">
           {listDataSiswa?.length > 0 && (
-            <p className="font-semibold text-blue-400">
+            <p className="font-semibold text-[#c59004]">
               {calculateShowingEntriesText(pagination)}
             </p>
           )}

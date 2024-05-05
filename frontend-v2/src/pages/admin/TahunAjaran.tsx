@@ -37,7 +37,7 @@ export default function TahunAjaran() {
 
   const rows = data?.map((element) => (
     <Table.Tr key={element.tahun_ajaran_id}>
-      <Table.Td className="font-bold text-blue-400 text-nowrap">
+      <Table.Td className="font-bold text-[#c59004] text-nowrap">
         {element.tahun_ajaran}
       </Table.Td>
       <Table.Td>

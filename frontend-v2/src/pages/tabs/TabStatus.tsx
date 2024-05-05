@@ -74,7 +74,7 @@ export default function TabStatus({ dataStatus }: Props) {
                 title="Ijazah Siswa">
                 <p>
                   :{' '}
-                  <b className="text-sm underline text-blue-500 cursor-pointer font-medium">
+                  <b className="text-sm underline text-[#c59004] cursor-pointer font-medium">
                     Lihat Ijazah
                   </b>
                 </p>

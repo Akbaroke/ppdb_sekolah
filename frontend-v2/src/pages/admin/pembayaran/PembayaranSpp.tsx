@@ -20,7 +20,7 @@ import ButtonDelete from '../../../components/ButtonDelete';
 export default function PembayaranSpp() {
   const rows = listPembayaranDummy?.map((element) => (
     <Table.Tr key={element.id}>
-      <Table.Td className="font-semibold text-blue-400 text-nowrap">
+      <Table.Td className="font-semibold text-[#c59004] text-nowrap">
         {element.no_transaksi}
       </Table.Td>
       <Table.Td className="text-nowrap">{element.tanggal}</Table.Td>

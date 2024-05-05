@@ -17,6 +17,20 @@ import { Toaster } from 'sonner';
 const theme = createTheme({
   fontFamily: 'Plus Jakarta Sans, sans-serif',
   cursorType: 'pointer',
+  colors: {
+    blue: [
+      '#fff5db', // Light gold
+      '#ffeaaf',
+      '#ffd666',
+      '#ffcc33', // Gold
+      '#ffa500', // Reference gold
+      '#c59004', // Final gold color
+      '#c59004', // Final gold color
+      '#c59004', // Final gold color
+      '#c59004', // Final gold color
+      '#c59004', // Final gold color
+    ],
+  },
 });
 
 // const colorSchemeManager = localStorageColorSchemeManager({

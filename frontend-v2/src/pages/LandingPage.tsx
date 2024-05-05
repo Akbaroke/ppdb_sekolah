@@ -24,7 +24,7 @@ export default function LandingPage() {
             }}
             variant="gradient"
             gradient={{ from: 'blue', to: 'gray', deg: 122 }}>
-            Sekolah Indonesia
+            TK ISLAM Pelita Insan
           </Text>
         </div>
         <Button
