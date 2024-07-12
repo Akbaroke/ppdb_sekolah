@@ -118,11 +118,7 @@ export default function Kelas() {
           onAction={() => handleDeleteKelas(element.id)}>
           <ButtonDelete isLoading={loadingDelete === element.id} />
         </ModalConfirm>
-        <ModalForm
-          title="Ubah Kelas"
-          formType="kelas"
-          actionType="edit"
-          id={element.id}>
+        <ModalForm title="Ubah Kelas" formType="kelas" data={element}>
           <ActionIcon variant="light" size="lg">
             <IconPencil size={18} />
           </ActionIcon>
@@ -139,7 +135,7 @@ export default function Kelas() {
       <Table.Th>Tahun Ajaran</Table.Th>
       <Table.Th>Jumlah Siswa</Table.Th>
       <Table.Th>Kapasitas</Table.Th>
-      <Table.Th>Aksi</Table.Th>
+      <Table.Th w={120}>Aksi</Table.Th>
     </Table.Tr>
   );
 
@@ -153,7 +149,7 @@ export default function Kelas() {
             setSearchValue={setSearchValue}
           />
           <ButtonRefresh isLoading={isLoading} onClick={refresh} />
-          <ModalForm title="Tambah Kelas" formType="kelas" actionType="create">
+          <ModalForm title="Tambah Kelas" formType="kelas">
             <ActionIcon variant="light" size="lg">
               <IconPlus size={18} />
             </ActionIcon>

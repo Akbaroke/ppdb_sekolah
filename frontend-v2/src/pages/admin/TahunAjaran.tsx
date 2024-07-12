@@ -60,8 +60,7 @@ export default function TahunAjaran() {
         <ModalForm
           title="Ubah Tahun Ajaran"
           formType="tahun_ajaran"
-          actionType="edit"
-          id={element.tahun_ajaran_id}>
+          data={element}>
           <ActionIcon variant="light" size="lg">
             <IconPencil size={18} />
           </ActionIcon>
@@ -75,7 +74,7 @@ export default function TahunAjaran() {
       <Table.Th>Tahun Ajaran</Table.Th>
       <Table.Th>Biaya Daftar</Table.Th>
       <Table.Th>Biaya SPP</Table.Th>
-      <Table.Th>Aksi</Table.Th>
+      <Table.Th w={120}>Aksi</Table.Th>
     </Table.Tr>
   );
 
@@ -119,10 +118,7 @@ export default function TahunAjaran() {
             setSearchValue={setSearchValue}
           />
           <ButtonRefresh isLoading={isLoading} onClick={refresh} />
-          <ModalForm
-            title="Buat Tahun Ajaran"
-            formType="tahun_ajaran"
-            actionType="create">
+          <ModalForm title="Buat Tahun Ajaran" formType="tahun_ajaran">
             <ActionIcon variant="light" size="lg">
               <IconPlus size={18} />
             </ActionIcon>

@@ -44,7 +44,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       // colorSchemeManager={colorSchemeManager}
       defaultColorScheme="light">
       <Provider store={store}>
-        <Toaster expand={false} position="top-center" richColors />
+        <Toaster
+          expand={false}
+          position="top-center"
+          richColors
+          duration={1000}
+        />
         <App />
       </Provider>
     </MantineProvider>

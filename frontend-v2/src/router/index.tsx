@@ -15,8 +15,16 @@ import DetailSiswa from '../pages/DetailSiswa';
 import Pendaftar from '../pages/admin/Pendaftar';
 import Siswa from '../pages/admin/siswa';
 import Pembayaran from '../pages/admin/pembayaran';
-import PembayaranSpp from '../pages/admin/pembayaran/PembayaranSpp';
 import NotFound from '../pages/NotFound';
+import RiwayatPembayaranDUSB from '../pages/admin/pembayaran/RiwayatPembayaranDUSB';
+import RiwayatPembayaranSPP from '../pages/admin/pembayaran/RiwayatPembayaranSPP';
+import DetailBiayaDUSB from '../pages/admin/pembayaran/DetailBiayaDUSB';
+import RiwayatPembayaranDUKK from '../pages/admin/pembayaran/RiwayatPembayaranDUKK';
+import DetailBiayaDUKK from '../pages/admin/pembayaran/DetailBiayaDUKK';
+import ListBiayaDUSB from '../pages/admin/pembayaran/ListBiayaDUSB';
+import ListBiayaDUKK from '../pages/admin/pembayaran/ListBiayaDUKK';
+import RiwayatPembayaranIjazah from '../pages/admin/pembayaran/RiwayatPembayaranIjazah';
+import DetailBiayaIjazah from '../pages/admin/pembayaran/DetailBiayaIjazah';
 
 export type DataRouteType = {
   path: string;
@@ -120,8 +128,40 @@ export default function Root() {
           element: <DetailSiswa />,
         },
         {
-          path: '/pembayaran/spp',
-          element: <PembayaranSpp />,
+          path: '/pembayaran/riwayat-spp',
+          element: <RiwayatPembayaranSPP />,
+        },
+        {
+          path: '/pembayaran/riwayat-dusb',
+          element: <RiwayatPembayaranDUSB />,
+        },
+        {
+          path: '/pembayaran/detail-dusb',
+          element: <DetailBiayaDUSB />,
+        },
+        {
+          path: '/pembayaran/detail-dusb/list',
+          element: <ListBiayaDUSB />,
+        },
+        {
+          path: '/pembayaran/riwayat-dukk',
+          element: <RiwayatPembayaranDUKK />,
+        },
+        {
+          path: '/pembayaran/detail-dukk',
+          element: <DetailBiayaDUKK />,
+        },
+        {
+          path: '/pembayaran/detail-dukk/list',
+          element: <ListBiayaDUKK />,
+        },
+        {
+          path: '/pembayaran/riwayat-ijazah',
+          element: <RiwayatPembayaranIjazah />,
+        },
+        {
+          path: '/pembayaran/detail-ijazah',
+          element: <DetailBiayaIjazah />,
         },
       ],
     },

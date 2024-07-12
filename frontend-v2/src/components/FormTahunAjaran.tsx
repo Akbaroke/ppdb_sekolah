@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { TahunAjaran } from '../interfaces/store';
 import { useForm } from '@mantine/form';
 import api from '../api';
@@ -10,12 +10,11 @@ import { fetchPaginatedTahunAjaran } from '../redux/slices/tahunAjaranSlice';
 import { useDispatch } from 'react-redux';
 
 type Props = {
-  id?: string;
-  type: 'create' | 'edit';
+  data?: any;
   close: () => void;
 };
 
-export default function FormTahunAjaran({ id, type, close }: Props) {
+export default function FormTahunAjaran({ data, close }: Props) {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,10 +26,10 @@ export default function FormTahunAjaran({ id, type, close }: Props) {
     validateInputOnChange: true,
     validateInputOnBlur: true,
     initialValues: {
-      tahun_ajaran_id: id || '',
-      tahun_ajaran: tahunAjaranNow || '',
-      biaya_daftar: 0,
-      besar_spp: 0,
+      tahun_ajaran_id: data?.tahun_ajaran_id || '',
+      tahun_ajaran: data?.tahun_ajaran || tahunAjaranNow,
+      biaya_daftar: data?.biaya_daftar || 0,
+      besar_spp: data?.besar_spp || 0,
     },
     validate: {
       tahun_ajaran: (value: string) => (value ? null : 'Wajib diisi'),
@@ -39,27 +38,12 @@ export default function FormTahunAjaran({ id, type, close }: Props) {
     },
   });
 
-  useEffect(() => {
-    const fetch = async () => {
-      setIsLoading(true);
-      const { data } = await api.get(`/tahun_ajaran/${id}`);
-      form.setFieldValue('tahun_ajaran', data.data.tahun_ajaran);
-      form.setFieldValue('biaya_daftar', data.data.biaya_daftar);
-      form.setFieldValue('besar_spp', data.data.besar_spp);
-      setIsLoading(false);
-    };
-
-    type === 'edit' && fetch();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
       const { tahun_ajaran_id, tahun_ajaran, biaya_daftar, besar_spp } =
         form.values;
-      if (type === 'edit') {
+      if (data) {
         const { data } = await api.patch(`/tahun_ajaran/${tahun_ajaran_id}`, {
           biaya_daftar,
           besar_spp,

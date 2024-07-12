@@ -141,67 +141,420 @@ const listPendaftarDummy = [
   },
 ];
 
-const listPembayaranDummy = [
+const riwayatPembayaranSPPDummy = [
   {
     id: '1',
     no_transaksi: '001',
-    tanggal: '10/01/24',
+    tanggal: 1720767341000,
     nis: '01101241',
     nama: 'Joni Sutejo',
     kelas: 'TKA-1',
     spp_bulan: 'Januari 2024',
     nominal: 300_000,
-    isPaid: true,
+    metode: 'QRIS',
   },
   {
     id: '2',
     no_transaksi: '001',
-    tanggal: '10/01/24',
+    tanggal: 1720767341000,
     nis: '01101241',
     nama: 'Joni Sutejo',
     kelas: 'TKA-1',
     spp_bulan: 'Januari 2024',
     nominal: 300_000,
-    isPaid: false,
+    metode: 'BCA',
   },
   {
     id: '3',
     no_transaksi: '001',
-    tanggal: '10/01/24',
+    tanggal: 1720767341000,
     nis: '01101241',
     nama: 'Joni Sutejo',
     kelas: 'TKA-1',
     spp_bulan: 'Januari 2024',
     nominal: 300_000,
-    isPaid: false,
+    metode: 'Mandiri',
   },
   {
     id: '4',
     no_transaksi: '001',
-    tanggal: '10/01/24',
+    tanggal: 1720767341000,
     nis: '01101241',
     nama: 'Joni Sutejo',
     kelas: 'TKA-1',
     spp_bulan: 'Januari 2024',
     nominal: 300_000,
-    isPaid: true,
+    metode: 'DANA',
   },
   {
     id: '5',
     no_transaksi: '001',
-    tanggal: '10/01/24',
+    tanggal: 1720767341000,
     nis: '01101241',
     nama: 'Joni Sutejo',
     kelas: 'TKA-1',
     spp_bulan: 'Januari 2024',
     nominal: 300_000,
-    isPaid: true,
+    metode: 'OVO',
   },
 ];
+
+const riwayatPembayaranDUSBDummy = [
+  {
+    id: '1',
+    no_transaksi: '001',
+    tanggal: 1720767341000,
+    no_pendaftaran: '0601241',
+    nis: '01101241',
+    nama: 'Budi Darma',
+    kelas: 'TKA-1',
+    jenis_kelamin: 'Laki-laki',
+    nominal: 1_500_000,
+    metode: 'Mandiri',
+  },
+  {
+    id: '2',
+    no_transaksi: '001',
+    tanggal: 1720767341000,
+    no_pendaftaran: '0601241',
+    nis: '01101241',
+    nama: 'Budi Darma',
+    jenis_kelamin: 'Laki-laki',
+    kelas: 'TKA-1',
+    nominal: 1_500_000,
+    metode: 'Mandiri',
+  },
+  {
+    id: '3',
+    no_transaksi: '001',
+    tanggal: 1720767341000,
+    no_pendaftaran: '0601241',
+    nis: '01101241',
+    nama: 'Budi Darma',
+    jenis_kelamin: 'Laki-laki',
+    kelas: 'TKA-1',
+    nominal: 1_500_000,
+    metode: 'Mandiri',
+  },
+];
+
+const listBiayaDUSBDummy = [
+  {
+    id: 1,
+    kode: 'DUSB-001',
+    title: 'Adminitrasi Daftar Ulang SB',
+    biaya: 650_000,
+  },
+  {
+    id: 2,
+    kode: 'DUSB-002',
+    title: 'Uang Gedung',
+    biaya: 50_000,
+  },
+  {
+    id: 3,
+    kode: 'DUSB-003',
+    title: 'Seragam 3 Stel',
+    biaya: 400_000,
+  },
+  {
+    id: 4,
+    kode: 'DUSB-004',
+    title: 'Buku TK-A',
+    biaya: 300_000,
+  },
+  {
+    id: 5,
+    kode: 'DUSB-005',
+    title: 'Buku TK-B',
+    biaya: 300_000,
+  },
+  {
+    id: 6,
+    kode: 'DUSB-006',
+    title: 'Uang Kegiatan',
+    biaya: 650_000,
+  },
+];
+
+const biayaDUSBDummy = [
+  {
+    id: '1',
+    tahun_ajaran: '2022/2023',
+    jenjang: 'TKA',
+    total_biaya: 1_550_000,
+    detail_biaya: [
+      {
+        id: 1,
+        kode: 'DUSB-001',
+        title: 'Adminitrasi Daftar Ulang SB',
+        biaya: 650_000,
+      },
+      {
+        id: 2,
+        kode: 'DUSB-002',
+        title: 'Uang Gedung',
+        biaya: 50_000,
+      },
+      {
+        id: 4,
+        kode: 'DUSB-004',
+        title: 'Buku TK-A',
+        biaya: 300_000,
+      },
+      {
+        id: 6,
+        kode: 'DUSB-006',
+        title: 'Uang Kegiatan',
+        biaya: 650_000,
+      },
+    ],
+  },
+  {
+    id: '2',
+    tahun_ajaran: '2022/2023',
+    jenjang: 'TKB',
+    total_biaya: 1_550_000,
+    detail_biaya: [
+      {
+        id: 1,
+        kode: 'DUSB-001',
+        title: 'Adminitrasi Daftar Ulang SB',
+        biaya: 650_000,
+      },
+      {
+        id: 2,
+        kode: 'DUSB-002',
+        title: 'Uang Gedung',
+        biaya: 50_000,
+      },
+      {
+        id: 5,
+        kode: 'DUSB-005',
+        title: 'Buku TK-B',
+        biaya: 300_000,
+      },
+      {
+        id: 6,
+        kode: 'DUSB-006',
+        title: 'Uang Kegiatan',
+        biaya: 650_000,
+      },
+    ],
+  },
+];
+
+const riwayatPembayaranDUKKDummy = [
+  {
+    id: '1',
+    no_transaksi: '001',
+    tanggal: 1720767341000,
+    nis: '01101241',
+    nama: 'Budi Darma 1',
+    kelas: 'TKA-1',
+    nominal: 1_500_000,
+    metode: 'Mandiri',
+  },
+  {
+    id: '2',
+    no_transaksi: '002',
+    tanggal: 1720767341000,
+    nis: '01101241',
+    nama: 'Budi Darma 2',
+    kelas: 'TKB-1',
+    nominal: 1_500_000,
+    metode: 'BNI',
+  },
+  {
+    id: '3',
+    no_transaksi: '003',
+    tanggal: 1720767341000,
+    nis: '01101241',
+    nama: 'Budi Darma 3',
+    kelas: 'TKB-1',
+    nominal: 1_500_000,
+    metode: 'QRIS',
+  },
+  {
+    id: '4',
+    no_transaksi: '004',
+    tanggal: 1720767341000,
+    nis: '01101241',
+    nama: 'Budi Darma 4',
+    kelas: 'TKA-1',
+    nominal: 1_500_000,
+    metode: 'BCA',
+  },
+];
+
+const listBiayaDUKKDummy = [
+  {
+    id: 1,
+    kode: 'DUKK-001',
+    title: 'Adminitrasi Daftar Ulang SB',
+    biaya: 650_000,
+  },
+  {
+    id: 2,
+    kode: 'DUKK-002',
+    title: 'Uang Gedung',
+    biaya: 50_000,
+  },
+  {
+    id: 3,
+    kode: 'DUKK-003',
+    title: 'Seragam 3 Stel',
+    biaya: 400_000,
+  },
+  {
+    id: 4,
+    kode: 'DUKK-004',
+    title: 'Buku TK-A',
+    biaya: 300_000,
+  },
+  {
+    id: 5,
+    kode: 'DUKK-005',
+    title: 'Buku TK-B',
+    biaya: 300_000,
+  },
+  {
+    id: 6,
+    kode: 'DUKK-006',
+    title: 'Uang Kegiatan',
+    biaya: 650_000,
+  },
+];
+
+const biayaDUKKDummy = [
+  {
+    id: '1',
+    tahun_ajaran: '2022/2023',
+    jenjang: 'TKA',
+    total_biaya: 1_550_000,
+    detail_biaya: [
+      {
+        id: 1,
+        kode: 'DUKK-001',
+        title: 'Adminitrasi Daftar Ulang SB',
+        biaya: 650_000,
+      },
+      {
+        id: 2,
+        kode: 'DUKK-002',
+        title: 'Uang Gedung',
+        biaya: 50_000,
+      },
+      {
+        id: 4,
+        kode: 'DUKK-004',
+        title: 'Buku TK-A',
+        biaya: 300_000,
+      },
+      {
+        id: 6,
+        kode: 'DUKK-006',
+        title: 'Uang Kegiatan',
+        biaya: 650_000,
+      },
+    ],
+  },
+  {
+    id: '2',
+    tahun_ajaran: '2022/2023',
+    jenjang: 'TKB',
+    total_biaya: 1_550_000,
+    detail_biaya: [
+      {
+        id: 1,
+        kode: 'DUSB-001',
+        title: 'Adminitrasi Daftar Ulang KK',
+        biaya: 650_000,
+      },
+      {
+        id: 2,
+        kode: 'DUSB-002',
+        title: 'Uang Gedung',
+        biaya: 50_000,
+      },
+      {
+        id: 5,
+        kode: 'DUSB-005',
+        title: 'Buku TK-B',
+        biaya: 300_000,
+      },
+      {
+        id: 6,
+        kode: 'DUSB-006',
+        title: 'Uang Kegiatan',
+        biaya: 650_000,
+      },
+    ],
+  },
+];
+
+const riwayatPembayaranIjazahDummy = [
+  {
+    id: '1',
+    no_transaksi: '001',
+    tanggal: 1720767341000,
+    nis: '01101241',
+    nama: 'Budi Darma 1',
+    kelas: 'TKA-1',
+    jenis_kelamin: 'Laki-laki',
+    nominal: 200_000,
+    metode: 'BNI',
+  },
+  {
+    id: '2',
+    no_transaksi: '002',
+    tanggal: 1720767341000,
+    nis: '01101241',
+    nama: 'Budi Darma 2',
+    kelas: 'TKA-2',
+    jenis_kelamin: 'Laki-laki',
+    nominal: 200_000,
+    metode: 'Mandiri',
+  },
+  {
+    id: '3',
+    no_transaksi: '003',
+    tanggal: 1720767341000,
+    nis: '01101241',
+    nama: 'Budi Darma 3',
+    kelas: 'TKA-1',
+    jenis_kelamin: 'Laki-laki',
+    nominal: 200_000,
+    metode: 'DANA',
+  },
+];
+
+const biayaIjazahDummy = [
+  {
+    id: '1',
+    tahun_ajaran: '2021/2022',
+    jenjang: 'TKB',
+    biaya: 200_000
+  },
+  {
+    id: '2',
+    tahun_ajaran: '2022/2023',
+    jenjang: 'TKB',
+    biaya: 200_000
+  }
+]
 
 export {
   listSiswaTerdaftarDummy,
   listSiswaDummy,
   listPendaftarDummy,
-  listPembayaranDummy,
+  riwayatPembayaranSPPDummy,
+  riwayatPembayaranDUSBDummy,
+  listBiayaDUSBDummy,
+  biayaDUSBDummy,
+  riwayatPembayaranDUKKDummy,
+  biayaDUKKDummy,
+  listBiayaDUKKDummy,
+  riwayatPembayaranIjazahDummy,
+  biayaIjazahDummy,
 };

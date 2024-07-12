@@ -10,14 +10,12 @@ import { JENJANG_LIST } from '../data/config';
 import { fetchPaginatedKelas } from '../redux/slices/kelasSlice';
 import {
   TahunAjaranAsync,
-  fetchPaginatedTahunAjaran,
   fetchSearchTahunAjaran,
 } from '../redux/slices/tahunAjaranSlice';
 import { useDebouncedValue } from '@mantine/hooks';
 
 type Props = {
-  id?: string;
-  type: 'create' | 'edit';
+  data?: any;
   close: () => void;
 };
 
@@ -28,10 +26,12 @@ type FormType = {
   kapasitas: number;
 };
 
-export default function FormKelas({ id, type, close }: Props) {
+export default function FormKelas({ data, close }: Props) {
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState<string | null>(
+    data?.tahun_ajaran || null
+  );
   const [debounced] = useDebouncedValue(searchValue, 500);
   const { data: dataTahunAjaran, isLoading: isLoadingTahunAjaran } =
     useSelector(
@@ -42,10 +42,10 @@ export default function FormKelas({ id, type, close }: Props) {
     validateInputOnChange: true,
     validateInputOnBlur: true,
     initialValues: {
-      id: id || '',
-      jenjang: '',
-      tahun_ajaran: '',
-      kapasitas: 0,
+      id: data?.id || '',
+      jenjang: data?.jenjang || '',
+      tahun_ajaran: data?.tahun_ajaran || '',
+      kapasitas: data?.kapasitas || 0,
     },
     validate: {
       jenjang: (value: string) => (value ? null : 'Wajib diisi'),
@@ -53,31 +53,11 @@ export default function FormKelas({ id, type, close }: Props) {
     },
   });
 
-  useEffect(() => {
-    const fetch = async () => {
-      const { data } = await api.get(`/kelas/${id}`);
-      form.setFieldValue('jenjang', data.data.jenjang);
-      form.setFieldValue('tahun_ajaran', data.data.tahun_ajaran);
-      form.setFieldValue('kapasitas', data.data.kapasitas);
-      setSearchValue(data.data.tahun_ajaran);
-    };
-
-    type === 'edit' && fetch();
-
-    dispatch(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      fetchPaginatedTahunAjaran({})
-    );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
       const { id, jenjang, tahun_ajaran, kapasitas } = form.values;
-      if (type === 'edit') {
+      if (data) {
         const { data } = await api.patch(`/kelas/${id}`, {
           jenjang: jenjang.toLowerCase(),
           tahun_ajaran,

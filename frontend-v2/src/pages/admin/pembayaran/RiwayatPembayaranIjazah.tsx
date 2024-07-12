@@ -10,26 +10,30 @@ import {
 import ButtonBack from '../../../components/ButtonBack';
 import ButtonRefresh from '../../../components/ButtonRefresh';
 import Card from '../../../components/Card';
-import { IconPencil, IconPlus, IconTrash } from '@tabler/icons-react';
+import { IconPlus, IconTrash } from '@tabler/icons-react';
 import InputSearch from '../../../components/InputSearch';
 import NotDataFound from '../../../components/NotDataFound';
-import { listPembayaranDummy } from '../../../data/dummy';
+import { riwayatPembayaranIjazahDummy } from '../../../data/dummy';
 import ModalConfirm from '../../../components/ModalConfirm';
 import ButtonDelete from '../../../components/ButtonDelete';
+import ModalForm from '../../../components/ModalForm';
+import moment from 'moment';
 
-export default function PembayaranSpp() {
-  const rows = listPembayaranDummy?.map((element) => (
+export default function RiwayatPembayaranIjazah() {
+  const rows = riwayatPembayaranIjazahDummy?.map((element) => (
     <Table.Tr key={element.id}>
       <Table.Td className="font-semibold text-[#c59004] text-nowrap">
         {element.no_transaksi}
       </Table.Td>
-      <Table.Td className="text-nowrap">{element.tanggal}</Table.Td>
+      <Table.Td className="text-nowrap">
+        {moment(element.tanggal).format('DD/MM/YYYY')}
+      </Table.Td>
       <Table.Td className="text-nowrap">{element.nis}</Table.Td>
       <Table.Td className="capitalize text-nowrap">{element.nama}</Table.Td>
       <Table.Td>
         <Badge color="blue">{element.kelas}</Badge>
       </Table.Td>
-      <Table.Td className="text-nowrap">{element.spp_bulan}</Table.Td>
+      <Table.Td className="text-nowrap">{element.jenis_kelamin}</Table.Td>
       <Table.Td className="text-nowrap">
         <NumberFormatter
           prefix="Rp "
@@ -39,19 +43,13 @@ export default function PembayaranSpp() {
         />
       </Table.Td>
       <Table.Td>
-        {element.isPaid ? (
-          <Badge variant="light" color="teal">
-            Lunas
-          </Badge>
-        ) : (
-          <Badge variant="light" color="red">
-            Belum
-          </Badge>
-        )}
+        <Badge variant="light" color="teal">
+          {element.metode}
+        </Badge>
       </Table.Td>
       <Table.Td className="flex items-center justify-evenly gap-3">
         <ModalConfirm
-          title="Hapus Kelas"
+          title="Hapus Riwayat Transaksi"
           icon={<IconTrash />}
           type="danger"
           text={
@@ -64,15 +62,6 @@ export default function PembayaranSpp() {
           onAction={() => null}>
           <ButtonDelete isLoading={false} />
         </ModalConfirm>
-        <ActionIcon variant="light" size="lg">
-          <IconPencil size={18} />
-        </ActionIcon>
-        {/* <ModalForm
-          title="Ubah Kelas"
-          formType="kelas"
-          actionType="edit"
-          id={element.id}>
-        </ModalForm> */}
       </Table.Td>
     </Table.Tr>
   ));
@@ -84,9 +73,9 @@ export default function PembayaranSpp() {
       <Table.Th>NIS</Table.Th>
       <Table.Th>Nama</Table.Th>
       <Table.Th>Kelas</Table.Th>
-      <Table.Th>SPP Bulan</Table.Th>
+      <Table.Th>Jenis Kel</Table.Th>
       <Table.Th>Nominal</Table.Th>
-      <Table.Th>Status</Table.Th>
+      <Table.Th>Metode</Table.Th>
       <Table.Th>Action</Table.Th>
     </Table.Tr>
   );
@@ -96,16 +85,18 @@ export default function PembayaranSpp() {
       <Card className="flex justify-between items-center flex-wrap gap-y-3">
         <div className="flex items-center gap-2">
           <ButtonBack />
-          <h1 className="font-bold text-lg">Pembayaran SPP</h1>
+          <h1 className="font-bold text-lg">Riwayat Pembayaran Ijazah</h1>
         </div>
         <div className="flex items-center gap-2">
           <InputSearch searchValue="" setSearchValue={() => null} />
           <ButtonRefresh isLoading={false} onClick={() => null} />
-          <ActionIcon variant="light" size="lg">
-            <IconPlus size={18} />
-          </ActionIcon>
-          {/* <ModalForm title="Tambah Kelas" formType="kelas" actionType="create">
-          </ModalForm> */}
+          <ModalForm
+            title="Manual Input Riwayat Pembayaran Ijazah"
+            formType="manual_ijazah">
+            <ActionIcon variant="light" size="lg">
+              <IconPlus size={18} />
+            </ActionIcon>
+          </ModalForm>
         </div>
       </Card>
       <Card>
@@ -117,7 +108,7 @@ export default function PembayaranSpp() {
             children: <Loader color="blue" size="sm" type="dots" />,
           }}
         />
-        {listPembayaranDummy?.length > 0 ? (
+        {riwayatPembayaranIjazahDummy?.length > 0 ? (
           <Table.ScrollContainer minWidth={500}>
             <Table
               withTableBorder

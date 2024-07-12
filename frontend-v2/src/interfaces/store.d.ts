@@ -33,3 +33,15 @@ export interface Kelas extends Timestamp {
   jumlah_siswa: number;
   kapasitas: number;
 }
+
+export interface PembayaranSPP {
+  id: string;
+  no_transaksi: string;
+  tanggal: Date;
+  nis: string;
+  nama: string;
+  kelas: string;
+  spp_bulan: string;
+  nominal: number;
+  metode: string;
+}

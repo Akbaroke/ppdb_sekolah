@@ -5,12 +5,35 @@ import FormKelas from './FormKelas';
 import FormTerima from './FormTerima';
 import FormLuluskan from './FormLuluskan';
 import FormKeluarkan from './FormKeluarkan';
+import FormManualSpp from './FormManualSpp';
+import FormManualDUSB from './FormManualDUSB';
+import FormListBiayaDUSB from './FormListBiayaDUSB';
+import FormBiayaDUSB from './FormBiayaDUSB';
+import FormManualDUKK from './FormManualDUKK';
+import FormBiayaDUKK from './FormBiayaDUKK';
+import FormListBiayaDUKK from './FormListBiayaDUKK';
+import FormManualIjazah from './FormManualIjazah';
+import FormBiayaIjazah from './FormBiayaIjazah';
 
 type Props = {
   children: React.ReactNode;
   title: string;
-  actionType?: 'create' | 'edit';
-  formType: 'tahun_ajaran' | 'kelas' | 'terima' | 'luluskan' | 'keluarkan';
+  formType:
+    | 'tahun_ajaran'
+    | 'kelas'
+    | 'terima'
+    | 'luluskan'
+    | 'keluarkan'
+    | 'manual_spp'
+    | 'manual_dusb'
+    | 'manual_dukk'
+    | 'manual_ijazah'
+    | 'list_biaya_dusb'
+    | 'list_biaya_dukk'
+    | 'biaya_dusb'
+    | 'biaya_dukk'
+    | 'biaya_ijazah';
+  data?: any;
   id?: string;
   listId?: string[];
   className?: string;
@@ -19,8 +42,8 @@ type Props = {
 export default function ModalForm({
   children,
   title,
-  actionType = 'create',
   formType,
+  data,
   id,
   listId,
   className,
@@ -30,15 +53,33 @@ export default function ModalForm({
   const formRender = () => {
     switch (formType) {
       case 'tahun_ajaran':
-        return <FormTahunAjaran id={id} type={actionType} close={close} />;
+        return <FormTahunAjaran data={data} close={close} />;
       case 'kelas':
-        return <FormKelas id={id} type={actionType} close={close} />;
+        return <FormKelas data={data} close={close} />;
       case 'terima':
         return <FormTerima listId={listId} close={close} />;
       case 'luluskan':
         return <FormLuluskan id={id} close={close} />;
       case 'keluarkan':
         return <FormKeluarkan id={id} close={close} />;
+      case 'manual_spp':
+        return <FormManualSpp close={close} />;
+      case 'manual_dusb':
+        return <FormManualDUSB close={close} />;
+      case 'manual_dukk':
+        return <FormManualDUKK close={close} />;
+      case 'manual_ijazah':
+        return <FormManualIjazah close={close} />;
+      case 'list_biaya_dusb':
+        return <FormListBiayaDUSB close={close} />;
+      case 'list_biaya_dukk':
+        return <FormListBiayaDUKK close={close} />;
+      case 'biaya_dusb':
+        return <FormBiayaDUSB data={data} close={close} />;
+      case 'biaya_dukk':
+        return <FormBiayaDUKK data={data} close={close} />;
+      case 'biaya_ijazah':
+        return <FormBiayaIjazah data={data} close={close} />;
     }
   };
 
