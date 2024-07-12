@@ -519,7 +519,7 @@ export default function FormSiswa({
           )}
         </div>
       </form>
-      <Group justify="center" className="w-full px-7 mt-5">
+      <Group justify="center" className="w-full px-7">
         {isAdmin && type === 'edit' && values?.status === 'siswa' && (
           <ModalForm
             title="Konfirmasi Keluarnya Siswa"
@@ -527,7 +527,7 @@ export default function FormSiswa({
             formType="keluarkan"
             className="flex-1 w-full">
             <Button
-              variant="outline"
+              variant="light"
               color="red"
               fullWidth
               rightSection={<IconTransferOut size={16} />}>
@@ -543,7 +543,7 @@ export default function FormSiswa({
             formType="luluskan"
             className="flex-1 w-full">
             <Button
-              variant="outline"
+              variant="light"
               color="teal"
               fullWidth
               rightSection={<IconSchool size={16} />}>

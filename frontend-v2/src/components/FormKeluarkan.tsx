@@ -65,8 +65,8 @@ export default function FormKeluarkan({ id, close }: Props) {
         </p>
         <Autocomplete
           required
-          label="Tahun Ajaran"
-          placeholder="Tahun ajaran"
+          label="Keterangan"
+          placeholder="Pilih keterangan siswa keluar"
           data={KETERANGAN_KELUAR}
           value={form.values.keterangan}
           error={form.errors.keterangan as string}

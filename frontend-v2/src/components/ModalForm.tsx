@@ -37,6 +37,7 @@ type Props = {
   id?: string;
   listId?: string[];
   className?: string;
+  disable?: boolean;
 };
 
 export default function ModalForm({
@@ -47,6 +48,7 @@ export default function ModalForm({
   id,
   listId,
   className,
+  disable,
 }: Props) {
   const [opened, { open, close }] = useDisclosure(false);
 
@@ -108,7 +110,7 @@ export default function ModalForm({
         {formRender()}
       </MantineModal>
 
-      <div onClick={open} className={className}>
+      <div onClick={disable ? () => null : open} className={className}>
         {children}
       </div>
     </>

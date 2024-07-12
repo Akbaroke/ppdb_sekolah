@@ -175,20 +175,20 @@ export default function Pendaftar() {
         />
 
         <div className="flex items-center justify-between mb-4">
-          {selectedRows.length > 0 && (
-            <ModalForm
-              title="Konfirmasi Penerimaan Siswa"
-              listId={selectedRows}
-              formType="terima">
-              <Button
-                variant="filled"
-                color="teal"
-                fullWidth
-                rightSection={<IconUserCheck size={16} />}>
-                Terima {selectedRows.length} Siswa
-              </Button>
-            </ModalForm>
-          )}
+          <ModalForm
+            title="Konfirmasi Penerimaan Siswa"
+            listId={selectedRows}
+            formType="terima"
+            disable={selectedRows.length === 0}>
+            <Button
+              variant="filled"
+              color="teal"
+              fullWidth
+              disabled={selectedRows.length === 0}
+              rightSection={<IconUserCheck size={16} />}>
+              Terima {selectedRows.length} Siswa
+            </Button>
+          </ModalForm>
           {listDataSiswa?.length > 0 && (
             <Select
               data={[

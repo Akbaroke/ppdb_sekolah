@@ -10,6 +10,7 @@ import { FormType } from '../interfaces/components';
 import { DataStatus, SiswaDetailResponse } from '../interfaces/pages';
 import api from '../api';
 import handleErrorResponse from '../services/handleErrorResponse';
+import TabTagihanPembayaran from './tabs/TabTagihanPembayaran';
 
 const tabs = [
   {
@@ -19,6 +20,10 @@ const tabs = [
   {
     key: 'status',
     label: 'Status',
+  },
+  {
+    key: 'tagihan_pembayaran',
+    label: 'Tagihan Pembayaran',
   },
   {
     key: 'riwayat_pembayaran',
@@ -102,6 +107,8 @@ export default function DetailSiswa() {
         );
       case 'status':
         return <TabStatus dataStatus={dataStatus as DataStatus} />;
+      case 'tagihan_pembayaran':
+        return <TabTagihanPembayaran />;
       case 'riwayat_pembayaran':
         return <TabRiwayatPembayaran />;
     }
