@@ -26,3 +26,7 @@
 
 - ubah nama file `.env.example` jadi `.env.local`
 - pastikan device terinstall `nodejs` versi `>= v20`
+
+### ERD
+
+<img src="./ERD_ppdb_sekolah.jpg" alt="ERD PPDB SEKOLAH" title="ERD PPDB SEKOLAH" />
