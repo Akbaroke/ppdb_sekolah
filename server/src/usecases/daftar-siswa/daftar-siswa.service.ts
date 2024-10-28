@@ -392,6 +392,7 @@ export class DaftarSiswaService {
 
       if (
         payload.role !== 'admin' &&
+        (data_siswa.kelas?.jenjang ?? null) !== null &&
         updatedData.jenjang !== data_siswa.kelas.jenjang
       ) {
         throw new BadRequestException(
