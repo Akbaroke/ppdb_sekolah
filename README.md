@@ -19,4 +19,10 @@
 
 ### Docs
 
-https://documenter.getpostman.com/view/19500855/2s93Juv3wB
+- API SPECIFICATION : [Klick Here](./API_SPECIFICATION.md)
+- VIDEO DEMO & CARA INSTALASI : [Klick Here](https://youtu.be/MtHbJdW8L0I)
+
+### NOTE :
+
+- ubah nama file `.env.example` jadi `.env.local`
+- pastikan device terinstall `nodejs` versi `>= v20`
